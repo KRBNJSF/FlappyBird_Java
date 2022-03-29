@@ -7,20 +7,34 @@ import android.graphics.Matrix;
 import java.util.ArrayList;
 
 import cz.reindl.game.constants.Constants;
+import cz.reindl.game.view.View;
 
 public class Bird extends GameObject {
 
+    Matrix matrix = new Matrix(); //Transforming bird
     private ArrayList<Bitmap> birdList = new ArrayList<>(); //List of Bitmap - animation during game
-    public final int TICK;
-    private int countTick, idCurrentBitmap;
-    private float drop, velocity;
+    public final int TICK = 8;
+    private int countTick;
+    private int idCurrentBitmap;
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    private int score;
+    private int highScore;
+    private float gravity, velocity;
 
     public Bird() {
         this.countTick = 0;
-        this.TICK = 8;
         this.idCurrentBitmap = 0;
-        this.drop = 0;
+        this.gravity = 0;
         this.velocity = 0.6f;
+        this.score = 0;
     }
 
     public void draw(Canvas canvas) {
@@ -30,15 +44,21 @@ public class Bird extends GameObject {
     }
 
     private void drop() {
-        this.drop += velocity;
-        y += this.drop;
+        this.gravity += velocity;
+        y += this.gravity;
     }
 
     public void death() {
-        if (y >= Constants.SCREEN_HEIGHT) {
+        if (this.y >= Constants.SCREEN_HEIGHT || this.x == View.barrier.getX()) {
+            System.out.println("X barrier" + View.barrier.getX() + " " + "X bird: " + this.x);
             setY(Constants.SCREEN_HEIGHT / 2 - this.getHeight() / 2);
-            this.drop = 0;
-        } else if (y <= Constants.SCREEN_HEIGHT) {
+            this.gravity = 0;
+            if (this.score > this.highScore) {
+                this.score = this.highScore;
+            }
+            this.score = 0;
+        } else if (y <= 0) {
+            setY(0);
         }
     }
 
@@ -57,39 +77,25 @@ public class Bird extends GameObject {
     public Bitmap getBitmap() {
         countTick++;
         //Changing img every 8 ticks
-        if (this.countTick == this.TICK) {
+        if (this.countTick == TICK) {
             for (int i = 0; i < birdList.size(); i++) {
                 if (i == birdList.size() - 1) {
                     this.idCurrentBitmap = 0;
-                    break;
                 } else if (this.idCurrentBitmap == i) {
-                    idCurrentBitmap = i + 1;
-                    break;
+                    ++i;
+                    idCurrentBitmap = i;
                 }
             }
             countTick = 0;
         }
-        if (this.drop < 0) {
-            Matrix matrix = new Matrix(); //Transforming bird
-            matrix.postRotate(-25);
-            return Bitmap.createBitmap(birdList.get(idCurrentBitmap), 0, 0, birdList.get(idCurrentBitmap).getWidth(), birdList.get(idCurrentBitmap).getHeight(), matrix, true);
-        } else if (drop >= 0) {
-            Matrix matrix = new Matrix();
-            if (drop <= 70) {
-                matrix.postRotate(-25 + (drop * 2));
-            } else {
-                matrix.postRotate(45);
-            }
-            return Bitmap.createBitmap(birdList.get(idCurrentBitmap), 0, 0, birdList.get(idCurrentBitmap).getWidth(), birdList.get(idCurrentBitmap).getHeight(), matrix, true);
-        }
         return this.birdList.get(idCurrentBitmap);
     }
 
-    public float getDrop() {
-        return drop;
+    public float getGravity() {
+        return gravity;
     }
 
-    public void setDrop(float drop) {
-        this.drop = drop;
+    public void setGravity(float gravity) {
+        this.gravity = gravity;
     }
 }

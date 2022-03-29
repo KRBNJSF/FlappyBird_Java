@@ -5,9 +5,9 @@ import android.graphics.Rect;
 
 public class GameObject {
 
-    public float x, y;
-    private int width, height;
-    private Bitmap bitmap;
+    protected float x, y;
+    protected int width, height;
+    protected Bitmap bitmap;
 
     public GameObject(float x, float y, int width, int height, Bitmap bitmap) {
         this.x = x;
@@ -17,10 +17,12 @@ public class GameObject {
         this.bitmap = bitmap;
     }
 
-    private Rect rect;
+    public GameObject(float x, float y, int width, int height) {
+    }
 
     public GameObject() {
     }
+
 
     public float getX() {
         return x;
@@ -66,7 +68,4 @@ public class GameObject {
         return new Rect((int) this.x, (int) this.y, (int) this.x + this.width, (int) this.y + this.height); //Object collision params
     }
 
-    public void setRect(Rect rect) {
-        this.rect = rect;
-    }
 }
