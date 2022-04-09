@@ -11,8 +11,8 @@ public class Barrier extends GameObject {
 
     private ArrayList<Bitmap> barriers = new ArrayList<>();
 
-    public Barrier(float x, float y, int width, int height) {
-        super(x, y, width, height);
+    public Barrier(float x, float y, int width, int height, Bitmap bitmap) {
+        super(x, y, width, height, bitmap);
         Constants.speedPipe = 6 * Constants.SCREEN_WIDTH / 1080; //Speed of the pipe according to screen width
     }
 

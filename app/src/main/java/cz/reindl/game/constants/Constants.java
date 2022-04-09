@@ -7,7 +7,7 @@ public class Constants {
     public static String TAG;
 
     public static int distancePipe;
-    public static int gapPipe;
+    public static int gapPipe = 80;
     public static int speedPipe;
 
 }

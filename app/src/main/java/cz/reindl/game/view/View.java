@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -43,17 +44,34 @@ public class View extends android.view.View {
         runnable = this::invalidate;
     }
 
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight, int x, int y) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap =
+                Bitmap.createBitmap(bm, x, y, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+
     private void initBarrier() {
         barrierDistance = 300 * Constants.SCREEN_HEIGHT / 1920;
 
-        barrier = new Barrier(Constants.SCREEN_WIDTH / 1080, 0, 200 * Constants.SCREEN_WIDTH / 1080, 200 * Constants.SCREEN_HEIGHT / 2);
-        barrier.setBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe));
+        barrier2 = new Barrier(Constants.SCREEN_WIDTH / 1080, 0, 200 * Constants.SCREEN_WIDTH / 1080, 200 * Constants.SCREEN_HEIGHT / 2, BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe));
 
-        barrier2 = new Barrier(Constants.SCREEN_WIDTH / 1080, Constants.SCREEN_HEIGHT, 200 * Constants.SCREEN_WIDTH / 1080, Constants.SCREEN_HEIGHT / 2);
-        barrier2.setBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe));
+        System.out.println("Ahoj " + barrier2.getHeight());
+        barrier = new Barrier(Constants.SCREEN_WIDTH / 1080, barrier2.getHeight(), 200 * Constants.SCREEN_WIDTH / 1080, 200 * Constants.SCREEN_HEIGHT / 2, BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe));
+        //barrier.setBitmap(getResizedBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200, 200, 0, 90));//barrier2.setBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe));
 
-        barriers.add(new Barrier(Constants.SCREEN_WIDTH / 1080, 0, 200 * Constants.SCREEN_WIDTH / 1080, 200 * Constants.SCREEN_HEIGHT / 2));
-        barriers.get(0).setBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe));
+        //barriers.add(new Barrier(Constants.SCREEN_WIDTH / 1080, 0, 200 * Constants.SCREEN_WIDTH / 1080, 200 * Constants.SCREEN_HEIGHT / 2));
+        //barriers.get(0).setBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe));
     }
 
     private void initBird() {
