@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 
 import cz.reindl.game.R;
@@ -23,17 +24,17 @@ import cz.reindl.game.entity.Bird;
 
 public class View extends android.view.View {
 
-    public TextView scoreText = (TextView) findViewById(R.id.scoreTextView);
     ArrayList<Barrier> barriers = new ArrayList<Barrier>();
     private Bird bird;
-    public static Barrier barrier, barrier2;
-    private int score, barrierDistance, idPipe;
+    public static Barrier barrier, barrier2, barrier3;
+    public static int score, barrierDistance;
     private android.os.Handler handler;
     private Runnable runnable;
+    private BreakIterator scoreText;
 
     public View(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        Log.d(Constants.TAG = "App start up", "view");
+        Log.d(Constants.TAG = "App start up", "Game view");
 
         //GAME OBJECTS RENDER
         initBarrier();
@@ -44,7 +45,7 @@ public class View extends android.view.View {
         runnable = this::invalidate;
     }
 
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight, int x, int y) {
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
         int height = bm.getHeight();
         float scaleWidth = ((float) newWidth) / width;
@@ -56,22 +57,16 @@ public class View extends android.view.View {
 
         // "RECREATE" THE NEW BITMAP
         Bitmap resizedBitmap =
-                Bitmap.createBitmap(bm, x, y, width, height, matrix, false);
+                Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
         bm.recycle();
         return resizedBitmap;
     }
 
     private void initBarrier() {
-        barrierDistance = 300 * Constants.SCREEN_HEIGHT / 1920;
-
-        barrier2 = new Barrier(Constants.SCREEN_WIDTH / 1080, 0, 200 * Constants.SCREEN_WIDTH / 1080, 200 * Constants.SCREEN_HEIGHT / 2, BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe));
-
-        System.out.println("Ahoj " + barrier2.getHeight());
-        barrier = new Barrier(Constants.SCREEN_WIDTH / 1080, barrier2.getHeight(), 200 * Constants.SCREEN_WIDTH / 1080, 200 * Constants.SCREEN_HEIGHT / 2, BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe));
-        //barrier.setBitmap(getResizedBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200, 200, 0, 90));//barrier2.setBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe));
-
-        //barriers.add(new Barrier(Constants.SCREEN_WIDTH / 1080, 0, 200 * Constants.SCREEN_WIDTH / 1080, 200 * Constants.SCREEN_HEIGHT / 2));
-        //barriers.get(0).setBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe));
+        barrierDistance = 600 * Constants.SCREEN_HEIGHT / 1920;
+        barrier = new Barrier(getResizedBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * Constants.SCREEN_WIDTH / 1080, 8 * Constants.SCREEN_HEIGHT), getResizedBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * Constants.SCREEN_WIDTH / 1080, Constants.SCREEN_HEIGHT / 2), 400 * Constants.SCREEN_WIDTH / 1080, 0);
+        barrier2 = new Barrier(getResizedBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * Constants.SCREEN_WIDTH / 1080, 8 * Constants.SCREEN_HEIGHT), getResizedBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * Constants.SCREEN_WIDTH / 1080, Constants.SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance, -250);
+        barrier3 = new Barrier(getResizedBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * Constants.SCREEN_WIDTH / 1080, 8 * Constants.SCREEN_HEIGHT), getResizedBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * Constants.SCREEN_WIDTH / 1080, Constants.SCREEN_HEIGHT / 2), barrier2.getX() + barrierDistance, 350);
     }
 
     private void initBird() {
@@ -86,14 +81,25 @@ public class View extends android.view.View {
         bird.setBirdList(birdList);
     }
 
+    public void collision() {
+        if (bird.getY() < barrier.getY() + (Constants.SCREEN_HEIGHT / 2) - Constants.gapPipe && bird.getX() > barrier.getX() && bird.getX() < barrier.getX()) {
+            System.out.println("Birderer: " + bird.getX() + " Piperer: " + barrier.getX());
+            resetGame();
+        }
+    }
+
+    public void resetGame() {
+        bird.setY(Constants.SCREEN_HEIGHT / 2 - this.getHeight() / 2);
+    }
+
     public void draw(Canvas canvas) {
         super.draw(canvas);
         bird.draw(canvas);
         barrier.draw(canvas);
         barrier2.draw(canvas);
-        //Log.d(Constants.TAG = "Draw", "Render"); //Render logs
-        handler.postDelayed(runnable, 10); //Render every 10 mils
-        //canvas.drawColor(Color.RED);
+        barrier3.draw(canvas);
+        collision();
+        handler.postDelayed(runnable, 10);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -101,6 +107,7 @@ public class View extends android.view.View {
     public boolean onTouchEvent(MotionEvent event) {
         bird.setGravity(-13);
         bird.setScore(bird.getScore() + 1);
+        scoreText.setText(String.valueOf(bird.getScore()));
         return super.onTouchEvent(event);
     }
 

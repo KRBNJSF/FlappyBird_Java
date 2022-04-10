@@ -11,6 +11,7 @@ import cz.reindl.game.constants.Constants;
 import cz.reindl.game.view.View;
 
 public class MainActivity extends AppCompatActivity {
+    public TextView scoreText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         Constants.SCREEN_WIDTH = metrics.widthPixels;
         Constants.SCREEN_HEIGHT = metrics.heightPixels;
+        scoreText = (TextView) findViewById(R.id.scoreTextView);
 
         setContentView(R.layout.activity_main);
     }

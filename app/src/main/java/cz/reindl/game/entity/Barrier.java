@@ -4,24 +4,28 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import cz.reindl.game.constants.Constants;
+import cz.reindl.game.view.View;
 
 public class Barrier extends GameObject {
 
     private ArrayList<Bitmap> barriers = new ArrayList<>();
 
-    public Barrier(float x, float y, int width, int height, Bitmap bitmap) {
-        super(x, y, width, height, bitmap);
-        Constants.speedPipe = 6 * Constants.SCREEN_WIDTH / 1080; //Speed of the pipe according to screen width
+    public Barrier(Bitmap bitmap, Bitmap bitmap2, float x, float y) {
+        super(bitmap, bitmap2, x, y);
+        Constants.speedPipe = 6 * Constants.SCREEN_WIDTH / 1080;
     }
 
     public void draw(Canvas canvas) {
-        if (x < this.getWidth()) {
-            this.setX(Constants.SCREEN_WIDTH);
+        if (x < -200 * Constants.SCREEN_WIDTH / 1080) {
+            this.setX(Constants.SCREEN_WIDTH + View.barrierDistance);
+            this.setY(new Random().nextInt(1400) - 700);
         }
-        this.x -= Constants.speedPipe; //Descending position of the pipe in the X axis
-        canvas.drawBitmap(this.bitmap, this.x, this.y, null);
+        this.x -= Constants.speedPipe;
+        canvas.drawBitmap(this.bitmap, this.x, ((Constants.SCREEN_HEIGHT / 2) + (Constants.gapPipe)) + this.y, null);
+        canvas.drawBitmap(this.bitmap2, this.x, -(Constants.gapPipe) + this.y, null);
     }
 
 }

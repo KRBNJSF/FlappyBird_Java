@@ -49,7 +49,7 @@ public class Bird extends GameObject {
     }
 
     public void death() {
-        if (this.y >= Constants.SCREEN_HEIGHT || this.x == View.barrier.getX()) {
+        if (this.y >= Constants.SCREEN_HEIGHT || this.getX() == View.barrier.getX()) {
             System.out.println("X barrier" + View.barrier.getX() + " " + "X bird: " + this.x);
             setY(Constants.SCREEN_HEIGHT / 2 - this.getHeight() / 2);
             this.gravity = 0;
@@ -58,7 +58,10 @@ public class Bird extends GameObject {
             }
             this.score = 0;
         } else if (y <= 0) {
-            setY(0);
+            setGravity(2);
+            if (y <= -this.height) {
+                setY(0);
+            }
         }
     }
 

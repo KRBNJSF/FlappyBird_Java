@@ -8,13 +8,15 @@ public class GameObject {
     protected float x, y;
     protected int width, height;
     protected Bitmap bitmap;
+    protected Bitmap bitmap2;
 
-    public GameObject(float x, float y, int width, int height, Bitmap bitmap) {
+    public GameObject(float x, float y, int width, int height, Bitmap bitmap, Bitmap bitmap2) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.bitmap = bitmap;
+        this.bitmap2 = bitmap2;
     }
 
     public GameObject(float x, float y, int width, int height) {
@@ -25,6 +27,13 @@ public class GameObject {
     }
 
     public GameObject() {
+    }
+
+    public GameObject(Bitmap bitmap, Bitmap bitmap2, float x, float y) {
+        this.bitmap = bitmap;
+        this.bitmap2 = bitmap2;
+        this.x = x;
+        this.y = y;
     }
 
 
