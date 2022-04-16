@@ -21,7 +21,7 @@ public class Barrier extends GameObject {
     public void draw(Canvas canvas) {
         if (x < -200 * Constants.SCREEN_WIDTH / 1080) {
             this.setX(Constants.SCREEN_WIDTH + View.barrierDistance);
-            this.setY(new Random().nextInt(1400) - 700);
+            this.setY(new Random().nextInt(1400) - 500);
         }
         this.x -= Constants.speedPipe;
         canvas.drawBitmap(this.bitmap, this.x, ((Constants.SCREEN_HEIGHT / 2) + (Constants.gapPipe)) + this.y, null);

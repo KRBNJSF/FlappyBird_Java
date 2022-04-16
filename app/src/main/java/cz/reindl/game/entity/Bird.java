@@ -39,7 +39,7 @@ public class Bird extends GameObject {
 
     public void draw(Canvas canvas) {
         drop();
-        death();
+        //death();
         canvas.drawBitmap(this.getBitmap(), this.getX(), this.getY(), null);
     }
 
