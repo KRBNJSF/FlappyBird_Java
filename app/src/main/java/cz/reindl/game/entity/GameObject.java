@@ -53,6 +53,14 @@ public class GameObject {
         this.y = y;
     }
 
+    public Bitmap getBitmap2() {
+        return bitmap2;
+    }
+
+    public void setBitmap2(Bitmap bitmap2) {
+        this.bitmap2 = bitmap2;
+    }
+
     public int getWidth() {
         return width;
     }

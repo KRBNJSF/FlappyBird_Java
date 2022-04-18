@@ -1,5 +1,8 @@
 package cz.reindl.game.entity;
 
+import static cz.reindl.game.MainActivity.highScoreText;
+import static cz.reindl.game.MainActivity.sharedPreferences;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -34,7 +37,8 @@ public class Bird extends GameObject {
         this.highScore = highScore;
     }
 
-    private float gravity, velocity;
+    private float gravity;
+    private final float velocity;
 
     public Bird() {
         this.tick = 0;
@@ -43,7 +47,7 @@ public class Bird extends GameObject {
         this.score = 0;
     }
 
-    public void draw(Canvas canvas) {
+    public void renderBird(Canvas canvas) {
         drop();
         checkY();
         canvas.drawBitmap(this.changeBird(), this.getX(), this.getY(), null);
@@ -79,7 +83,7 @@ public class Bird extends GameObject {
         if (tick > 5) {
             if (tick == 15) {
                 tick = 0;
-                Log.d(Constants.TAG = "Bird change", "Bird change");
+                //Log.d(Constants.TAG = "Bird change", "Bird change");
             }
             return birdList.get(0);
         }
