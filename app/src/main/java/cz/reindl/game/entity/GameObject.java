@@ -26,7 +26,15 @@ public class GameObject {
         this.height = height;
     }
 
-    public GameObject() {
+    public GameObject(int height, int width, float x, float y) {
+        this.height = height;
+        this.width = width;
+        this.x = x;
+        this.y = y;
+    }
+
+    GameObject() {
+
     }
 
     public GameObject(Bitmap bitmap, Bitmap bitmap2, float x, float y) {
@@ -34,6 +42,12 @@ public class GameObject {
         this.bitmap2 = bitmap2;
         this.x = x;
         this.y = y;
+    }
+
+    public GameObject(Bitmap resizeBitmap, int width, int height) {
+        this.bitmap = resizeBitmap;
+        this.width = width;
+        this.height = height;
     }
 
 

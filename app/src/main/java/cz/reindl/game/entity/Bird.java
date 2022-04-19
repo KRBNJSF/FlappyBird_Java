@@ -18,6 +18,14 @@ public class Bird extends GameObject {
     private ArrayList<Bitmap> birdList = new ArrayList<>(); //List of Bitmap - animation during game
     private int tick;
 
+    public Bird(Bitmap resizeBitmap, int i, int i1) {
+        super(resizeBitmap, i, i1);
+        this.tick = 0;
+        this.gravity = 0;
+        this.velocity = 0.6f;
+        this.score = 0;
+    }
+
     public int getScore() {
         return score;
     }
@@ -40,7 +48,16 @@ public class Bird extends GameObject {
     private float gravity;
     private final float velocity;
 
+    public Bird(int height, int width, float x, float y) {
+        super(height, width, x, y);
+        this.tick = 0;
+        this.gravity = 0;
+        this.velocity = 0.6f;
+        this.score = 0;
+    }
+
     public Bird() {
+        super();
         this.tick = 0;
         this.gravity = 0;
         this.velocity = 0.6f;
@@ -96,5 +113,11 @@ public class Bird extends GameObject {
 
     public void setGravity(float gravity) {
         this.gravity = gravity;
+    }
+
+    public void setImage(Bitmap bitmap) {
+        this.bitmap = bitmap;
+        this.width = bitmap.getWidth();
+        this.height = bitmap.getHeight();
     }
 }
