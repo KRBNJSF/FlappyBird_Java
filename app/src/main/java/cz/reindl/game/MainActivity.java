@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -47,5 +48,7 @@ public class MainActivity extends AppCompatActivity {
         highScoreText.setTextAppearance(R.style.whiteText);
         sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        //MediaPlayer sound = MediaPlayer.create(MainActivity.this, );
+        //sound.start();
     }
 }
