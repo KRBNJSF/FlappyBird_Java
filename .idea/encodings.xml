@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cz/reindl/game/event/bgMusic.mp3" charset="windows-1250" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cz/reindl/game/sound/storage/bgMusic.mp3" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cz/reindl/game/sound/storage/bgMusic.mp3" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cz/reindl/game/sound/storage/bgSound.mp3" charset="UTF-8" />
+  </component>
+</project>
