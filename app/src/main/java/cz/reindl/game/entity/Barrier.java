@@ -1,5 +1,6 @@
 package cz.reindl.game.entity;
 
+import static cz.reindl.game.constants.Constants.SCREEN_HEIGHT;
 import static cz.reindl.game.constants.Constants.SCREEN_WIDTH;
 import static cz.reindl.game.constants.Constants.barrierDistance;
 import static cz.reindl.game.constants.Constants.speedPipe;
@@ -23,13 +24,13 @@ public class Barrier extends GameObject {
     }
 
     public void renderBarrier(Canvas canvas) {
-        if (x < -200 * SCREEN_WIDTH / 1080) {
+        if (x < (float) -200 * SCREEN_WIDTH / 1080) {
             this.setX(SCREEN_WIDTH + barrierDistance + 300);
             this.setY(new Random().nextInt(1000) - 500);
         }
         this.x -= speedPipe;
-        canvas.drawBitmap(addBorder(this.bitmap, 1, "red"), this.x, ((Constants.SCREEN_HEIGHT / 2) + (Constants.gapPipe)) + this.y, null);
         canvas.drawBitmap(this.bitmap2, this.x, -(Constants.gapPipe) + this.y, null);
+        canvas.drawBitmap(addBorder(this.bitmap, 1, "red"), this.x, (((float) SCREEN_HEIGHT / 2) + (Constants.gapPipe)) + this.y, null);
     }
 
 }

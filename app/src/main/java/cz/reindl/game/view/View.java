@@ -29,6 +29,7 @@ import cz.reindl.game.R;
 import cz.reindl.game.constants.Constants;
 import cz.reindl.game.entity.Barrier;
 import cz.reindl.game.entity.Bird;
+import cz.reindl.game.event.Timer;
 import cz.reindl.game.sound.Sound;
 import cz.reindl.game.utils.Utils;
 
@@ -122,10 +123,10 @@ public class View extends android.view.View {
     //COLLISION CHECK
     public void collision() {
         for (int i = 0; i < barriers.size(); i++) {
-            if (bird.getX() > (barriers.get(i).getX()) && bird.getY() < barriers.get(i).getY() + (SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) {
+            if (bird.getX() > (barriers.get(i).getX()) && bird.getY() < barriers.get(i).getY() + ((float) SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) {
                 System.out.println(barriers.get(i).getX());
                 resetGame();
-            } else if (bird.getY() > SCREEN_HEIGHT / 2 + Constants.gapPipe + barriers.get(i).getY() && bird.getX() > barriers.get(i).getX()) {
+            } else if (bird.getY() > (float) SCREEN_HEIGHT / 2 + Constants.gapPipe + barriers.get(i).getY() && bird.getX() > barriers.get(i).getX()) {
                 resetGame();
             } else if (bird.getX() > barrier.getX()) {
 

@@ -3,7 +3,7 @@ package cz.reindl.game.entity;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
-public class GameObject {
+public abstract class GameObject {
 
     protected float x, y;
     protected int width, height;
@@ -34,7 +34,6 @@ public class GameObject {
     }
 
     GameObject() {
-
     }
 
     public GameObject(Bitmap bitmap, Bitmap bitmap2, float x, float y) {
