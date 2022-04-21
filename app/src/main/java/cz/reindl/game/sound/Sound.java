@@ -15,7 +15,7 @@ public class Sound {
         SoundPool.Builder builder = new SoundPool.Builder();
         builder.setAudioAttributes(audioAttributes).setMaxStreams(5);
         soundPool = builder.build();
-        soundPool.setOnLoadCompleteListener((soundPoolC, sampleId, status) -> this.isSoundLoaded = true);
+        soundPool.setOnLoadCompleteListener((soundPoolC, Id, status) -> this.isSoundLoaded = true);
     }
 
     public SoundPool getSoundPool() {

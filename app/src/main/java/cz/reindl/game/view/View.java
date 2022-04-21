@@ -30,6 +30,7 @@ import cz.reindl.game.constants.Constants;
 import cz.reindl.game.entity.Barrier;
 import cz.reindl.game.entity.Bird;
 import cz.reindl.game.sound.Sound;
+import cz.reindl.game.utils.Utils;
 
 public class View extends android.view.View {
 
@@ -91,11 +92,14 @@ public class View extends android.view.View {
 
     private void initBarrier() {
         Log.d(Constants.TAG = "initBarrier", "Barriers init");
-        barrierDistance = 600 * SCREEN_HEIGHT / 1920;
+        barrierDistance = 700 * SCREEN_HEIGHT / 1920;
+
         barriers = new ArrayList();
-        barrier = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), SCREEN_WIDTH, 0);
+
+        barrier = new Barrier(Utils.addBorder(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), 2, "blue"), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), SCREEN_WIDTH, 0);
         barrier2 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance, -250);
         barrier3 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance * 2, 350);
+
         barriers.add(barrier);
         barriers.add(barrier2);
         barriers.add(barrier3);
@@ -108,6 +112,7 @@ public class View extends android.view.View {
         bird.setWidth(100 * SCREEN_WIDTH / 1080);
         bird.setX(100 * SCREEN_WIDTH / 1080);
         bird.setY(SCREEN_HEIGHT / 2 - bird.getHeight() / 2);
+
         birdList = new ArrayList<>();
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_h));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_scythe_up));
