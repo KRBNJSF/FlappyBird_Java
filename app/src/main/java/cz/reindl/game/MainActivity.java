@@ -1,5 +1,7 @@
 package cz.reindl.game;
 
+import static cz.reindl.game.constants.Constants.SCREEN_WIDTH;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,8 +36,10 @@ public class MainActivity extends AppCompatActivity {
     public static TextView scoreText, highScoreText;
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
+    public static Button button;
     private MediaPlayer mediaPlayer;
     private View view;
+    private int i = 0;
 
     @Override
     protected void onResume() {
@@ -73,6 +77,21 @@ public class MainActivity extends AppCompatActivity {
         highScoreText.setTextAppearance(R.style.whiteText);
         sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        button = (Button) findViewById(R.id.buttonMain);
+        button.setOnClickListener(v -> {
+            if (i == 0) {
+                View.isActive = true;
+                Constants.speedPipe = 19 * SCREEN_WIDTH / 1080;
+                Bird.skinUnlocked = true;
+                i = 1;
+                Constants.gapPipe = 600;
+            } else {
+                View.isActive = false;
+                i = 0;
+                Bird.skinUnlocked = false;
+                Constants.gapPipe = 200;
+            }
+        });
 
         /*buttonRestart.setOnClickListener(v -> {
             v.setVisibility(View.INVISIBLE);

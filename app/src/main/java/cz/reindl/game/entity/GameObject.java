@@ -1,5 +1,6 @@
 package cz.reindl.game.entity;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
