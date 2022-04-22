@@ -115,18 +115,19 @@ public class View extends android.view.View {
         bird.setY(SCREEN_HEIGHT / 2 - bird.getHeight() / 2);
 
         birdList = new ArrayList<>();
-        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_h));
-        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_scythe_up));
+        //birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_h));
+        //birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_scythe_up));
+        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.legendary_skinup));
+        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.legendary_skindown));
         bird.setBirdList(birdList);
     }
 
     //COLLISION CHECK
     public void collision() {
         for (int i = 0; i < barriers.size(); i++) {
-            if (bird.getX() > (barriers.get(i).getX()) && bird.getY() < barriers.get(i).getY() + ((float) SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) {
-                System.out.println(barriers.get(i).getX());
+            if ((bird.getX() + bird.getWidth()) > (barriers.get(i).getX() - barriers.get(i).getWidth() * 2) && bird.getY() < barriers.get(i).getY() + ((float) SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) { //TOP BARRIER COLLISION
                 resetGame();
-            } else if (bird.getY() > (float) SCREEN_HEIGHT / 2 + Constants.gapPipe + barriers.get(i).getY() && bird.getX() > barriers.get(i).getX()) {
+            } else if ((bird.getY() + bird.getHeight()) > (float) SCREEN_HEIGHT / 2 + Constants.gapPipe + barriers.get(i).getY() && (bird.getX() + bird.getWidth()) > barriers.get(i).getX()) { //BOTTOM BARRIER COLLISION
                 resetGame();
             } else if (bird.getX() > barrier.getX()) {
 
@@ -172,7 +173,7 @@ public class View extends android.view.View {
         if (bird.getScore() > bird.getHighScore()) {
             sound.getSoundPool().play(sound.highScoreSound, 1f, 1f, 1, 0, 1f);
         }
-        sound.getSoundPool().play(sound.collideSound, 1f, 1f, 1, 0, 1f);
+        sound.getSoundPool().play(sound.collideSound, 0.4f, 0.4f, 1, 0, 1f);
         editor.putInt("highScore", bird.getHighScore());
         editor.commit();
         /*if (!prepare) {
@@ -209,7 +210,7 @@ public class View extends android.view.View {
         Log.d(Constants.TAG = "onTouchEvent", "Bird flap");
         bird.setGravity(-15);
         if (sound.isSoundLoaded()) {
-            sound.getSoundPool().play(sound.flapSound, 1f, 1f, 1, 0, 1f);
+            sound.getSoundPool().play(sound.flapSound, 0.7f, 0.7f, 1, 0, 1f);
         }
         return super.onTouchEvent(event);
     }
