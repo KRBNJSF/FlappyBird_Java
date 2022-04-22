@@ -33,12 +33,38 @@
 
     <Button
         android:id="@+id/buttonMain"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:background="@color/black"
-        android:text="Hardcore Mode">
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginTop="0dp"
+        android:background="@color/SkyBlue"
+        android:visibility="visible" />
 
-    </Button>
+    <RelativeLayout
+        android:id="@+id/gameOver"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <Button
+            android:id="@+id/buttonRestart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/gameOverText"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="60sp"
+            android:background="@color/black"
+            android:text="Restart" />
+
+        <TextView
+            android:id="@+id/gameOverText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Game Over"
+            android:textColor="@color/black"
+            android:textSize="40sp" />
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

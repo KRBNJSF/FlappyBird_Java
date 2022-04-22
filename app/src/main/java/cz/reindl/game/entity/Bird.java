@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -19,7 +20,17 @@ public class Bird extends GameObject {
 
     Matrix matrix = new Matrix(); //Transforming bird
     private ArrayList<Bitmap> birdList = new ArrayList<>(); //List of Bitmap - animation during game
+
+    public static boolean skinUnlocked;
+
     private int tick;
+
+    private float gravity;
+    private final float velocity;
+
+    private int score;
+    private int highScore;
+
 
     public Bird(Bitmap resizeBitmap, int i, int i1) {
         super(resizeBitmap, i, i1);
@@ -28,29 +39,6 @@ public class Bird extends GameObject {
         this.velocity = 0.6f;
         this.score = 0;
     }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    private int score;
-    private int highScore;
-    public static boolean skinUnlocked;
-
-    public int getHighScore() {
-        return highScore;
-    }
-
-    public void setHighScore(int highScore) {
-        this.highScore = highScore;
-    }
-
-    private float gravity;
-    private final float velocity;
 
     public Bird(int height, int width, float x, float y) {
         super(height, width, x, y);
@@ -88,10 +76,6 @@ public class Bird extends GameObject {
         }
     }
 
-    public ArrayList<Bitmap> getBirdList() {
-        return birdList;
-    }
-
     public void setBirdList(ArrayList<Bitmap> birdList) {
         this.birdList = birdList;
         for (int i = 0; i < birdList.size(); i++) {
@@ -118,6 +102,26 @@ public class Bird extends GameObject {
         return birdList.get(1);
     }
 
+    public ArrayList<Bitmap> getBirdList() {
+        return birdList;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getHighScore() {
+        return highScore;
+    }
+
+    public void setHighScore(int highScore) {
+        this.highScore = highScore;
+    }
+
     public float getGravity() {
         return gravity;
     }
@@ -131,4 +135,5 @@ public class Bird extends GameObject {
         this.width = bitmap.getWidth();
         this.height = bitmap.getHeight();
     }
+
 }

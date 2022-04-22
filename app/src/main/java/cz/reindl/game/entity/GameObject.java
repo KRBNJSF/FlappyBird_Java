@@ -50,6 +50,14 @@ public abstract class GameObject {
         this.height = height;
     }
 
+    public Rect getRect() {
+        return new Rect(
+                (int) this.x,
+                (int) this.y,
+                (int) this.x + this.width,
+                (int) this.y + this.height
+        );
+    }
 
     public float getX() {
         return x;

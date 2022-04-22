@@ -12,6 +12,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Handler;
@@ -39,7 +40,9 @@ public class View extends android.view.View {
     List<Barrier> barriers = new ArrayList();
     private Barrier barrier, barrier2, barrier3;
     private Bird bird;
+    public Rect barrierRect, birdRect;
     public static boolean isActive;
+    public boolean isRunning = true;
 
     Sound sound = new Sound();
 
@@ -103,6 +106,8 @@ public class View extends android.view.View {
         barrier2 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance, -250);
         barrier3 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance * 2, 350);
 
+        barrierRect = new Rect((int) barrier.getX(), (int) barrier.getY(), 100, 100);
+
         barriers.add(barrier);
         barriers.add(barrier2);
         barriers.add(barrier3);
@@ -115,6 +120,8 @@ public class View extends android.view.View {
         bird.setWidth(105 * SCREEN_WIDTH / 1080);
         bird.setX(100 * SCREEN_WIDTH / 1080);
         bird.setY(SCREEN_HEIGHT / 2 - bird.getHeight() / 2);
+
+        birdRect = new Rect(100, 100, 100, 100);
 
         ArrayList<Bitmap> birdList = new ArrayList<>();
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_h));
@@ -130,23 +137,28 @@ public class View extends android.view.View {
     public void collision() {
         checkScore();
         for (int i = 0; i < barriers.size(); i++) {
-            if ((bird.getX() + bird.getWidth()) > (barriers.get(i).getX() - barriers.get(i).getWidth() * 2) && bird.getY() < barriers.get(i).getY() + ((float) SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) { //TOP BARRIER COLLISION
+            /*if ((bird.getX() + bird.getWidth()) > (barriers.get(i).getX() - barriers.get(i).getWidth() * 2) && bird.getY() < barriers.get(i).getY() + ((float) SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) { //TOP BARRIER COLLISION
                 resetGame();
             } else if ((bird.getY() + bird.getHeight()) > (float) SCREEN_HEIGHT / 2 + Constants.gapPipe + barriers.get(i).getY() && (bird.getX() + bird.getWidth()) > barriers.get(i).getX()) { //BOTTOM BARRIER COLLISION
                 resetGame();
-            } else if (bird.getX() > barrier.getX()) {
+            } else if (bird.getX() + bird.getWidth() > barrier.getX() + barrier.getWidth() + barrier.getWidth()) {
 
+            }*/
+
+            if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT) {
+                resetGame();
             }
-            // FIXME: 21.04.2022
-            //  sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
             bird.setScore(bird.getScore() + 1);
             scoreText.setText(String.valueOf("Score: " + bird.getScore()));
+            // FIXME: 21.04.2022
+            //  sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
+
         }
     }
 
     public void gameSpeedUp() {
         if (bird.getScore() > 1000 && bird.getScore() < 2000) {
-            bird.skinUnlocked = true;
+            Bird.skinUnlocked = true;
             Constants.speedPipe = 5 * SCREEN_WIDTH / 1080;
         } else if (bird.getScore() > 2000 && bird.getScore() < 3000) {
             Constants.speedPipe = 6 * SCREEN_WIDTH / 1080;
@@ -180,44 +192,60 @@ public class View extends android.view.View {
     }
 
     public void resetGame() {
+        Log.d(Constants.TAG = "resetGame", "Game reset");
+        isRunning = false;
         Bird.skinUnlocked = false;
+        isActive = false;
+
+        scoreText.setVisibility(INVISIBLE);
+        relativeLayout.setVisibility(VISIBLE);
+
         if (bird.getScore() > bird.getHighScore()) {
             sound.getSoundPool().play(sound.highScoreSound, 1f, 1f, 1, 0, 1f);
         }
         sound.getSoundPool().play(sound.collideSound, 0.1f, 0.1f, 1, 0, 1f);
         editor.putInt("highScore", bird.getHighScore());
         editor.commit();
-
         makeText(highScoreText.getContext(), "Score saved", Toast.LENGTH_SHORT).show();
-        Log.d(Constants.TAG = "resetGame", "Game reset");
+
         bird.setScore(0);
         bird.setY(SCREEN_HEIGHT - this.getHeight() / 2);
         bird.setGravity(0.6f);
         barriers.get(0).setX(SCREEN_WIDTH);
         barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
         barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
+
         Constants.speedPipe = 4 * SCREEN_WIDTH / 1080;
+        Constants.gapPipe = 200;
     }
 
     //RENDER
     public void draw(Canvas canvas) {
         new Handler().postDelayed(runnable, 1);
         super.draw(canvas);
-        bird.renderBird(canvas);
-        for (int i = 0; i < barriers.size(); i++) {
-            barriers.get(i).renderBarrier(canvas);
+        if (isRunning) {
+            for (int i = 0; i < barriers.size(); i++) {
+                barriers.get(i).renderBarrier(canvas);
+            }
+            collision();
+        } else {
+            if (bird.getY() > SCREEN_HEIGHT / 2 + 150) {
+                bird.setGravity(-15);
+            }
         }
-        collision();
+        bird.renderBird(canvas);
     }
 
     //FLAP
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d(Constants.TAG = "onTouchEvent", "Bird flap");
-        bird.setGravity(-15);
-        if (sound.isSoundLoaded()) {
-            sound.getSoundPool().play(sound.flapSound, 0.3f, 0.3f, 1, 0, 1f);
+        if (isRunning) {
+            Log.d(Constants.TAG = "onTouchEvent", "Bird flap");
+            bird.setGravity(-15);
+            if (sound.isSoundLoaded()) {
+                sound.getSoundPool().play(sound.flapSound, 0.3f, 0.3f, 1, 0, 1f);
+            }
         }
         return super.onTouchEvent(event);
     }

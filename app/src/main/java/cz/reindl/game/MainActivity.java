@@ -20,6 +20,7 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import cz.reindl.game.constants.Constants;
@@ -31,12 +32,11 @@ import cz.reindl.game.view.View;
 public class MainActivity extends AppCompatActivity {
     DisplayMetrics metrics;
     @SuppressLint("StaticFieldLeak")
-    public static Button buttonRestart;
-    @SuppressLint("StaticFieldLeak")
-    public static TextView scoreText, highScoreText;
+    public static TextView scoreText, highScoreText, gameOverText;
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
-    public static Button button;
+    public static Button button, restartButton;
+    public static RelativeLayout relativeLayout;
     private MediaPlayer mediaPlayer;
     private View view;
     private int i = 0;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         Constants.SCREEN_HEIGHT = metrics.heightPixels;
         setContentView(R.layout.activity_main);
         view = findViewById(R.id.gameView);
-
+        relativeLayout = (RelativeLayout) findViewById(R.id.gameOver);
 
         //Intent intent = new Intent(this, View.class);
         //startActivity(intent);
@@ -78,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         button = (Button) findViewById(R.id.buttonMain);
+        gameOverText = (TextView) findViewById(R.id.gameOverText);
+        restartButton = (Button) findViewById(R.id.buttonRestart);
+
         button.setOnClickListener(v -> {
             if (i == 0) {
                 View.isActive = true;
@@ -93,9 +96,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*buttonRestart.setOnClickListener(v -> {
-            v.setVisibility(View.INVISIBLE);
-        });*/
+        restartButton.setOnClickListener(v -> {
+            view.isRunning = true;
+            relativeLayout.setVisibility(android.view.View.INVISIBLE);
+            scoreText.setVisibility(android.view.View.VISIBLE);
+        });
 
         mediaPlayer = MediaPlayer.create(this, R.raw.background_music);
         mediaPlayer.setLooping(true);
