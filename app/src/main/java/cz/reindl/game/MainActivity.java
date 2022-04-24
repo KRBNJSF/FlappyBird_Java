@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 View.isActive = false;
                 i = 0;
                 Bird.skinUnlocked = false;
-                Constants.gapPipe = 200;
+                Constants.gapPipe = 400;
             }
         });
 

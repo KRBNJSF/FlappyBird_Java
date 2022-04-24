@@ -12,9 +12,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.media.AudioAttributes;
-import android.media.SoundPool;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -26,12 +23,10 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.reindl.game.MainActivity;
 import cz.reindl.game.R;
 import cz.reindl.game.constants.Constants;
 import cz.reindl.game.entity.Barrier;
 import cz.reindl.game.entity.Bird;
-import cz.reindl.game.event.Timer;
 import cz.reindl.game.sound.Sound;
 import cz.reindl.game.utils.Utils;
 
@@ -101,7 +96,7 @@ public class View extends android.view.View {
         //Blue barrier is the first one in ArrayList, Red are the others
         Barrier barrier = new Barrier(Utils.addBorder(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), 2, "blue"), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), SCREEN_WIDTH, 0);
         Barrier barrier2 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance, -250);
-        Barrier barrier3 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance * 2, 350);
+        Barrier barrier3 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance * 2, -350);
 
         barriers.add(barrier);
         barriers.add(barrier2);
@@ -128,28 +123,33 @@ public class View extends android.view.View {
 
     //COLLISION CHECK
     public void collision() {
-        checkScore();
+        checkHighScore();
         for (int i = 0; i < barriers.size(); i++) {
-            if ((bird.getX() + bird.getWidth()) > (barriers.get(i).getX() - barriers.get(i).getWidth() * 2) && bird.getY() < barriers.get(i).getY() + ((float) SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) { //TOP BARRIER COLLISION
+           /* if ((bird.getX() + bird.getWidth()) > (barriers.get(i).getX() - barriers.get(i).getWidth()) && bird.getY() < barriers.get(i).getY() + ((float) SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) { //TOP BARRIER COLLISION
                 resetGame();
             } else if ((bird.getY() + bird.getHeight()) > (float) SCREEN_HEIGHT / 2 + Constants.gapPipe + barriers.get(i).getY() && (bird.getX() + bird.getWidth()) > barriers.get(i).getX()) { //BOTTOM BARRIER COLLISION
                 resetGame();
             } else if (bird.getX() + bird.getWidth() > barriers.get(i).getX() + barriers.get(i).getWidth()) {
                 if (bird.getX() == barriers.get(i).getX()) {
-                    bird.setScore(bird.getScore() + 1);
-                    scoreText.setText(String.valueOf("Score: " + bird.getScore()));
-                    sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
+                    if (!bird.getRect().setIntersect(bird.getRect(), barriers.get(i).getRect())) {
+                        bird.setScore(bird.getScore() + 1);
+                        sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
+                    }
                 }
-            } else {
-           /* if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT) {
+            } else {*/
+            if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT || bird.getRect().intersect(barriers.get(i).setRect(barriers.get(i).getHeight()))) {
                 resetGame();
-            }*/
-                //bird.setScore(bird.getScore() + 1);
+                //}
+
                 //scoreText.setText(String.valueOf("Score: " + bird.getScore()));
                 // FIXME: 21.04.2022
-                //  sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
+                //
+            } else if (bird.getX() == barriers.get(i).getX()) {
+                sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
             }
         }
+        bird.setScore(bird.getScore() + 1);
+        scoreText.setText(String.valueOf("Score: " + bird.getScore()));
     }
 
     public void gameSpeedUp() {
@@ -167,16 +167,11 @@ public class View extends android.view.View {
         }
     }
 
-    //SCORE CHECK
-    public void checkScore() {
+    //HIGH SCORE CHECK
+    public void checkHighScore() {
         if (!isActive) {
             gameSpeedUp();
         }
-        /*
-        if (bird.getX() > barrier.getX() + barrier.getWidth() && bird.getX() < barrier.getX() + barrier.getWidth() + barrierDistance) {
-            bird.setScore(bird.getScore() + 1);
-            Log.d(Constants.TAG, "Score: " + bird.getScore());
-        }*/
 
         if (bird.getScore() > bird.getHighScore()) {
             bird.setHighScore(bird.getScore());
@@ -224,7 +219,7 @@ public class View extends android.view.View {
             barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
 
             Constants.speedPipe = 4 * SCREEN_WIDTH / 1080;
-            Constants.gapPipe = 200;
+            Constants.gapPipe = 400;
         }
     }
 

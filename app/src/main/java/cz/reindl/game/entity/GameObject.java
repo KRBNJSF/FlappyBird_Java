@@ -4,9 +4,11 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
+import cz.reindl.game.constants.Constants;
+
 public abstract class GameObject {
 
-    protected float x, y;
+    protected float x, yy, y;
     protected int width, height;
     protected Bitmap bitmap;
     protected Bitmap bitmap2;
@@ -56,6 +58,16 @@ public abstract class GameObject {
                 (int) this.y,
                 (int) this.x + this.width,
                 (int) this.y + this.height
+        );
+    }
+
+    public Rect setRect(float yy) {
+        this.yy = yy + Constants.gapPipe;
+        return new Rect(
+                (int) this.x,
+                (int) this.yy,
+                (int) this.x + this.width,
+                (int) this.yy + this.height
         );
     }
 

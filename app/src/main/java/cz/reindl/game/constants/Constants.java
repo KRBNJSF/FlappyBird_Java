@@ -9,7 +9,7 @@ public class Constants {
     public static String TAG;
 
     public static int barrierDistance;
-    public static int gapPipe = 200;
+    public static int gapPipe = 400;
     public static int speedPipe;
 
     public static Intent intent;
