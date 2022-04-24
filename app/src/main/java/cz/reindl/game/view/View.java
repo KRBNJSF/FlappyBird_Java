@@ -36,13 +36,14 @@ import cz.reindl.game.sound.Sound;
 import cz.reindl.game.utils.Utils;
 
 public class View extends android.view.View {
-    
+
     private final List<Barrier> barriers = new ArrayList();
     private final Runnable runnable;
     private final Sound sound = new Sound();
 
     public static boolean isActive;
     public boolean isRunning = true;
+    public boolean isAlive = false;
 
     private Bird bird;
 
@@ -65,6 +66,7 @@ public class View extends android.view.View {
         sound.collideSound = sound.getSoundPool().load(context, R.raw.bang, 1);
         sound.scoreSound = sound.getSoundPool().load(context, R.raw.score_sound, 1);
         sound.highScoreSound = sound.getSoundPool().load(context, R.raw.high_score, 1);
+        sound.barrierCollideSound = sound.getSoundPool().load(context, R.raw.collide_fall, 1);
     }
 
     private void scoreThread() {
@@ -128,22 +130,25 @@ public class View extends android.view.View {
     public void collision() {
         checkScore();
         for (int i = 0; i < barriers.size(); i++) {
-            /*if ((bird.getX() + bird.getWidth()) > (barriers.get(i).getX() - barriers.get(i).getWidth() * 2) && bird.getY() < barriers.get(i).getY() + ((float) SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) { //TOP BARRIER COLLISION
+            if ((bird.getX() + bird.getWidth()) > (barriers.get(i).getX() - barriers.get(i).getWidth() * 2) && bird.getY() < barriers.get(i).getY() + ((float) SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) { //TOP BARRIER COLLISION
                 resetGame();
             } else if ((bird.getY() + bird.getHeight()) > (float) SCREEN_HEIGHT / 2 + Constants.gapPipe + barriers.get(i).getY() && (bird.getX() + bird.getWidth()) > barriers.get(i).getX()) { //BOTTOM BARRIER COLLISION
                 resetGame();
-            } else if (bird.getX() + bird.getWidth() > barrier.getX() + barrier.getWidth() + barrier.getWidth()) {
-
-            }*/
-
-            if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT) {
+            } else if (bird.getX() + bird.getWidth() > barriers.get(i).getX() + barriers.get(i).getWidth()) {
+                if (bird.getX() == barriers.get(i).getX()) {
+                    bird.setScore(bird.getScore() + 1);
+                    scoreText.setText(String.valueOf("Score: " + bird.getScore()));
+                    sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
+                }
+            } else {
+           /* if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT) {
                 resetGame();
+            }*/
+                //bird.setScore(bird.getScore() + 1);
+                //scoreText.setText(String.valueOf("Score: " + bird.getScore()));
+                // FIXME: 21.04.2022
+                //  sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
             }
-            bird.setScore(bird.getScore() + 1);
-            scoreText.setText(String.valueOf("Score: " + bird.getScore()));
-            // FIXME: 21.04.2022
-            //  sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
-
         }
     }
 
@@ -183,33 +188,44 @@ public class View extends android.view.View {
     }
 
     public void resetGame() {
-        Log.d(Constants.TAG = "resetGame", "Game reset");
-        isRunning = false;
-        Bird.skinUnlocked = false;
-        isActive = false;
-
-        scoreText.setVisibility(INVISIBLE);
-        relativeLayout.setVisibility(VISIBLE);
-        restartButton.setText("Restart");
-        gameOverText.setText("Game Over");
-
-        if (bird.getScore() > bird.getHighScore()) {
-            sound.getSoundPool().play(sound.highScoreSound, 1f, 1f, 1, 0, 1f);
+        if (!isAlive) {
+            sound.getSoundPool().play(sound.collideSound, 0.1f, 0.1f, 1, 0, 1f);
         }
-        sound.getSoundPool().play(sound.collideSound, 0.1f, 0.1f, 1, 0, 1f);
-        editor.putInt("highScore", bird.getHighScore());
-        editor.commit();
-        makeText(highScoreText.getContext(), "Score saved", Toast.LENGTH_SHORT).show();
 
-        bird.setScore(0);
-        bird.setY(SCREEN_HEIGHT - (float) this.getHeight() / 2);
-        bird.setGravity(0.6f);
-        barriers.get(0).setX(SCREEN_WIDTH);
-        barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
-        barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
+        isRunning = false;
+        isActive = false;
+        isAlive = false;
 
-        Constants.speedPipe = 4 * SCREEN_WIDTH / 1080;
-        Constants.gapPipe = 200;
+        if (bird.getY() <= SCREEN_HEIGHT) {
+            isAlive = true;
+            sound.getSoundPool().play(sound.barrierCollideSound, 0.4f, 0.4f, 1, 0, 1f);
+            Constants.speedPipe = 0;
+        } else {
+            Log.d(Constants.TAG = "resetGame", "Game reset");
+            scoreText.setVisibility(INVISIBLE);
+            relativeLayout.setVisibility(VISIBLE);
+            restartButton.setText("Restart");
+            gameOverText.setText("Game Over");
+
+            if (bird.getScore() > bird.getHighScore()) {
+                sound.getSoundPool().play(sound.highScoreSound, 1f, 1f, 1, 0, 1f);
+            }
+
+            editor.putInt("highScore", bird.getHighScore());
+            editor.commit();
+            makeText(highScoreText.getContext(), "Score saved", Toast.LENGTH_SHORT).show();
+
+            Bird.skinUnlocked = false;
+            bird.setScore(0);
+            bird.setY(SCREEN_HEIGHT - (float) this.getHeight() / 2);
+            bird.setGravity(0.6f);
+            barriers.get(0).setX(SCREEN_WIDTH);
+            barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
+            barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
+
+            Constants.speedPipe = 4 * SCREEN_WIDTH / 1080;
+            Constants.gapPipe = 200;
+        }
     }
 
     //RENDER
@@ -221,10 +237,17 @@ public class View extends android.view.View {
                 barriers.get(i).renderBarrier(canvas);
             }
             collision();
-        } else {
+        } else if (!isAlive) {
             if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
                 bird.setGravity(-15);
             }
+        } else if (bird.getY() <= SCREEN_HEIGHT) {
+            for (int i = 0; i < barriers.size(); i++) {
+                barriers.get(i).renderBarrier(canvas);
+            }
+            bird.setGravity(15);
+        } else {
+            resetGame();
         }
         bird.renderBird(canvas);
     }
@@ -234,10 +257,12 @@ public class View extends android.view.View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (isRunning) {
-            Log.d(Constants.TAG = "onTouchEvent", "Bird flap");
-            bird.setGravity(-15);
-            if (sound.isSoundLoaded()) {
-                sound.getSoundPool().play(sound.flapSound, 0.3f, 0.3f, 1, 0, 1f);
+            if (!isAlive) {
+                Log.d(Constants.TAG = "onTouchEvent", "Bird flap");
+                bird.setGravity(-15);
+                if (sound.isSoundLoaded()) {
+                    sound.getSoundPool().play(sound.flapSound, 0.3f, 0.3f, 1, 0, 1f);
+                }
             }
         }
         return super.onTouchEvent(event);

@@ -8,7 +8,7 @@ public class Sound {
     private SoundPool soundPool;
     private boolean isSoundLoaded;
 
-    public int flapSound, collideSound, scoreSound, highScoreSound;
+    public int flapSound, collideSound, scoreSound, highScoreSound, barrierCollideSound;
 
     public Sound() {
         AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
