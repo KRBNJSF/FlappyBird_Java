@@ -1,10 +1,9 @@
 package cz.reindl.game.entity;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
-import cz.reindl.game.constants.Constants;
+import cz.reindl.game.values.Values;
 
 public abstract class GameObject {
 
@@ -62,7 +61,7 @@ public abstract class GameObject {
     }
 
     public Rect setRect(float yy) {
-        this.yy = yy + Constants.gapPipe;
+        this.yy = yy + Values.gapPipe;
         return new Rect(
                 (int) this.x,
                 (int) this.yy,

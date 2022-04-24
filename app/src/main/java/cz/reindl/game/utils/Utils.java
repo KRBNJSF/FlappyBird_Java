@@ -8,8 +8,8 @@ import java.util.Random;
 
 public class Utils {
 
-    public static int randomNumber(int value) {
-        return new Random().nextInt(value);
+    public static int randomNumber(int value, int offset) {
+        return new Random().nextInt(value) + offset;
     }
 
     public static Bitmap addBorder(Bitmap bitmap, int borderSize, String color) {

@@ -11,6 +11,6 @@ public class DeathScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_death_screen);
+        setContentView(R.layout.activity_shop);
     }
 }

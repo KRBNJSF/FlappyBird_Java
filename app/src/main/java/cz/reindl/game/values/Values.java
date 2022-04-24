@@ -1,8 +1,8 @@
-package cz.reindl.game.constants;
+package cz.reindl.game.values;
 
 import android.content.Intent;
 
-public class Constants {
+public class Values {
 
     public static int SCREEN_WIDTH;
     public static int SCREEN_HEIGHT;

@@ -1,32 +1,27 @@
 package cz.reindl.game;
 
-import static cz.reindl.game.constants.Constants.SCREEN_WIDTH;
+import static cz.reindl.game.values.Values.SCREEN_WIDTH;
+import static cz.reindl.game.view.View.isActive;
+import static cz.reindl.game.view.View.isHardCore;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.app.Service;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.DisplayMetrics;
-import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import cz.reindl.game.constants.Constants;
+import cz.reindl.game.values.Values;
 import cz.reindl.game.entity.Bird;
-import cz.reindl.game.sound.Sound;
-import cz.reindl.game.view.DeathScreen;
 import cz.reindl.game.view.View;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,7 +31,9 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
     @SuppressLint("StaticFieldLeak")
-    public static Button button, restartButton;
+    public static Button button, restartButton, hardCoreButton;
+    @SuppressLint("StaticFieldLeak")
+    public static ImageButton buttonSkin1, buttonSkin2;
     @SuppressLint("StaticFieldLeak")
     public static RelativeLayout relativeLayout;
     private MediaPlayer mediaPlayer;
@@ -64,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        Constants.SCREEN_WIDTH = metrics.widthPixels;
-        Constants.SCREEN_HEIGHT = metrics.heightPixels;
+        Values.SCREEN_WIDTH = metrics.widthPixels;
+        Values.SCREEN_HEIGHT = metrics.heightPixels;
         setContentView(R.layout.activity_main);
 
         view = findViewById(R.id.gameView);
@@ -86,21 +83,46 @@ public class MainActivity extends AppCompatActivity {
 
         gameOverText = (TextView) findViewById(R.id.gameOverText);
         restartButton = (Button) findViewById(R.id.buttonRestart);
+        buttonSkin1 = (ImageButton) findViewById(R.id.buttonSkin1);
+        buttonSkin2 = (ImageButton) findViewById(R.id.buttonSkin2);
+        hardCoreButton = (Button) findViewById(R.id.buttonHardCore);
         gameOverText.setText("Flappy Bird");
         restartButton.setText("Start");
 
+        buttonSkin1.setOnClickListener(l -> {
+            Bird.changeSkin = false;
+        });
+
+        hardCoreButton.setOnClickListener(l -> {
+            if (!isHardCore) {
+                isHardCore = true;
+                hardCoreButton.setBackgroundColor(Color.BLACK);
+                Values.speedPipe = 8 * SCREEN_WIDTH / 1080;
+            } else {
+                isHardCore = false;
+                Values.speedPipe = 19 * SCREEN_WIDTH / 1080;
+                hardCoreButton.setBackgroundColor(Color.RED);
+            }
+        });
+
+        buttonSkin2.setOnClickListener(l -> {
+            if (Bird.skinUnlocked) {
+                Bird.changeSkin = true;
+            } else {
+                System.out.println("It is not unlocked yet");
+            }
+        });
+
         button.setOnClickListener(v -> {
             if (i == 0) {
-                View.isActive = true;
-                Constants.speedPipe = 19 * SCREEN_WIDTH / 1080;
-                Bird.skinUnlocked = true;
+                isActive = true;
                 i = 1;
-                Constants.gapPipe = 600;
+                Values.gapPipe = 600;
             } else {
-                View.isActive = false;
+                isActive = false;
                 i = 0;
                 Bird.skinUnlocked = false;
-                Constants.gapPipe = 400;
+                Values.gapPipe = 400;
             }
         });
 

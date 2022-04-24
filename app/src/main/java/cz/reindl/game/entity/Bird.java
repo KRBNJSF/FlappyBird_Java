@@ -1,27 +1,17 @@
 package cz.reindl.game.entity;
 
-import static cz.reindl.game.MainActivity.highScoreText;
-import static cz.reindl.game.MainActivity.sharedPreferences;
-
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Rect;
-import android.util.Log;
 
 import java.util.ArrayList;
-
-import cz.reindl.game.R;
-import cz.reindl.game.constants.Constants;
-import cz.reindl.game.view.View;
 
 public class Bird extends GameObject {
 
     Matrix matrix = new Matrix(); //Transforming bird
     private ArrayList<Bitmap> birdList = new ArrayList<>(); //List of Bitmap - animation during game
 
-    public static boolean skinUnlocked;
+    public static boolean skinUnlocked, changeSkin;
 
     private int tick;
 
@@ -84,7 +74,7 @@ public class Bird extends GameObject {
     }
 
     public Bitmap changeBird() {
-        if (skinUnlocked) {
+        if (skinUnlocked && changeSkin) {
             this.birdList.set(0, birdList.get(2));
             this.birdList.set(1, birdList.get(3));
         } else {
