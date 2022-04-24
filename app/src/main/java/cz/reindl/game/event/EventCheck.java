@@ -64,7 +64,7 @@ public class EventCheck {
 
     //HIGH SCORE CHECK
     private void checkHighScore() {
-        if (!isHardCore || !isActive) {
+        if (isHardCore) {
             gameSpeedUp();
         }
 

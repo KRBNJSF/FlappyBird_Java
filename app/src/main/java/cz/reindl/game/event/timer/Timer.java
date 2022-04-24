@@ -1,4 +1,4 @@
-package cz.reindl.game.event;
+package cz.reindl.game.event.timer;
 
 import android.os.Handler;
 
