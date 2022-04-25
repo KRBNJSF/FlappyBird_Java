@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 import cz.reindl.game.R;
-import cz.reindl.game.event.EventCheck;
+import cz.reindl.game.event.EventHandler;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.entity.Barrier;
 import cz.reindl.game.entity.Bird;
@@ -40,7 +40,7 @@ public class View extends android.view.View {
 
     private final Runnable runnable;
 
-    EventCheck eventCheck = new EventCheck();
+    EventHandler eventHandler = new EventHandler();
 
     public View(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -97,9 +97,9 @@ public class View extends android.view.View {
         Barrier barrier2 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance, -350);
         Barrier barrier3 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance * 2, -200);
 
-        eventCheck.barriers.add(barrier);
-        eventCheck.barriers.add(barrier2);
-        eventCheck.barriers.add(barrier3);
+        eventHandler.barriers.add(barrier);
+        eventHandler.barriers.add(barrier2);
+        eventHandler.barriers.add(barrier3);
     }
 
     public void checkSkin() {
@@ -133,21 +133,21 @@ public class View extends android.view.View {
         new Handler().postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {
-            for (int i = 0; i < eventCheck.barriers.size(); i++) {
-                eventCheck.barriers.get(i).renderBarrier(canvas);
+            for (int i = 0; i < eventHandler.barriers.size(); i++) {
+                eventHandler.barriers.get(i).renderBarrier(canvas);
             }
-            eventCheck.collision();
+            eventHandler.collision();
         } else if (!isAlive) {
             if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
                 bird.setGravity(-15);
             }
         } else if (bird.getY() <= SCREEN_HEIGHT) {
-            for (int i = 0; i < eventCheck.barriers.size(); i++) {
-                eventCheck.barriers.get(i).renderBarrier(canvas);
+            for (int i = 0; i < eventHandler.barriers.size(); i++) {
+                eventHandler.barriers.get(i).renderBarrier(canvas);
             }
             bird.setGravity(15);
         } else {
-            eventCheck.resetGame();
+            eventHandler.resetGame();
         }
         bird.renderBird(canvas);
     }

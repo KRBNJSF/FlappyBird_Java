@@ -31,7 +31,7 @@ import cz.reindl.game.entity.Barrier;
 import cz.reindl.game.entity.Bird;
 import cz.reindl.game.values.Values;
 
-public class EventCheck {
+public class EventHandler {
 
     public final List<Barrier> barriers = new ArrayList();
 
