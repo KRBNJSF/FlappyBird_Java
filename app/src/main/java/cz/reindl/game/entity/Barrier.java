@@ -30,7 +30,7 @@ public class Barrier extends GameObject {
             } */
             this.setX(SCREEN_WIDTH + barrierDistance + 200);
             this.setY(new Random().nextInt(1000) - 1000);
-            this.yy = this.y + gapPipe;
+            gapPipe = this.y + this.height - 400;
             //setRect(this.height).offset(-200, -100);
         }
 
