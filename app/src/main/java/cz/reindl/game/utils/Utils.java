@@ -15,7 +15,7 @@ public class Utils {
     public static Bitmap addBorder(Bitmap bitmap, int borderSize, String color) {
         Bitmap borderBitmap = Bitmap.createBitmap(bitmap.getWidth() + borderSize * 2, bitmap.getHeight() + borderSize * 2, bitmap.getConfig());
         Canvas canvas = new Canvas(borderBitmap);
-        canvas.drawColor(Color.parseColor(color));
+        //canvas.drawColor(Color.parseColor(color));
         canvas.drawBitmap(bitmap, borderSize, borderSize, null);
         return borderBitmap;
     }

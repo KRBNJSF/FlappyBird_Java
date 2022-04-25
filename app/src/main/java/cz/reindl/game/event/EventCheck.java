@@ -20,8 +20,8 @@ import static cz.reindl.game.view.View.isHardCore;
 import static cz.reindl.game.view.View.isRunning;
 import static cz.reindl.game.view.View.sound;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -50,10 +50,9 @@ public class EventCheck {
                         sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
                     }
                 }
-            } else {*/
-            if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT || bird.getRect().intersect(barriers.get(i).setRect(barriers.get(i).getHeight()))) {
+            }*/
+            if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT || bird.getRect().intersect(barriers.get(i).getBottomPipeRect())) {
                 resetGame();
-                //}
             } else if (bird.getX() == barriers.get(i).getX()) {
                 sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
             }
@@ -77,6 +76,7 @@ public class EventCheck {
         highScoreText.setText(String.valueOf("High Score: " + bird.getHighScore()));
     }
 
+    @SuppressLint("SetTextI18n")
     public void resetGame() {
         if (!isAlive) {
             sound.getSoundPool().play(sound.collideSound, 0.1f, 0.1f, 1, 0, 1f);
@@ -108,13 +108,13 @@ public class EventCheck {
 
             Bird.skinUnlocked = false;
             bird.setScore(0);
-            bird.setY(SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
+            bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
             bird.setGravity(0.6f);
             barriers.get(0).setX(SCREEN_WIDTH);
             barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
             barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
-            Values.gapPipe = 400;
-            Values.speedPipe = 8 * SCREEN_WIDTH / 1080;
+            Values.gapPipe = 350;
+            Values.speedPipe = 10 * SCREEN_WIDTH / 1080;
             if (!isHardCore) {
                 Values.speedPipe = 19 * SCREEN_WIDTH / 1080;
             }
@@ -123,15 +123,15 @@ public class EventCheck {
 
     private void gameSpeedUp() {
         if (bird.getScore() > 1000 && bird.getScore() < 2000) {
-            Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
-        } else if (bird.getScore() > 2000 && bird.getScore() < 3000) {
-            Values.speedPipe = 10 * SCREEN_WIDTH / 1080;
-        } else if (bird.getScore() > 3000 && bird.getScore() < 4000) {
             Values.speedPipe = 11 * SCREEN_WIDTH / 1080;
-        } else if (bird.getScore() > 4000 && bird.getScore() < 5000) {
+        } else if (bird.getScore() > 2000 && bird.getScore() < 3000) {
             Values.speedPipe = 12 * SCREEN_WIDTH / 1080;
-        } else if (bird.getScore() > 5000) {
+        } else if (bird.getScore() > 3000 && bird.getScore() < 4000) {
             Values.speedPipe = 13 * SCREEN_WIDTH / 1080;
+        } else if (bird.getScore() > 4000 && bird.getScore() < 5000) {
+            Values.speedPipe = 14 * SCREEN_WIDTH / 1080;
+        } else if (bird.getScore() > 5000) {
+            Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
         }
     }
 

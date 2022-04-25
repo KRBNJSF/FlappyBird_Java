@@ -89,15 +89,13 @@ public class MainActivity extends AppCompatActivity {
         gameOverText.setText("Flappy Bird");
         restartButton.setText("Start");
 
-        buttonSkin1.setOnClickListener(l -> {
-            Bird.changeSkin = false;
-        });
+        buttonSkin1.setOnClickListener(l -> Bird.changeSkin = false);
 
         hardCoreButton.setOnClickListener(l -> {
             if (!isHardCore) {
                 isHardCore = true;
                 hardCoreButton.setBackgroundColor(Color.BLACK);
-                Values.speedPipe = 8 * SCREEN_WIDTH / 1080;
+                Values.speedPipe = 10 * SCREEN_WIDTH / 1080;
             } else {
                 isHardCore = false;
                 Values.speedPipe = 19 * SCREEN_WIDTH / 1080;
@@ -122,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 isActive = false;
                 i = 0;
                 Bird.skinUnlocked = false;
-                Values.gapPipe = 400;
+                Values.gapPipe = 350;
             }
         });
 

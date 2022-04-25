@@ -9,7 +9,7 @@ public class Values {
     public static String TAG;
 
     public static int barrierDistance;
-    public static int gapPipe = 400;
+    public static int gapPipe = 350;
     public static int speedPipe;
 
     public static Intent intent;

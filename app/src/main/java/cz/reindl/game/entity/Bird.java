@@ -1,5 +1,6 @@
 package cz.reindl.game.entity;
 
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -20,23 +21,6 @@ public class Bird extends GameObject {
 
     private int score;
     private int highScore;
-
-
-    public Bird(Bitmap resizeBitmap, int i, int i1) {
-        super(resizeBitmap, i, i1);
-        this.tick = 0;
-        this.gravity = 0;
-        this.velocity = 0.6f;
-        this.score = 0;
-    }
-
-    public Bird(int height, int width, float x, float y) {
-        super(height, width, x, y);
-        this.tick = 0;
-        this.gravity = 0;
-        this.velocity = 0.6f;
-        this.score = 0;
-    }
 
     public Bird() {
         super();

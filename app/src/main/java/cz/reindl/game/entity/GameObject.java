@@ -60,13 +60,13 @@ public abstract class GameObject {
         );
     }
 
-    public Rect setRect(float yy) {
-        this.yy = yy + Values.gapPipe;
+    public Rect getBottomPipeRect() {
+        float yy = (this.getHeight() + this.getY()) + Values.gapPipe;
         return new Rect(
                 (int) this.x,
-                (int) this.yy,
+                (int) yy,
                 (int) this.x + this.width,
-                (int) this.yy + this.height
+                (int) yy + this.height
         );
     }
 
@@ -118,4 +118,11 @@ public abstract class GameObject {
         this.bitmap = bitmap;
     }
 
+    public float getYy() {
+        return yy;
+    }
+
+    public void setYy(float yy) {
+        this.yy = yy;
+    }
 }

@@ -5,7 +5,7 @@ import android.media.SoundPool;
 
 public class Sound {
 
-    private SoundPool soundPool;
+    private final SoundPool soundPool;
     private boolean isSoundLoaded;
 
     public int flapSound, collideSound, scoreSound, highScoreSound, barrierCollideSound, scytheFlap;
