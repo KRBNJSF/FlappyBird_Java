@@ -12,14 +12,16 @@ public class Bird extends GameObject {
     Matrix matrix = new Matrix(); //Transforming bird
     private ArrayList<Bitmap> birdList = new ArrayList<>(); //List of Bitmap - animation during game
 
-    public static boolean skinUnlocked, changeSkin;
+    public static boolean skinUnlocked, changeSkin, boughtSkinUsing;
+
+    public static int boughtSkin = 0;
 
     private int tick = 0;
 
     private float gravity;
     private final float velocity;
 
-    private int score;
+    private int score, coins;
     private int highScore;
 
     public Bird() {
@@ -42,7 +44,7 @@ public class Bird extends GameObject {
 
     public void checkY() {
         if (y <= 0) {
-            setGravity(2);
+            setGravity(3);
             if (y <= -this.height) {
                 setY(0);
             }
@@ -60,6 +62,9 @@ public class Bird extends GameObject {
         if (skinUnlocked && changeSkin) {
             this.birdList.set(0, birdList.get(2));
             this.birdList.set(1, birdList.get(3));
+        } else if (boughtSkinUsing) {
+            this.birdList.set(0, birdList.get(6));
+            this.birdList.set(1, birdList.get(7));
         } else {
             this.birdList.set(0, birdList.get(4));
             this.birdList.set(1, birdList.get(5));
@@ -109,4 +114,11 @@ public class Bird extends GameObject {
         this.height = bitmap.getHeight();
     }
 
+    public int getCoins() {
+        return coins;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
+    }
 }

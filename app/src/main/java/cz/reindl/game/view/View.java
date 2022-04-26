@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 import cz.reindl.game.R;
+import cz.reindl.game.entity.Coin;
 import cz.reindl.game.event.EventHandler;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.entity.Barrier;
@@ -37,6 +38,7 @@ public class View extends android.view.View {
     public static boolean isAlive = false;
 
     public static Bird bird;
+    public static Coin coin;
 
     private final Runnable runnable;
 
@@ -49,6 +51,7 @@ public class View extends android.view.View {
         //GAME OBJECTS INITIALIZATION
         initBarrier();
         initBird();
+        initCoin();
 
         //MAIN LOOP
         runnable = this::invalidate;
@@ -93,13 +96,18 @@ public class View extends android.view.View {
         barrierDistance = 700 * SCREEN_HEIGHT / 1920;
 
         //Blue barrier is the first one in ArrayList, Red are the others
-        Barrier barrier = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), SCREEN_WIDTH, 0);
+        Barrier barrier = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), SCREEN_WIDTH, 1);
         Barrier barrier2 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance, -350);
         Barrier barrier3 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance * 2, -200);
 
         eventHandler.barriers.add(barrier);
         eventHandler.barriers.add(barrier2);
         eventHandler.barriers.add(barrier3);
+    }
+
+    private void initCoin() {
+        Log.d(Values.TAG = "initCoin", "Coin init");
+        coin = new Coin(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.coin), 100 * SCREEN_WIDTH / 1080, 100 * SCREEN_HEIGHT / 1920), 100, 200);
     }
 
     public void checkSkin() {
@@ -112,7 +120,7 @@ public class View extends android.view.View {
     private void initBird() {
         Log.d(Values.TAG = "initBird", "Bird init");
         bird = new Bird();
-        bird.setHeight(105 * SCREEN_HEIGHT / 1920);
+        bird.setHeight(100 * SCREEN_HEIGHT / 1920);
         bird.setWidth(105 * SCREEN_WIDTH / 1080);
         bird.setX((float) 100 * SCREEN_WIDTH / 1080);
         bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
@@ -124,6 +132,8 @@ public class View extends android.view.View {
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.legendary_skindown));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_h));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_scythe_up));
+        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.default_bird));
+        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.defalut_bird_flap));
         bird.setBirdList(birdList);
     }
 
@@ -136,16 +146,17 @@ public class View extends android.view.View {
             for (int i = 0; i < eventHandler.barriers.size(); i++) {
                 eventHandler.barriers.get(i).renderBarrier(canvas);
             }
+            coin.renderCoin(canvas);
             eventHandler.collision();
         } else if (!isAlive) {
             if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
                 bird.setGravity(-15);
             }
-        } else if (bird.getY() <= SCREEN_HEIGHT) {
+        } else if (bird.getY() <= SCREEN_HEIGHT - grass.getHeight()) {
             for (int i = 0; i < eventHandler.barriers.size(); i++) {
                 eventHandler.barriers.get(i).renderBarrier(canvas);
             }
-            bird.setGravity(15);
+            bird.setGravity(18);
         } else {
             eventHandler.resetGame();
         }
@@ -161,7 +172,7 @@ public class View extends android.view.View {
                 Log.d(Values.TAG = "onTouchEvent", "Bird flap");
                 bird.setGravity(-15);
                 if (sound.isSoundLoaded()) {
-                    if (!Bird.changeSkin) {
+                    if (!Bird.changeSkin && !Bird.boughtSkinUsing) {
                         sound.getSoundPool().play(sound.scytheFlap, 0.3f, 0.3f, 1, 0, 1f);
                     } else {
                         sound.getSoundPool().play(sound.flapSound, 1f, 1f, 1, 0, 1f);

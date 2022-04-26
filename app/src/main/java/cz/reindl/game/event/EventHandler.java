@@ -5,6 +5,7 @@ import static android.view.View.VISIBLE;
 import static android.widget.Toast.makeText;
 import static cz.reindl.game.MainActivity.editor;
 import static cz.reindl.game.MainActivity.gameOverText;
+import static cz.reindl.game.MainActivity.grass;
 import static cz.reindl.game.MainActivity.highScoreText;
 import static cz.reindl.game.MainActivity.relativeLayout;
 import static cz.reindl.game.MainActivity.restartButton;
@@ -26,10 +27,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import cz.reindl.game.MainActivity;
 import cz.reindl.game.entity.Barrier;
 import cz.reindl.game.entity.Bird;
 import cz.reindl.game.values.Values;
+import cz.reindl.game.view.View;
 
 public class EventHandler {
 
@@ -51,10 +55,12 @@ public class EventHandler {
                     }
                 }
             }*/
-            if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT || bird.getRect().intersect(barriers.get(i).getBottomPipeRect())) {
+            if (View.coin.getX() + View.coin.getBitmap().getWidth() < 0 || View.coin.getRect().intersect(barriers.get(i).getRect())) {
+                View.coin.setX(new Random().nextInt(SCREEN_WIDTH) + (float) SCREEN_WIDTH / 2);
+                View.coin.setY(new Random().nextInt(SCREEN_HEIGHT - MainActivity.grass.getHeight()) + 1);
+            }
+            if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT - grass.getHeight() || bird.getRect().intersect(barriers.get(i).getBottomPipeRect())) {
                 resetGame();
-            } else if (bird.getX() == barriers.get(i).getX()) {
-                sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
             }
         }
         bird.setScore(bird.getScore() + 1);
@@ -86,7 +92,7 @@ public class EventHandler {
         isActive = false;
         isAlive = false;
 
-        if (bird.getY() <= SCREEN_HEIGHT) {
+        if (bird.getY() <= SCREEN_HEIGHT - grass.getHeight()) {
             isAlive = true;
             sound.getSoundPool().play(sound.barrierCollideSound, 0.4f, 0.4f, 1, 0, 1f);
             Values.speedPipe = 0;
@@ -103,6 +109,8 @@ public class EventHandler {
 
             editor.putBoolean("skinUnlocked", Bird.skinUnlocked);
             editor.putInt("highScore", bird.getHighScore());
+            editor.putInt("coinValue", bird.getCoins());
+            editor.putInt("skinBought", Bird.boughtSkin);
             editor.commit();
             makeText(highScoreText.getContext(), "Score saved", Toast.LENGTH_SHORT).show();
 
