@@ -14,7 +14,7 @@ public class Bird extends GameObject {
 
     public static boolean skinUnlocked, changeSkin;
 
-    private int tick;
+    private int tick = 0;
 
     private float gravity;
     private final float velocity;
@@ -24,19 +24,18 @@ public class Bird extends GameObject {
 
     public Bird() {
         super();
-        this.tick = 0;
         this.gravity = 0;
         this.velocity = 0.6f;
         this.score = 0;
     }
 
     public void renderBird(Canvas canvas) {
-        drop();
+        fall();
         checkY();
         canvas.drawBitmap(this.changeBird(), this.getX(), this.getY(), null);
     }
 
-    private void drop() {
+    private void fall() {
         this.gravity += velocity;
         y += this.gravity;
     }

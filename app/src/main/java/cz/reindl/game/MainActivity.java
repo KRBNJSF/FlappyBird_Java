@@ -1,6 +1,8 @@
 package cz.reindl.game;
 
+import static android.widget.Toast.makeText;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
+import static cz.reindl.game.view.View.bird;
 import static cz.reindl.game.view.View.isActive;
 import static cz.reindl.game.view.View.isHardCore;
 
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import cz.reindl.game.values.Values;
 import cz.reindl.game.entity.Bird;
@@ -74,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         scoreText.setTextAppearance(R.style.whiteText);
         highScoreText = (TextView) findViewById(R.id.highScore);
         highScoreText.setTextAppearance(R.style.whiteText);
-        highScoreText.setVisibility(android.view.View.INVISIBLE);
         scoreText.setVisibility(android.view.View.INVISIBLE);
 
         sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         hardCoreButton = (Button) findViewById(R.id.buttonHardCore);
         gameOverText.setText("Flappy Bird");
         restartButton.setText("Start");
+        highScoreText.setText(String.valueOf("High Score: " + sharedPreferences.getInt("highScore", bird.getHighScore())));
 
         buttonSkin1.setOnClickListener(l -> Bird.changeSkin = false);
 
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 hardCoreButton.setBackgroundColor(Color.BLACK);
                 Values.speedPipe = 10 * SCREEN_WIDTH / 1080;
             } else {
+                makeText(this, "HardCore enabled", Toast.LENGTH_SHORT).show();
                 isHardCore = false;
                 Values.speedPipe = 19 * SCREEN_WIDTH / 1080;
                 hardCoreButton.setBackgroundColor(Color.RED);
@@ -107,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             if (Bird.skinUnlocked) {
                 Bird.changeSkin = true;
             } else {
-                System.out.println("It is not unlocked yet");
+                makeText(this, "It is not unlocked yet, " + (10000 - sharedPreferences.getInt("highScore", bird.getHighScore())) + " score remaining", Toast.LENGTH_SHORT).show();
             }
         });
 
