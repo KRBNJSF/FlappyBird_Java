@@ -112,11 +112,11 @@ public class MainActivity extends AppCompatActivity {
             if (!isHardCore) {
                 isHardCore = true;
                 hardCoreButton.setBackgroundColor(Color.BLACK);
-                Values.speedPipe = 10 * SCREEN_WIDTH / 1080;
+                Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
             } else {
                 makeText(this, "HardCore enabled", Toast.LENGTH_SHORT).show();
                 isHardCore = false;
-                Values.speedPipe = 19 * SCREEN_WIDTH / 1080;
+                Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
                 hardCoreButton.setBackgroundColor(Color.RED);
             }
         });

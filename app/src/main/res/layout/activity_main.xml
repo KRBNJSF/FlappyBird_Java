@@ -23,11 +23,11 @@
 
     <ImageView
         android:id="@+id/coinImg"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="85dp"
         android:background="@drawable/coin"
         tools:ignore="ContentDescription" />
 
@@ -36,11 +36,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@id/coinImg"
-        android:layout_marginStart="14dp"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="85dp"
         android:text="0"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="15sp"
         tools:ignore="HardcodedText" />
 
     <TextView
@@ -124,7 +124,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="140dp"
-            android:layout_marginTop="23dp"
+            android:layout_marginTop="25dp"
             android:background="@drawable/default_bird"
             android:contentDescription="Default skin"
             android:foreground="?android:attr/selectableItemBackground"

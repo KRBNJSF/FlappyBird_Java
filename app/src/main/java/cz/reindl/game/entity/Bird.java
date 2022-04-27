@@ -1,11 +1,15 @@
 package cz.reindl.game.entity;
 
 
+import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 
 import java.util.ArrayList;
+
+import cz.reindl.game.utils.Utils;
 
 public class Bird extends GameObject {
 

@@ -18,12 +18,12 @@ public class Barrier extends GameObject {
         super(bitmap, bitmap2, x, y);
         this.width = bitmap.getWidth();
         this.height = bitmap.getHeight();
-        speedPipe = 10 * SCREEN_WIDTH / 1080;
+        speedPipe = 9 * SCREEN_WIDTH / 1080;
     }
 
     public void renderBarrier(Canvas canvas) {
         if (x + bitmap.getWidth() < 0) {
-            this.setX(SCREEN_WIDTH + barrierDistance + 200);
+            this.setX(SCREEN_WIDTH + barrierDistance + 230);
             this.setY(new Random().nextInt(645) - 620);
         }
 

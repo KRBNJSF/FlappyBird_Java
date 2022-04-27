@@ -15,6 +15,7 @@ import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.values.Values.barrierDistance;
 import static cz.reindl.game.view.View.bird;
+import static cz.reindl.game.view.View.coin;
 import static cz.reindl.game.view.View.isActive;
 import static cz.reindl.game.view.View.isAlive;
 import static cz.reindl.game.view.View.isHardCore;
@@ -55,8 +56,8 @@ public class EventHandler {
                     }
                 }
             }*/
-            if (View.coin.getX() + View.coin.getBitmap().getWidth() < 0 || View.coin.getRect().intersect(barriers.get(i).getRect())) {
-                View.coin.setX(new Random().nextInt(SCREEN_WIDTH) + (float) SCREEN_WIDTH / 2);
+            if (View.coin.getX() + View.coin.getBitmap().getWidth() < 0 || View.coin.getRect().intersect(barriers.get(i).getRect()) || View.coin.getRect().intersect(barriers.get(i).getBottomPipeRect())) {
+                View.coin.setX((SCREEN_WIDTH) + (float) SCREEN_WIDTH / 2); //barriers.get(i).getX() - (new Random().nextInt(100) + coin.getWidth())
                 View.coin.setY(new Random().nextInt(SCREEN_HEIGHT - MainActivity.grass.getHeight()) + 1);
             }
             if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT - grass.getHeight() || bird.getRect().intersect(barriers.get(i).getBottomPipeRect())) {
@@ -122,24 +123,24 @@ public class EventHandler {
             barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
             barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
             Values.gapPipe = 350;
-            Values.speedPipe = 10 * SCREEN_WIDTH / 1080;
+            Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
             if (!isHardCore) {
-                Values.speedPipe = 19 * SCREEN_WIDTH / 1080;
+                Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
             }
         }
     }
 
     private void gameSpeedUp() {
         if (bird.getScore() > 1000 && bird.getScore() < 2000) {
-            Values.speedPipe = 11 * SCREEN_WIDTH / 1080;
+            Values.speedPipe = 10 * SCREEN_WIDTH / 1080;
         } else if (bird.getScore() > 2000 && bird.getScore() < 3000) {
-            Values.speedPipe = 12 * SCREEN_WIDTH / 1080;
+            Values.speedPipe = 11 * SCREEN_WIDTH / 1080;
         } else if (bird.getScore() > 3000 && bird.getScore() < 4000) {
-            Values.speedPipe = 13 * SCREEN_WIDTH / 1080;
+            Values.speedPipe = 12 * SCREEN_WIDTH / 1080;
         } else if (bird.getScore() > 4000 && bird.getScore() < 5000) {
-            Values.speedPipe = 14 * SCREEN_WIDTH / 1080;
+            Values.speedPipe = 13 * SCREEN_WIDTH / 1080;
         } else if (bird.getScore() > 5000) {
-            Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
+            Values.speedPipe = 14 * SCREEN_WIDTH / 1080;
         }
     }
 
