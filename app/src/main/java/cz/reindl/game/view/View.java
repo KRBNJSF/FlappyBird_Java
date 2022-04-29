@@ -1,5 +1,6 @@
 package cz.reindl.game.view;
 
+import static android.widget.Toast.makeText;
 import static cz.reindl.game.MainActivity.*;
 import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
@@ -15,6 +16,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -33,7 +35,7 @@ public class View extends android.view.View {
     public static final Sound sound = new Sound();
 
     public static boolean isActive;
-    public static boolean isHardCore = true;
+    public boolean isHardCore = true;
     public static boolean isRunning = true;
     public static boolean isAlive = false;
 
@@ -61,7 +63,7 @@ public class View extends android.view.View {
 
         //SOUND
         sound.flapSound = sound.getSoundPool().load(context, R.raw.flap, 1);
-        sound.collideSound = sound.getSoundPool().load(context, R.raw.bang, 1);
+        sound.collideSound = sound.getSoundPool().load(context, R.raw.bang, 2);
         sound.scoreSound = sound.getSoundPool().load(context, R.raw.score_sound, 1);
         sound.highScoreSound = sound.getSoundPool().load(context, R.raw.high_score, 1);
         sound.barrierCollideSound = sound.getSoundPool().load(context, R.raw.collide_fall, 1);
@@ -93,7 +95,7 @@ public class View extends android.view.View {
 
     private void initBarrier() {
         Log.d(Values.TAG = "initBarrier", "Barriers init");
-        barrierDistance = 700 * SCREEN_HEIGHT / 1920;
+        barrierDistance = 750 * SCREEN_HEIGHT / 1920;
 
         //Blue barrier is the first one in ArrayList, Red are the others
         Barrier barrier = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), SCREEN_WIDTH, 1);
@@ -107,24 +109,18 @@ public class View extends android.view.View {
 
     private void initCoin() {
         Log.d(Values.TAG = "initCoin", "Coin init");
-        coin = new Coin(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.coin), 100 * SCREEN_WIDTH / 1080, 100 * SCREEN_HEIGHT / 1920), 100, 200);
+        coin = new Coin(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.coin), 100 * SCREEN_WIDTH / 1080, 90 * SCREEN_HEIGHT / 1920), 600, 600);
     }
 
-    public void checkSkin() {
-        Bird.skinUnlocked = sharedPreferences.getBoolean("skinUnlocked", Bird.skinUnlocked);
-        if (sharedPreferences.getInt("highScore", bird.getHighScore()) >= 10000) {
-            Bird.skinUnlocked = true;
+    public void checkBirdSkin() {
+        Bird.legendarySkin = sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin);
+        if (sharedPreferences.getInt("highScore", bird.getHighScore()) >= 10000 && !Bird.legendarySkin) {
+            makeText(highScoreText.getContext(), "New skin unlocked", Toast.LENGTH_SHORT).show();
+            Bird.legendarySkin = true;
         }
     }
 
-    private void initBird() {
-        Log.d(Values.TAG = "initBird", "Bird init");
-        bird = new Bird();
-        bird.setHeight(100 * SCREEN_HEIGHT / 1920);
-        bird.setWidth(105 * SCREEN_WIDTH / 1080);
-        bird.setX((float) 100 * SCREEN_WIDTH / 1080);
-        bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
-
+    public void initBirdList() {
         ArrayList<Bitmap> birdList = new ArrayList<>();
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_h));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_scythe_up));
@@ -133,13 +129,23 @@ public class View extends android.view.View {
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_h));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_scythe_up));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.default_bird));
-        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.defalut_bird_flap));
+        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.default_bird_flap));
         bird.setBirdList(birdList);
+    }
+
+    private void initBird() {
+        Log.d(Values.TAG = "initBird", "Bird init");
+        bird = new Bird();
+        bird.setHeight(105 * SCREEN_HEIGHT / 1920);
+        bird.setWidth(105 * SCREEN_WIDTH / 1080);
+        bird.setX((float) 100 * SCREEN_WIDTH / 1080);
+        bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
+        initBirdList();
     }
 
     //RENDER
     public void draw(Canvas canvas) {
-        checkSkin();
+        checkBirdSkin();
         new Handler().postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {
@@ -152,7 +158,7 @@ public class View extends android.view.View {
             if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
                 bird.setGravity(-15);
             }
-        } else if (bird.getY() <= SCREEN_HEIGHT - grass.getHeight()) {
+        } else if (bird.getY() + bird.getHeight() <= SCREEN_HEIGHT - grass.getHeight()) {
             for (int i = 0; i < eventHandler.barriers.size(); i++) {
                 eventHandler.barriers.get(i).renderBarrier(canvas);
             }
@@ -172,7 +178,7 @@ public class View extends android.view.View {
                 Log.d(Values.TAG = "onTouchEvent", "Bird flap");
                 bird.setGravity(-15);
                 if (sound.isSoundLoaded()) {
-                    if (!Bird.changeSkin && !Bird.boughtSkinUsing) {
+                    if (!Bird.legendarySkinUsing && !Bird.boughtSkinUsing) {
                         sound.getSoundPool().play(sound.scytheFlap, 0.3f, 0.3f, 1, 0, 1f);
                     } else {
                         sound.getSoundPool().play(sound.flapSound, 1f, 1f, 1, 0, 1f);

@@ -23,7 +23,7 @@ public class Barrier extends GameObject {
 
     public void renderBarrier(Canvas canvas) {
         if (x + bitmap.getWidth() < 0) {
-            this.setX(SCREEN_WIDTH + barrierDistance + 230);
+            this.setX(SCREEN_WIDTH + barrierDistance + ((float) barrierDistance / 2));
             this.setY(new Random().nextInt(645) - 620);
         }
 

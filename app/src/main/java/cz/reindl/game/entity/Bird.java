@@ -1,30 +1,31 @@
 package cz.reindl.game.entity;
 
 
-import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 
 import java.util.ArrayList;
 
-import cz.reindl.game.utils.Utils;
-
 public class Bird extends GameObject {
 
     Matrix matrix = new Matrix(); //Transforming bird
     private ArrayList<Bitmap> birdList = new ArrayList<>(); //List of Bitmap - animation during game
 
-    public static boolean skinUnlocked, changeSkin, boughtSkinUsing;
-
+    //SKIN
+    public static boolean legendarySkin;
     public static int boughtSkin = 0;
+    //SKIN USAGE
+    public static boolean legendarySkinUsing, boughtSkinUsing;
 
+    //REFRESH TICKS
     private int tick = 0;
 
+    //GRAVITY
     private float gravity;
     private final float velocity;
 
+    //STATS
     private int score, coins;
     private int highScore;
 
@@ -62,8 +63,9 @@ public class Bird extends GameObject {
         }
     }
 
+    //ANIMATION
     public Bitmap changeBird() {
-        if (skinUnlocked && changeSkin) {
+        if (legendarySkin && legendarySkinUsing) {
             this.birdList.set(0, birdList.get(2));
             this.birdList.set(1, birdList.get(3));
         } else if (boughtSkinUsing) {
@@ -77,7 +79,6 @@ public class Bird extends GameObject {
         if (tick > 5) {
             if (tick == 15) {
                 tick = 0;
-                //Log.d(Constants.TAG = "Bird change", "Bird change");
             }
             return birdList.get(0);
         }

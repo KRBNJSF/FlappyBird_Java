@@ -1,10 +1,10 @@
 package cz.reindl.game;
 
 import static android.widget.Toast.makeText;
+import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.view.View.bird;
 import static cz.reindl.game.view.View.isActive;
-import static cz.reindl.game.view.View.isHardCore;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static ImageView grass;
     private MediaPlayer mediaPlayer;
-    private View view;
+    public static View view;
     private int i = 0;
 
     @Override
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    @SuppressLint({"SetTextI18n", "WrongConstant"})
+    @SuppressLint({"SetTextI18n", "WrongConstant", "UseCompatLoadingForDrawables"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,30 +101,44 @@ public class MainActivity extends AppCompatActivity {
         highScoreText.setText(String.valueOf("High Score: " + sharedPreferences.getInt("highScore", bird.getHighScore())));
         coinText.setText(String.valueOf(sharedPreferences.getInt("coinValue", bird.getCoins())));
         bird.setCoins(sharedPreferences.getInt("coinValue", bird.getCoins()));
+        Bird.legendarySkin = sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin);
         Bird.boughtSkin = sharedPreferences.getInt("skinBought", Bird.boughtSkin);
 
+        if (Bird.boughtSkin == 0) {
+            buttonSkin3.setBackground(getDrawable(R.drawable.skin_bird_locked));
+        }
+        if (!Bird.legendarySkin) {
+            buttonSkin2.setBackground(getDrawable(R.drawable.legendary_skin_locked));
+        }
+
         buttonSkin1.setOnClickListener(l -> {
-            Bird.changeSkin = false;
+            Bird.legendarySkinUsing = false;
             Bird.boughtSkinUsing = false;
+            bird.setHeight(105 * SCREEN_HEIGHT / 1920);
+            bird.setWidth(105 * SCREEN_WIDTH / 1080);
+            bird.setBirdList(bird.getBirdList());
         });
 
         hardCoreButton.setOnClickListener(l -> {
-            if (!isHardCore) {
-                isHardCore = true;
+            if (!view.isHardCore) {
+                view.isHardCore = true;
                 hardCoreButton.setBackgroundColor(Color.BLACK);
                 Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
             } else {
                 makeText(this, "HardCore enabled", Toast.LENGTH_SHORT).show();
-                isHardCore = false;
+                view.isHardCore = false;
                 Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
                 hardCoreButton.setBackgroundColor(Color.RED);
             }
         });
 
         buttonSkin2.setOnClickListener(l -> {
-            if (Bird.skinUnlocked) {
+            if (Bird.legendarySkin) {
                 Bird.boughtSkinUsing = false;
-                Bird.changeSkin = true;
+                Bird.legendarySkinUsing = true;
+                bird.setHeight(100 * SCREEN_HEIGHT / 1920);
+                bird.setWidth(110 * SCREEN_WIDTH / 1080);
+                bird.setBirdList(bird.getBirdList());
             } else {
                 makeText(this, "It is not unlocked yet, " + (10000 - sharedPreferences.getInt("highScore", bird.getHighScore())) + " score remaining", Toast.LENGTH_SHORT).show();
             }
@@ -133,13 +147,16 @@ public class MainActivity extends AppCompatActivity {
         buttonSkin3.setOnClickListener(l -> {
             if (Bird.boughtSkin == 1) {
                 Bird.boughtSkinUsing = true;
-                Bird.changeSkin = false;
-            } else if (Bird.boughtSkin == 0 && bird.getCoins() == 500) {
-                bird.setCoins(bird.getCoins() - 500);
+                Bird.legendarySkinUsing = false;
+                bird.setHeight(80 * SCREEN_HEIGHT / 1920);
+                bird.setWidth(105 * SCREEN_WIDTH / 1080);
+                bird.setBirdList(bird.getBirdList());
+            } else if (Bird.boughtSkin == 0 && bird.getCoins() == 1000) {
+                bird.setCoins(bird.getCoins() - 1000);
                 coinText.setText(bird.getCoins());
                 Bird.boughtSkin = 1;
             } else {
-                makeText(this, "It is not unlocked yet, " + (500 - sharedPreferences.getInt("coinValue", bird.getCoins())) + " coins remaining", Toast.LENGTH_SHORT).show();
+                makeText(this, "It is not unlocked yet, " + (1000 - sharedPreferences.getInt("coinValue", bird.getCoins())) + " coins remaining", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -151,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 isActive = false;
                 i = 0;
-                Bird.skinUnlocked = false;
-                Values.gapPipe = 350;
+                Bird.legendarySkin = false;
+                Values.gapPipe = 380;
             }
         });
 

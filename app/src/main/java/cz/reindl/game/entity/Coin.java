@@ -24,6 +24,8 @@ public class Coin extends GameObject {
         super(bitmap, x, y);
         this.width = bitmap.getWidth();
         this.height = bitmap.getHeight();
+        this.y = y;
+        this.x = x;
     }
 
     public void renderCoin(Canvas canvas) {
@@ -32,7 +34,7 @@ public class Coin extends GameObject {
             bird.setCoins(bird.getCoins() + 1);
             MainActivity.coinText.setText(String.valueOf(bird.getCoins()));
             this.setX(new Random().nextInt(SCREEN_WIDTH) + (float) SCREEN_WIDTH / 2);
-            this.setY(new Random().nextInt(SCREEN_HEIGHT - MainActivity.grass.getHeight()) + 1);
+            this.setY(new Random().nextInt(SCREEN_HEIGHT / 2 - MainActivity.grass.getHeight()) + (float) SCREEN_HEIGHT / 3);
         }
 
         this.x -= speedPipe;

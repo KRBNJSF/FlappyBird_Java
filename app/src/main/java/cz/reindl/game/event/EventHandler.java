@@ -11,14 +11,13 @@ import static cz.reindl.game.MainActivity.relativeLayout;
 import static cz.reindl.game.MainActivity.restartButton;
 import static cz.reindl.game.MainActivity.scoreText;
 import static cz.reindl.game.MainActivity.sharedPreferences;
+import static cz.reindl.game.MainActivity.view;
 import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.values.Values.barrierDistance;
 import static cz.reindl.game.view.View.bird;
-import static cz.reindl.game.view.View.coin;
 import static cz.reindl.game.view.View.isActive;
 import static cz.reindl.game.view.View.isAlive;
-import static cz.reindl.game.view.View.isHardCore;
 import static cz.reindl.game.view.View.isRunning;
 import static cz.reindl.game.view.View.sound;
 
@@ -58,19 +57,23 @@ public class EventHandler {
             }*/
             if (View.coin.getX() + View.coin.getBitmap().getWidth() < 0 || View.coin.getRect().intersect(barriers.get(i).getRect()) || View.coin.getRect().intersect(barriers.get(i).getBottomPipeRect())) {
                 View.coin.setX((SCREEN_WIDTH) + (float) SCREEN_WIDTH / 2); //barriers.get(i).getX() - (new Random().nextInt(100) + coin.getWidth())
-                View.coin.setY(new Random().nextInt(SCREEN_HEIGHT - MainActivity.grass.getHeight()) + 1);
+                View.coin.setY(new Random().nextInt(SCREEN_HEIGHT / 2 - MainActivity.grass.getHeight()) + (float) SCREEN_HEIGHT / 3);
             }
-            if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() >= SCREEN_HEIGHT - grass.getHeight() || bird.getRect().intersect(barriers.get(i).getBottomPipeRect())) {
+            if (bird.getRect().intersect(barriers.get(i).getRect()) || bird.getY() + bird.getHeight() >= SCREEN_HEIGHT - grass.getHeight() || bird.getRect().intersect(barriers.get(i).getBottomPipeRect())) {
                 resetGame();
             }
         }
-        bird.setScore(bird.getScore() + 1);
+        if (!view.isHardCore) {
+            bird.setScore(bird.getScore() + 3);
+        } else {
+            bird.setScore(bird.getScore() + 1);
+        }
         scoreText.setText(String.valueOf("Score: " + bird.getScore()));
     }
 
     //HIGH SCORE CHECK
     private void checkHighScore() {
-        if (!isHardCore) {
+        if (MainActivity.view.isHardCore) {
             gameSpeedUp();
         }
 
@@ -93,9 +96,9 @@ public class EventHandler {
         isActive = false;
         isAlive = false;
 
-        if (bird.getY() <= SCREEN_HEIGHT - grass.getHeight()) {
+        if (bird.getY() + bird.getHeight() <= SCREEN_HEIGHT - grass.getHeight()) {
             isAlive = true;
-            sound.getSoundPool().play(sound.barrierCollideSound, 0.4f, 0.4f, 1, 0, 1f);
+            sound.getSoundPool().play(sound.barrierCollideSound, 0.4f, 0.4f, 2, 0, 1f);
             Values.speedPipe = 0;
         } else {
             Log.d(Values.TAG = "resetGame", "Game reset");
@@ -108,23 +111,23 @@ public class EventHandler {
                 sound.getSoundPool().play(sound.highScoreSound, 1f, 1f, 1, 0, 1f);
             }
 
-            editor.putBoolean("skinUnlocked", Bird.skinUnlocked);
+            editor.putBoolean("skinUnlocked", Bird.legendarySkin);
             editor.putInt("highScore", bird.getHighScore());
             editor.putInt("coinValue", bird.getCoins());
             editor.putInt("skinBought", Bird.boughtSkin);
             editor.commit();
             makeText(highScoreText.getContext(), "Score saved", Toast.LENGTH_SHORT).show();
 
-            Bird.skinUnlocked = false;
+            Bird.legendarySkin = false;
             bird.setScore(0);
             bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
             bird.setGravity(0.6f);
             barriers.get(0).setX(SCREEN_WIDTH);
             barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
             barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
-            Values.gapPipe = 350;
+            Values.gapPipe = 380;
             Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
-            if (!isHardCore) {
+            if (!MainActivity.view.isHardCore) {
                 Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
             }
         }
