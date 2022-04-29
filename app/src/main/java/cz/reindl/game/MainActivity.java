@@ -116,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
             Bird.boughtSkinUsing = false;
             bird.setHeight(105 * SCREEN_HEIGHT / 1920);
             bird.setWidth(105 * SCREEN_WIDTH / 1080);
-            bird.setBirdList(bird.getBirdList());
+            bird.getBirdList().clear();
+            view.initBirdList();
         });
 
         hardCoreButton.setOnClickListener(l -> {
@@ -138,7 +139,8 @@ public class MainActivity extends AppCompatActivity {
                 Bird.legendarySkinUsing = true;
                 bird.setHeight(100 * SCREEN_HEIGHT / 1920);
                 bird.setWidth(110 * SCREEN_WIDTH / 1080);
-                bird.setBirdList(bird.getBirdList());
+                bird.getBirdList().clear();
+                view.initBirdList();
             } else {
                 makeText(this, "It is not unlocked yet, " + (10000 - sharedPreferences.getInt("highScore", bird.getHighScore())) + " score remaining", Toast.LENGTH_SHORT).show();
             }
@@ -150,7 +152,8 @@ public class MainActivity extends AppCompatActivity {
                 Bird.legendarySkinUsing = false;
                 bird.setHeight(80 * SCREEN_HEIGHT / 1920);
                 bird.setWidth(105 * SCREEN_WIDTH / 1080);
-                bird.setBirdList(bird.getBirdList());
+                bird.getBirdList().clear();
+                view.initBirdList();
             } else if (Bird.boughtSkin == 0 && bird.getCoins() == 1000) {
                 bird.setCoins(bird.getCoins() - 1000);
                 coinText.setText(bird.getCoins());
