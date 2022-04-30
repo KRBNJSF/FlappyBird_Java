@@ -123,7 +123,7 @@ public class EventHandler {
 
             bird.setScore(0);
             bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
-            bird.setGravity(0.6f);
+            bird.setFallGravity(0.6f);
             barriers.get(0).setX(SCREEN_WIDTH);
             barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
             barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);

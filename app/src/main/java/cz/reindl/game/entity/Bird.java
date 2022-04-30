@@ -22,7 +22,7 @@ public class Bird extends GameObject {
     private int tick = 0;
 
     //GRAVITY
-    private float gravity;
+    private float fallGravity;
     private final float velocity;
 
     //STATS
@@ -31,7 +31,7 @@ public class Bird extends GameObject {
 
     public Bird() {
         super();
-        this.gravity = 0;
+        this.fallGravity = 0;
         this.velocity = 0.6f;
         this.score = 0;
     }
@@ -43,13 +43,13 @@ public class Bird extends GameObject {
     }
 
     private void fall() {
-        this.gravity += velocity;
-        y += this.gravity;
+        this.fallGravity += velocity;
+        y += this.fallGravity;
     }
 
     public void checkY() {
         if (y <= 0) {
-            setGravity(3);
+            setFallGravity(3);
             if (y <= -this.height) {
                 setY(0);
             }
@@ -105,12 +105,12 @@ public class Bird extends GameObject {
         this.highScore = highScore;
     }
 
-    public float getGravity() {
-        return gravity;
+    public float getFallGravity() {
+        return fallGravity;
     }
 
-    public void setGravity(float gravity) {
-        this.gravity = gravity;
+    public void setFallGravity(float fallGravity) {
+        this.fallGravity = fallGravity;
     }
 
     public void setImage(Bitmap bitmap) {

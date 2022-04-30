@@ -16,11 +16,8 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -58,7 +55,7 @@ public class View extends android.view.View {
         initCoin();
         //checkBirdSkin();
 
-        //MAIN LOOP
+        //Invalidating view
         runnable = this::invalidate;
 
         //BG THREAD
@@ -115,6 +112,7 @@ public class View extends android.view.View {
 
     //RENDER
     public void draw(Canvas canvas) {
+        //LOOP
         new Handler().postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {
@@ -125,13 +123,13 @@ public class View extends android.view.View {
             eventHandler.collision();
         } else if (!isAlive) {
             if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
-                bird.setGravity(-15);
+                bird.setFallGravity(-15);
             }
         } else if (bird.getY() + bird.getHeight() <= SCREEN_HEIGHT - grass.getHeight()) {
             for (int i = 0; i < eventHandler.barriers.size(); i++) {
                 eventHandler.barriers.get(i).renderBarrier(canvas);
             }
-            bird.setGravity(18);
+            bird.setFallGravity(18);
         } else {
             eventHandler.resetGame();
         }
@@ -145,7 +143,7 @@ public class View extends android.view.View {
         if (isRunning) {
             if (!isAlive) {
                 Log.d(Values.TAG = "onTouchEvent", "Bird flap");
-                bird.setGravity(-15);
+                bird.setFallGravity(-15);
                 if (sound.isSoundLoaded()) {
                     if (!Bird.legendarySkinUsing && !Bird.boughtSkinUsing) {
                         sound.getSoundPool().play(sound.scytheFlap, 0.3f, 0.3f, 1, 0, 1f);
