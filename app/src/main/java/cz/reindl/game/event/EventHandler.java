@@ -3,6 +3,7 @@ package cz.reindl.game.event;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.makeText;
+import static cz.reindl.game.MainActivity.currentMusic;
 import static cz.reindl.game.MainActivity.editor;
 import static cz.reindl.game.MainActivity.gameOverText;
 import static cz.reindl.game.MainActivity.grass;
@@ -22,6 +23,7 @@ import static cz.reindl.game.view.View.isRunning;
 import static cz.reindl.game.view.View.sound;
 
 import android.annotation.SuppressLint;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -32,12 +34,15 @@ import java.util.List;
 import java.util.Random;
 
 import cz.reindl.game.MainActivity;
+import cz.reindl.game.R;
 import cz.reindl.game.entity.Barrier;
 import cz.reindl.game.entity.Bird;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.view.View;
 
 public class EventHandler {
+
+    MainActivity mainActivity = new MainActivity();
 
     public final List<Barrier> barriers = new ArrayList();
 
@@ -82,6 +87,8 @@ public class EventHandler {
             sound.getSoundPool().play(sound.collideSound, 0.1f, 0.1f, 1, 0, 1f);
         }
 
+        MainActivity.mediaPlayer.stop();
+
         isRunning = false;
         isActive = false;
         isAlive = false;
@@ -92,6 +99,11 @@ public class EventHandler {
             Values.speedPipe = 0;
         } else {
             Log.d(Values.TAG = "resetGame", "Game reset");
+
+            MainActivity.currentMusic = R.raw.theme_music;
+            MainActivity.mediaPlayer = MediaPlayer.create(view.getContext(), currentMusic);
+
+            MainActivity.mediaPlayer.start();
             scoreText.setVisibility(INVISIBLE);
             relativeLayout.setVisibility(VISIBLE);
             restartButton.setText("Restart");

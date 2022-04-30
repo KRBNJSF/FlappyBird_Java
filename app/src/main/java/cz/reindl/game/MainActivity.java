@@ -44,10 +44,11 @@ public class MainActivity extends AppCompatActivity {
     public static RelativeLayout relativeLayout;
     @SuppressLint("StaticFieldLeak")
     public static ImageView grass;
-    private MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
     public static View view;
 
     private int i = 0;
+    public static int currentMusic;
 
     @Override
     protected void onResume() {
@@ -128,6 +129,10 @@ public class MainActivity extends AppCompatActivity {
                 view.isHardCore = true;
                 hardCoreButton.setBackgroundColor(Color.BLACK);
                 Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
+                if (!mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                    backgroundMusic(R.raw.background_music);
+                }
             } else {
                 makeText(this, "HardCore enabled", Toast.LENGTH_SHORT).show();
                 view.isHardCore = false;
@@ -179,13 +184,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         restartButton.setOnClickListener(v -> {
+            if (currentMusic != R.raw.background_music) {
+                mediaPlayer.stop();
+                System.out.println("muzika " + currentMusic);
+                backgroundMusic(R.raw.background_music);
+            }
+            if (!view.isHardCore) {
+                mediaPlayer.stop();
+                backgroundMusic(R.raw.hardcore_theme);
+            }
             view.isRunning = true;
             relativeLayout.setVisibility(android.view.View.INVISIBLE);
             scoreText.setVisibility(android.view.View.VISIBLE);
             highScoreText.setVisibility(android.view.View.VISIBLE);
         });
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.background_music);
+        backgroundMusic(R.raw.theme_music);
+    }
+
+    public void backgroundMusic(int resid) {
+        currentMusic = resid;
+        mediaPlayer = MediaPlayer.create(this, currentMusic);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
     }
