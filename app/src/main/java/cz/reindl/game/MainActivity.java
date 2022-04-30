@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -35,16 +34,19 @@ public class MainActivity extends AppCompatActivity {
     public static TextView scoreText, highScoreText, gameOverText, coinText;
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
+
     @SuppressLint("StaticFieldLeak")
-    public static Button button, restartButton, hardCoreButton;
+    public static Button devButton, restartButton, hardCoreButton;
     @SuppressLint("StaticFieldLeak")
     public static ImageButton buttonSkin1, buttonSkin2, buttonSkin3;
+
     @SuppressLint("StaticFieldLeak")
     public static RelativeLayout relativeLayout;
     @SuppressLint("StaticFieldLeak")
     public static ImageView grass;
     private MediaPlayer mediaPlayer;
     public static View view;
+
     private int i = 0;
 
     @Override
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        button = (Button) findViewById(R.id.buttonMain);
+        devButton = (Button) findViewById(R.id.buttonMain);
 
         gameOverText = (TextView) findViewById(R.id.gameOverText);
         restartButton = (Button) findViewById(R.id.buttonRestart);
@@ -164,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        button.setOnClickListener(v -> {
+        devButton.setOnClickListener(v -> {
             if (i == 0) {
                 isActive = true;
                 i = 1;

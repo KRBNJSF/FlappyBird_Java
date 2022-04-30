@@ -45,18 +45,6 @@ public class EventHandler {
     public void collision() {
         checkHighScore();
         for (int i = 0; i < barriers.size(); i++) {
-           /* if ((bird.getX() + bird.getWidth()) > (barriers.get(i).getX() - barriers.get(i).getWidth()) && bird.getY() < barriers.get(i).getY() + ((float) SCREEN_HEIGHT / 2 - Constants.gapPipe) || bird.getY() >= SCREEN_HEIGHT) { //TOP BARRIER COLLISION
-                resetGame();
-            } else if ((bird.getY() + bird.getHeight()) > (float) SCREEN_HEIGHT / 2 + Constants.gapPipe + barriers.get(i).getY() && (bird.getX() + bird.getWidth()) > barriers.get(i).getX()) { //BOTTOM BARRIER COLLISION
-                resetGame();
-            } else if (bird.getX() + bird.getWidth() > barriers.get(i).getX() + barriers.get(i).getWidth()) {
-                if (bird.getX() == barriers.get(i).getX()) {
-                    if (!bird.getRect().setIntersect(bird.getRect(), barriers.get(i).getRect())) {
-                        bird.setScore(bird.getScore() + 1);
-                        sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
-                    }
-                }
-            }*/
             if (View.coin.getX() + View.coin.getBitmap().getWidth() < 0 || View.coin.getRect().intersect(barriers.get(i).getRect()) || View.coin.getRect().intersect(barriers.get(i).getBottomPipeRect())) {
                 View.coin.setX((SCREEN_WIDTH) + (float) SCREEN_WIDTH / 2); //barriers.get(i).getX() - (new Random().nextInt(100) + coin.getWidth())
                 View.coin.setY(new Random().nextInt(SCREEN_HEIGHT / 2 - MainActivity.grass.getHeight()) + (float) SCREEN_HEIGHT / 3);

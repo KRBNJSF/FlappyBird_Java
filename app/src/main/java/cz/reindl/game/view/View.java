@@ -62,7 +62,6 @@ public class View extends android.view.View {
         runnable = this::invalidate;
 
         //BG THREAD
-        //scoreThread();
 
         //SOUND
         sound.flapSound = sound.getSoundPool().load(context, R.raw.flap, 1);
@@ -73,34 +72,10 @@ public class View extends android.view.View {
         sound.scytheFlap = sound.getSoundPool().load(context, R.raw.scythe_flap, 1);
     }
 
-    private void scoreThread() {
-        Runnable r = () -> {
-            boolean flag = true;
-            int i = 0;
-            while (flag) {
-                i++;
-                System.out.println("Thread started... Counter ==> " + i);
-                try {
-                    //checkScore();
-                    //collision();
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        Thread t = new Thread(r);
-
-        t.start();
-        // t.run(); // is going to execute the code in the thread's run method on the current thread
-        System.out.println("Program Exited\n");
-    }
-
     private void initBarrier() {
         Log.d(Values.TAG = "initBarrier", "Barriers init");
         barrierDistance = 750 * SCREEN_HEIGHT / 1920;
 
-        //Blue barrier is the first one in ArrayList, Red are the others
         Barrier barrier = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), SCREEN_WIDTH, 1);
         Barrier barrier2 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance, -350);
         Barrier barrier3 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance * 2, -200);
