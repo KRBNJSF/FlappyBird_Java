@@ -136,12 +136,12 @@ public class EventHandler {
     }
 
     private void checkBirdSkin() {
+        if (sharedPreferences.getInt("skinBought", Bird.boughtSkin) == 0 && !isRunning && sharedPreferences.getInt("coinValue", bird.getCoins()) >= 1000) {
+            Snackbar.make(relativeLayout, "A new skin is available for purchase", Snackbar.LENGTH_SHORT).show();
+        }
         if (sharedPreferences.getInt("highScore", bird.getHighScore()) >= 10000 && !sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin) && !isRunning) {
             Snackbar.make(relativeLayout, "New skin unlocked", Snackbar.LENGTH_SHORT).show();
             Bird.legendarySkin = true;
-        }
-        if (sharedPreferences.getInt("skinBought", Bird.boughtSkin) == 0 && !isRunning && sharedPreferences.getInt("coinValue", bird.getCoins()) >= 1000) {
-            Snackbar.make(relativeLayout, "A new skin is available for purchase", Snackbar.LENGTH_SHORT).show();
         }
     }
 
