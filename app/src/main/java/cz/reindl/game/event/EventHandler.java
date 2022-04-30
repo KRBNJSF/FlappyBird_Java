@@ -102,6 +102,7 @@ public class EventHandler {
 
             MainActivity.currentMusic = R.raw.theme_music;
             MainActivity.mediaPlayer = MediaPlayer.create(view.getContext(), currentMusic);
+            MainActivity.mediaPlayer.setLooping(true);
 
             MainActivity.mediaPlayer.start();
             scoreText.setVisibility(INVISIBLE);
