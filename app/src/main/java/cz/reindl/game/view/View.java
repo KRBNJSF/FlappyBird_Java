@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 
 import cz.reindl.game.R;
@@ -54,6 +56,7 @@ public class View extends android.view.View {
         initBarrier();
         initBird();
         initCoin();
+        //checkBirdSkin();
 
         //MAIN LOOP
         runnable = this::invalidate;
@@ -112,14 +115,6 @@ public class View extends android.view.View {
         coin = new Coin(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.coin), 100 * SCREEN_WIDTH / 1080, 90 * SCREEN_HEIGHT / 1920), 600, 600);
     }
 
-    public void checkBirdSkin() {
-        Bird.legendarySkin = sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin);
-        if (sharedPreferences.getInt("highScore", bird.getHighScore()) >= 10000 && !Bird.legendarySkin) {
-            makeText(highScoreText.getContext(), "New skin unlocked", Toast.LENGTH_SHORT).show();
-            Bird.legendarySkin = true;
-        }
-    }
-
     public void initBirdList() {
         ArrayList<Bitmap> birdList = new ArrayList<>();
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_h));
@@ -145,7 +140,6 @@ public class View extends android.view.View {
 
     //RENDER
     public void draw(Canvas canvas) {
-        checkBirdSkin();
         new Handler().postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {

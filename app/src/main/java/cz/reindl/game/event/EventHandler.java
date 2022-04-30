@@ -25,6 +25,8 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -106,6 +108,7 @@ public class EventHandler {
             relativeLayout.setVisibility(VISIBLE);
             restartButton.setText("Restart");
             gameOverText.setText("Game Over");
+            checkBirdSkin();
 
             if (bird.getScore() > bird.getHighScore()) {
                 sound.getSoundPool().play(sound.highScoreSound, 1f, 1f, 1, 0, 1f);
@@ -118,7 +121,6 @@ public class EventHandler {
             editor.commit();
             makeText(highScoreText.getContext(), "Score saved", Toast.LENGTH_SHORT).show();
 
-            Bird.legendarySkin = false;
             bird.setScore(0);
             bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
             bird.setGravity(0.6f);
@@ -130,6 +132,16 @@ public class EventHandler {
             if (!MainActivity.view.isHardCore) {
                 Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
             }
+        }
+    }
+
+    private void checkBirdSkin() {
+        if (sharedPreferences.getInt("highScore", bird.getHighScore()) >= 10000 && !sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin) && !isRunning) {
+            Snackbar.make(relativeLayout, "New skin unlocked", Snackbar.LENGTH_SHORT).show();
+            Bird.legendarySkin = true;
+        }
+        if (sharedPreferences.getInt("skinBought", Bird.boughtSkin) == 0 && !isRunning && sharedPreferences.getInt("coinValue", bird.getCoins()) >= 1000) {
+            Snackbar.make(relativeLayout, "A new skin is available for purchase", Snackbar.LENGTH_SHORT).show();
         }
     }
 

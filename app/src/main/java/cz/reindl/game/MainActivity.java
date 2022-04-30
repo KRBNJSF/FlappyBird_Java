@@ -172,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 isActive = false;
                 i = 0;
-                Bird.legendarySkin = false;
                 Values.gapPipe = 380;
             }
         });
