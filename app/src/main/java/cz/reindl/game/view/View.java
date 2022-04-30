@@ -55,7 +55,7 @@ public class View extends android.view.View {
         initCoin();
         //checkBirdSkin();
 
-        //Invalidating view
+        //Invalidating UI thread - view
         runnable = this::invalidate;
 
         //BG THREAD
