@@ -1,6 +1,6 @@
 # FlappyBird_Java
 
-<p align="center"><a href="https://www.mediafire.com/file/4deqzvm4vib3isx/app-debug.apk/file" download><b>Download - newer versions</b></a></p>
+<p align="center"><a href="https://www.mediafire.com/file/4deqzvm4vib3isx/app-debug.apk/file" download><b>Download - Newer version</b></a></p>
 
 <br>
 <br>
