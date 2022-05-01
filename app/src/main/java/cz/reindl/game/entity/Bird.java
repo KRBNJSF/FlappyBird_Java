@@ -57,13 +57,6 @@ public class Bird extends GameObject {
         }
     }
 
-    public void setBirdList(ArrayList<Bitmap> birdList) {
-        this.birdList = birdList;
-        for (int i = 0; i < birdList.size(); i++) {
-            this.birdList.set(i, Bitmap.createScaledBitmap(this.birdList.get(i), this.getWidth(), this.getHeight(), true));
-        }
-    }
-
     //ANIMATION
     public Bitmap changeBird() {
         if (legendarySkin && legendarySkinUsing) {
@@ -84,6 +77,13 @@ public class Bird extends GameObject {
             return birdList.get(0);
         }
         return birdList.get(1);
+    }
+
+    public void setBirdList(ArrayList<Bitmap> birdList) {
+        this.birdList = birdList;
+        for (int i = 0; i < birdList.size(); i++) {
+            this.birdList.set(i, Bitmap.createScaledBitmap(this.birdList.get(i), this.getWidth(), this.getHeight(), true));
+        }
     }
 
     public List<Bitmap> getBirdList() {

@@ -30,9 +30,11 @@ import cz.reindl.game.entity.Bird;
 import cz.reindl.game.view.View;
 
 public class MainActivity extends AppCompatActivity {
+
     DisplayMetrics metrics;
     @SuppressLint("StaticFieldLeak")
     public static TextView scoreText, highScoreText, gameOverText, coinText;
+
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
 
@@ -50,18 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
     private int i = 0;
     public static int currentMusic;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mediaPlayer.start();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mediaPlayer.pause();
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint({"SetTextI18n", "WrongConstant", "UseCompatLoadingForDrawables"})
@@ -135,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     backgroundMusic(R.raw.background_music);
                 }
             } else {
-                makeText(this, "HardCore enabled", Toast.LENGTH_SHORT).show();
+                makeText(this, "Hardcore enabled", Toast.LENGTH_SHORT).show();
                 view.isHardCore = false;
                 Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
                 hardCoreButton.setBackgroundColor(Color.RED);
@@ -201,6 +191,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         backgroundMusic(R.raw.theme_music);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mediaPlayer.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mediaPlayer.pause();
     }
 
     public void backgroundMusic(int resid) {

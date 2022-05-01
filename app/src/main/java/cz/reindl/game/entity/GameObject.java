@@ -7,7 +7,7 @@ import cz.reindl.game.values.Values;
 
 public abstract class GameObject {
 
-    protected float x, yy, y;
+    public float x, yy, y;
     protected int width, height;
     protected Bitmap bitmap;
     protected Bitmap bitmap2;

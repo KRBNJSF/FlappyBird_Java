@@ -34,9 +34,9 @@ public class View extends android.view.View {
     public static final Sound sound = new Sound();
 
     public static boolean isActive;
-    public boolean isHardCore = true;
     public static boolean isRunning = true;
     public static boolean isAlive = false;
+    public boolean isHardCore = true;
 
     public static Bird bird;
     public static Coin coin;
@@ -53,14 +53,13 @@ public class View extends android.view.View {
         initBarrier();
         initBird();
         initCoin();
-        //checkBirdSkin();
 
         //Invalidating UI thread - view
         runnable = this::invalidate;
 
         //BG THREAD
 
-        //SOUND
+        //SOUND INITIALIZATION
         sound.flapSound = sound.getSoundPool().load(context, R.raw.flap, 1);
         sound.collideSound = sound.getSoundPool().load(context, R.raw.bang, 2);
         sound.scoreSound = sound.getSoundPool().load(context, R.raw.score_sound, 1);

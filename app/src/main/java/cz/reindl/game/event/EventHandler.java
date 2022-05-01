@@ -42,8 +42,6 @@ import cz.reindl.game.view.View;
 
 public class EventHandler {
 
-    MainActivity mainActivity = new MainActivity();
-
     public final List<Barrier> barriers = new ArrayList();
 
     //COLLISION CHECK
@@ -58,11 +56,7 @@ public class EventHandler {
                 resetGame();
             }
         }
-        if (!view.isHardCore) {
-            bird.setScore(bird.getScore() + 3);
-        } else {
-            bird.setScore(bird.getScore() + 1);
-        }
+        checkHardCore();
         scoreText.setText(String.valueOf("Score: " + bird.getScore()));
     }
 
@@ -143,6 +137,14 @@ public class EventHandler {
         if (sharedPreferences.getInt("highScore", bird.getHighScore()) >= 10000 && !sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin) && !isRunning) {
             Snackbar.make(relativeLayout, "New skin unlocked", Snackbar.LENGTH_SHORT).show();
             Bird.legendarySkin = true;
+        }
+    }
+
+    private void checkHardCore() {
+        if (!view.isHardCore) {
+            bird.setScore(bird.getScore() + 3);
+        } else {
+            bird.setScore(bird.getScore() + 1);
         }
     }
 

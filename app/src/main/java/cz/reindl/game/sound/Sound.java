@@ -8,6 +8,7 @@ public class Sound {
     private final SoundPool soundPool;
     private boolean isSoundLoaded;
 
+    //SOUND EFFECTS
     public int flapSound, collideSound, scoreSound, highScoreSound, barrierCollideSound, scytheFlap;
 
     public Sound() {
