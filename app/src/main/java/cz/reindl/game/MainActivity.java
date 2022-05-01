@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     public static int currentMusic;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    @SuppressLint({"SetTextI18n", "WrongConstant", "UseCompatLoadingForDrawables"})
+    @SuppressLint({"SetTextI18n", "WrongConstant", "UseCompatLoadingForDrawables", "LongLogTag"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,14 +171,15 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 isActive = false;
                 i = 0;
-                Values.gapPipe = 380;
+                Values.gapPipe = 400;
             }
         });
 
         restartButton.setOnClickListener(v -> {
             if (currentMusic != R.raw.background_music) {
                 mediaPlayer.stop();
-                System.out.println("muzika " + currentMusic);
+                Log.i(Values.TAG = "MainActivity - restartButton", "Playing music ID");
+                System.out.println("Music ID: " + currentMusic);
                 backgroundMusic(R.raw.background_music);
             }
             if (!view.isHardCore) {

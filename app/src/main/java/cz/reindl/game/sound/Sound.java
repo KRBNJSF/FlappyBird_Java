@@ -11,6 +11,7 @@ public class Sound {
     //SOUND EFFECTS
     public int flapSound, collideSound, scoreSound, highScoreSound, barrierCollideSound, scytheFlap;
 
+    //SOUND SETTINGS
     public Sound() {
         AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
         SoundPool.Builder builder = new SoundPool.Builder();

@@ -47,7 +47,7 @@ public class View extends android.view.View {
 
     public View(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        Log.d(Values.TAG = "App start up", "Game view");
+        Log.d(Values.TAG = "View - App start up", "Game view");
 
         //GAME OBJECTS INITIALIZATION
         initBarrier();
@@ -70,7 +70,7 @@ public class View extends android.view.View {
 
     private void initBarrier() {
         Log.d(Values.TAG = "initBarrier", "Barriers init");
-        barrierDistance = 750 * SCREEN_HEIGHT / 1920;
+        barrierDistance = 775 * SCREEN_HEIGHT / 1920;
 
         Barrier barrier = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), SCREEN_WIDTH, 1);
         Barrier barrier2 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance, -350);
@@ -82,11 +82,12 @@ public class View extends android.view.View {
     }
 
     private void initCoin() {
-        Log.d(Values.TAG = "initCoin", "Coin init");
+        Log.d(Values.TAG = "View - initCoin", "Coin init");
         coin = new Coin(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.coin), 100 * SCREEN_WIDTH / 1080, 90 * SCREEN_HEIGHT / 1920), 600, 600);
     }
 
     public void initBirdList() {
+        Log.d(Values.TAG = "View - initBirdList", "Bird list init");
         ArrayList<Bitmap> birdList = new ArrayList<>();
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_h));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_scythe_up));
@@ -100,7 +101,7 @@ public class View extends android.view.View {
     }
 
     private void initBird() {
-        Log.d(Values.TAG = "initBird", "Bird init");
+        Log.d(Values.TAG = "View - initBird", "Bird init");
         bird = new Bird();
         bird.setHeight(105 * SCREEN_HEIGHT / 1920);
         bird.setWidth(105 * SCREEN_WIDTH / 1080);
@@ -141,7 +142,7 @@ public class View extends android.view.View {
     public boolean onTouchEvent(MotionEvent event) {
         if (isRunning) {
             if (!isAlive) {
-                Log.d(Values.TAG = "onTouchEvent", "Bird flap");
+                Log.d(Values.TAG = "View - onTouchEvent", "Bird flap");
                 bird.setFallGravity(-15);
                 if (sound.isSoundLoaded()) {
                     if (!Bird.legendarySkinUsing && !Bird.boughtSkinUsing) {

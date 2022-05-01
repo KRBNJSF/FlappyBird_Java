@@ -61,6 +61,7 @@ public class EventHandler {
     }
 
     //HIGH SCORE CHECK
+    @SuppressLint("LongLogTag")
     private void checkHighScore() {
         if (MainActivity.view.isHardCore) {
             gameSpeedUp();
@@ -68,14 +69,14 @@ public class EventHandler {
 
         if (bird.getScore() > bird.getHighScore()) {
             bird.setHighScore(bird.getScore());
-            Log.d(Values.TAG = "checkScore", "new high score");
+            Log.d(Values.TAG = "EventHandler - checkScore", "New HIGH SCORE");
         } else {
             bird.setHighScore(sharedPreferences.getInt("highScore", bird.getHighScore()));
         }
         highScoreText.setText(String.valueOf("High Score: " + bird.getHighScore()));
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "LongLogTag"})
     public void resetGame() {
         if (!isAlive) {
             sound.getSoundPool().play(sound.collideSound, 0.1f, 0.1f, 1, 0, 1f);
@@ -92,7 +93,7 @@ public class EventHandler {
             sound.getSoundPool().play(sound.barrierCollideSound, 0.4f, 0.4f, 2, 0, 1f);
             Values.speedPipe = 0;
         } else {
-            Log.d(Values.TAG = "resetGame", "Game reset");
+            Log.d(Values.TAG = "EventHandler - resetGame", "Game reset");
 
             MainActivity.currentMusic = R.raw.theme_music;
             MainActivity.mediaPlayer = MediaPlayer.create(view.getContext(), currentMusic);
@@ -122,7 +123,7 @@ public class EventHandler {
             barriers.get(0).setX(SCREEN_WIDTH);
             barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
             barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
-            Values.gapPipe = 380;
+            Values.gapPipe = 400;
             Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
             if (!MainActivity.view.isHardCore) {
                 Values.speedPipe = 15 * SCREEN_WIDTH / 1080;

@@ -13,7 +13,7 @@ public class Values {
 
     //GAME ATTRIBUTES
     public static int barrierDistance;
-    public static int gapPipe = 380;
+    public static int gapPipe = 400;
     public static int speedPipe;
 
     //ACTIVITY
