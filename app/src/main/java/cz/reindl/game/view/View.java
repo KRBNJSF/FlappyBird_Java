@@ -129,7 +129,7 @@ public class View extends android.view.View {
             for (int i = 0; i < eventHandler.barriers.size(); i++) {
                 eventHandler.barriers.get(i).renderBarrier(canvas);
             }
-            bird.setFallGravity(18);
+            bird.setFallGravity(bird.getFallGravity() + 0.6f);
         } else {
             eventHandler.resetGame();
         }

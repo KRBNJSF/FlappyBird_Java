@@ -6,11 +6,14 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import cz.reindl.game.view.View;
 
 public class Bird extends GameObject {
 
     Matrix matrix = new Matrix(); //Transforming bird
-    private ArrayList<Bitmap> birdList = new ArrayList<>(); //List of Bitmap - animation during game
+    private List<Bitmap> birdList = new ArrayList<>(); //List of Bitmap - animation during game
 
     //SKIN
     public static boolean legendarySkin;
@@ -49,7 +52,6 @@ public class Bird extends GameObject {
 
     public void checkY() {
         if (y <= 0) {
-            setFallGravity(3);
             if (y <= -this.height) {
                 setY(0);
             }
@@ -85,7 +87,7 @@ public class Bird extends GameObject {
         return birdList.get(1);
     }
 
-    public ArrayList<Bitmap> getBirdList() {
+    public List<Bitmap> getBirdList() {
         return birdList;
     }
 
