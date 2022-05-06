@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         lastScoreText = (TextView) findViewById(R.id.lastScoreText);
 
         grass = (ImageView) findViewById(R.id.grass);
+        grass.setMinimumHeight(SCREEN_HEIGHT / 4);
 
         sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();

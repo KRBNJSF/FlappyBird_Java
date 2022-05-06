@@ -109,6 +109,7 @@ public class EventHandler {
             restartButton.setText("Restart");
             gameOverText.setText("Game Over");
             lastScoreText.setText(String.valueOf("Last score: " + bird.getScore()));
+            highScoreText.setText(String.valueOf("High Score: " + bird.getHighScore()));
 
             editor.putBoolean("skinUnlocked", Bird.legendarySkin);
             editor.putInt("highScore", bird.getHighScore());
