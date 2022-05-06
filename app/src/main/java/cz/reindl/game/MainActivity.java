@@ -5,6 +5,7 @@ import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.view.View.bird;
 import static cz.reindl.game.view.View.isActive;
+import static cz.reindl.game.view.View.isRunning;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     DisplayMetrics metrics;
     @SuppressLint("StaticFieldLeak")
-    public static TextView scoreText, highScoreText, gameOverText, coinText;
+    public static TextView scoreText, highScoreText, gameOverText, coinText, lastScoreText;
 
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static Button devButton, restartButton, hardCoreButton;
     @SuppressLint("StaticFieldLeak")
-    public static ImageButton buttonSkin1, buttonSkin2, buttonSkin3;
+    public static ImageButton buttonSkin1, buttonSkin2, buttonSkin3, buttonStop;
 
     @SuppressLint("StaticFieldLeak")
     public static RelativeLayout relativeLayout;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     public static MediaPlayer mediaPlayer;
     public static View view;
 
-    private int i = 0;
+    public static int i, c = 0;
     public static int currentMusic;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         highScoreText = (TextView) findViewById(R.id.highScore);
         highScoreText.setTextAppearance(R.style.whiteText);
         scoreText.setVisibility(android.view.View.INVISIBLE);
+        lastScoreText = (TextView) findViewById(R.id.lastScoreText);
 
         grass = (ImageView) findViewById(R.id.grass);
 
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         buttonSkin2 = (ImageButton) findViewById(R.id.buttonSkin2);
         buttonSkin3 = (ImageButton) findViewById(R.id.buttonSkin3);
         hardCoreButton = (Button) findViewById(R.id.buttonHardCore);
+        buttonStop = (ImageButton) findViewById(R.id.buttonStop);
 
         gameOverText.setText("Flappy Bird");
         restartButton.setText("Start");
@@ -163,6 +166,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        buttonStop.setOnClickListener(l -> {
+            if (c == 0) {
+                c = 1;
+                buttonStop.setBackground(getDrawable(R.drawable.ic_play_button));
+                mediaPlayer.pause();
+                view.handler.removeCallbacks(view.runnable);
+            } else {
+                c = 0;
+                buttonStop.setBackground(getDrawable(R.drawable.ic_stop_button));
+                mediaPlayer.start();
+                view.handler.postDelayed(view.runnable, 1);
+            }
+        });
+
         devButton.setOnClickListener(v -> {
             if (i == 0) {
                 isActive = true;
@@ -190,6 +207,8 @@ public class MainActivity extends AppCompatActivity {
             relativeLayout.setVisibility(android.view.View.INVISIBLE);
             scoreText.setVisibility(android.view.View.VISIBLE);
             highScoreText.setVisibility(android.view.View.VISIBLE);
+            buttonStop.setVisibility(android.view.View.VISIBLE);
+            lastScoreText.setVisibility(android.view.View.VISIBLE);
         });
 
         backgroundMusic(R.raw.theme_music);

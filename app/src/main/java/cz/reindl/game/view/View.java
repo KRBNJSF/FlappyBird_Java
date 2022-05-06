@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+import cz.reindl.game.MainActivity;
 import cz.reindl.game.R;
 import cz.reindl.game.entity.Coin;
 import cz.reindl.game.event.EventHandler;
@@ -41,7 +42,8 @@ public class View extends android.view.View {
     public static Bird bird;
     public static Coin coin;
 
-    private final Runnable runnable;
+    public final Runnable runnable;
+    public Handler handler;
 
     EventHandler eventHandler = new EventHandler();
 
@@ -56,6 +58,7 @@ public class View extends android.view.View {
 
         //Invalidating UI thread - view
         runnable = this::invalidate;
+        handler = new Handler();
 
         //BG THREAD
 
@@ -113,7 +116,7 @@ public class View extends android.view.View {
     //RENDER
     public void draw(Canvas canvas) {
         //LOOP
-        new Handler().postDelayed(runnable, 1);
+        handler.postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {
             for (int i = 0; i < eventHandler.barriers.size(); i++) {
@@ -140,7 +143,7 @@ public class View extends android.view.View {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (isRunning) {
+        if (isRunning && MainActivity.c == 0) {
             if (!isAlive) {
                 Log.d(Values.TAG = "View - onTouchEvent", "Bird flap");
                 bird.setFallGravity(-15);

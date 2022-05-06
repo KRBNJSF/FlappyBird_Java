@@ -3,11 +3,13 @@ package cz.reindl.game.event;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.makeText;
+import static cz.reindl.game.MainActivity.buttonStop;
 import static cz.reindl.game.MainActivity.currentMusic;
 import static cz.reindl.game.MainActivity.editor;
 import static cz.reindl.game.MainActivity.gameOverText;
 import static cz.reindl.game.MainActivity.grass;
 import static cz.reindl.game.MainActivity.highScoreText;
+import static cz.reindl.game.MainActivity.lastScoreText;
 import static cz.reindl.game.MainActivity.relativeLayout;
 import static cz.reindl.game.MainActivity.restartButton;
 import static cz.reindl.game.MainActivity.scoreText;
@@ -82,6 +84,7 @@ public class EventHandler {
             sound.getSoundPool().play(sound.collideSound, 0.1f, 0.1f, 1, 0, 1f);
         }
 
+        buttonStop.setVisibility(INVISIBLE); // FIXME: 06.05.2022 Once you click before death, game will have unexpected behaviour
         MainActivity.mediaPlayer.stop();
 
         isRunning = false;
@@ -102,19 +105,23 @@ public class EventHandler {
             MainActivity.mediaPlayer.start();
             scoreText.setVisibility(INVISIBLE);
             relativeLayout.setVisibility(VISIBLE);
+            buttonStop.setVisibility(INVISIBLE);
             restartButton.setText("Restart");
             gameOverText.setText("Game Over");
-            checkBirdSkin();
-
-            if (bird.getScore() > bird.getHighScore()) {
-                sound.getSoundPool().play(sound.highScoreSound, 1f, 1f, 1, 0, 1f);
-            }
+            lastScoreText.setText(String.valueOf("Last score: " + bird.getScore()));
 
             editor.putBoolean("skinUnlocked", Bird.legendarySkin);
             editor.putInt("highScore", bird.getHighScore());
             editor.putInt("coinValue", bird.getCoins());
             editor.putInt("skinBought", Bird.boughtSkin);
             editor.commit();
+
+            checkBirdSkin();
+
+            if (bird.getScore() > bird.getHighScore()) {
+                sound.getSoundPool().play(sound.highScoreSound, 1f, 1f, 1, 0, 1f);
+            }
+
             makeText(highScoreText.getContext(), "Score saved", Toast.LENGTH_SHORT).show();
 
             bird.setScore(0);
@@ -138,6 +145,7 @@ public class EventHandler {
         if (sharedPreferences.getInt("highScore", bird.getHighScore()) >= 10000 && !sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin) && !isRunning) {
             Snackbar.make(relativeLayout, "New skin unlocked", Snackbar.LENGTH_SHORT).show();
             Bird.legendarySkin = true;
+            editor.putBoolean("skinUnlocked", true);
         }
     }
 
