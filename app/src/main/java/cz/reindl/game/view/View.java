@@ -100,6 +100,8 @@ public class View extends android.view.View {
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.bird_scythe_up));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.default_bird));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.default_bird_flap));
+        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.mega_nose1));
+        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.mega_nose2));
         bird.setBirdList(birdList);
     }
 
@@ -128,13 +130,17 @@ public class View extends android.view.View {
             if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
                 bird.setFallGravity(-15);
             }
-        } else if (bird.getY() + bird.getHeight() <= SCREEN_HEIGHT - grass.getHeight()) {
+        } else if (bird.getY() /*+ bird.getHeight()*/ <= SCREEN_HEIGHT - grass.getHeight()) {
             for (int i = 0; i < eventHandler.barriers.size(); i++) {
                 eventHandler.barriers.get(i).renderBarrier(canvas);
             }
             bird.setFallGravity(bird.getFallGravity() + 0.6f);
         } else {
-            eventHandler.resetGame();
+            if (bird.getCoins() >= 50 && MainActivity.z == 0) {
+                eventHandler.checkContinuity();
+            } else {
+                eventHandler.resetValues();
+            }
         }
         bird.renderBird(canvas);
     }
@@ -143,7 +149,7 @@ public class View extends android.view.View {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (isRunning && MainActivity.c == 0) {
+        if (isRunning && MainActivity.isGameStopped == 0) {
             if (!isAlive) {
                 Log.d(Values.TAG = "View - onTouchEvent", "Bird flap");
                 bird.setFallGravity(-15);

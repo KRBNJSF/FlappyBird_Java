@@ -17,7 +17,7 @@ public class Bird extends GameObject {
     public static boolean legendarySkin;
     public static int boughtSkin = 0;
     //SKIN USAGE
-    public static boolean legendarySkinUsing, boughtSkinUsing;
+    public static boolean legendarySkinUsing, boughtSkinUsing, easterEgg;
 
     //REFRESH TICKS
     private int tick = 0;
@@ -59,7 +59,10 @@ public class Bird extends GameObject {
 
     //ANIMATION
     public Bitmap changeBird() {
-        if (legendarySkin && legendarySkinUsing) {
+        if (easterEgg) {
+            this.birdList.set(0, birdList.get(8));
+            this.birdList.set(1, birdList.get(9));
+        } else if (legendarySkin && legendarySkinUsing) {
             this.birdList.set(0, birdList.get(2));
             this.birdList.set(1, birdList.get(3));
         } else if (boughtSkinUsing) {

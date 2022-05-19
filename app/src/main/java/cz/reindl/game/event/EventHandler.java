@@ -10,10 +10,13 @@ import static cz.reindl.game.MainActivity.gameOverText;
 import static cz.reindl.game.MainActivity.grass;
 import static cz.reindl.game.MainActivity.highScoreText;
 import static cz.reindl.game.MainActivity.lastScoreText;
+import static cz.reindl.game.MainActivity.musicStopButton;
 import static cz.reindl.game.MainActivity.relativeLayout;
 import static cz.reindl.game.MainActivity.restartButton;
+import static cz.reindl.game.MainActivity.reviveButton;
 import static cz.reindl.game.MainActivity.scoreText;
 import static cz.reindl.game.MainActivity.sharedPreferences;
+import static cz.reindl.game.MainActivity.skipReviveButton;
 import static cz.reindl.game.MainActivity.view;
 import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
@@ -26,6 +29,8 @@ import static cz.reindl.game.view.View.sound;
 
 import android.annotation.SuppressLint;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,6 +44,7 @@ import cz.reindl.game.MainActivity;
 import cz.reindl.game.R;
 import cz.reindl.game.entity.Barrier;
 import cz.reindl.game.entity.Bird;
+import cz.reindl.game.event.timer.Timer;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.view.View;
 
@@ -58,6 +64,7 @@ public class EventHandler {
                 resetGame();
             }
         }
+        Bird.easterEgg = bird.getScore() >= 10000 && bird.getScore() <= 12000;
         checkHardCore();
         scoreText.setText(String.valueOf("Score: " + bird.getScore()));
     }
@@ -80,12 +87,12 @@ public class EventHandler {
 
     @SuppressLint({"SetTextI18n", "LongLogTag"})
     public void resetGame() {
-        if (!isAlive) {
-            sound.getSoundPool().play(sound.collideSound, 0.1f, 0.1f, 1, 0, 1f);
+        if (!isAlive && bird.getY() + bird.getHeight() > SCREEN_HEIGHT - grass.getHeight()) {
+            sound.getSoundPool().play(sound.collideSound, 0.4f, 0.4f, 1, 0, 1f);
         }
 
         buttonStop.setVisibility(INVISIBLE); // FIXME: 06.05.2022 Once you click before death, game will have unexpected behaviour
-        MainActivity.mediaPlayer.stop();
+        MainActivity.mediaPlayer.pause();
 
         isRunning = false;
         isActive = false;
@@ -96,54 +103,114 @@ public class EventHandler {
             sound.getSoundPool().play(sound.barrierCollideSound, 0.4f, 0.4f, 2, 0, 1f);
             Values.speedPipe = 0;
         } else {
-            Log.d(Values.TAG = "EventHandler - resetGame", "Game reset");
-
-            MainActivity.currentMusic = R.raw.theme_music;
-            MainActivity.mediaPlayer = MediaPlayer.create(view.getContext(), currentMusic);
-            MainActivity.mediaPlayer.setLooping(true);
-
-            MainActivity.mediaPlayer.start();
-            scoreText.setVisibility(INVISIBLE);
-            relativeLayout.setVisibility(VISIBLE);
-            buttonStop.setVisibility(INVISIBLE);
-            restartButton.setText("Restart");
-            gameOverText.setText("Game Over");
-            lastScoreText.setText(String.valueOf("Last score: " + bird.getScore()));
-            highScoreText.setText(String.valueOf("High Score: " + bird.getHighScore()));
-
-            editor.putBoolean("skinUnlocked", Bird.legendarySkin);
-            editor.putInt("highScore", bird.getHighScore());
-            editor.putInt("coinValue", bird.getCoins());
-            editor.putInt("skinBought", Bird.boughtSkin);
-            editor.commit();
-
-            checkBirdSkin();
-
-            if (bird.getScore() > bird.getHighScore()) {
-                sound.getSoundPool().play(sound.highScoreSound, 1f, 1f, 1, 0, 1f);
-            }
-
-            makeText(highScoreText.getContext(), "Score saved", Toast.LENGTH_SHORT).show();
-
-            bird.setScore(0);
-            bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
-            bird.setFallGravity(0.6f);
-            barriers.get(0).setX(SCREEN_WIDTH);
-            barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
-            barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
-            Values.gapPipe = 400;
-            Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
-            if (!MainActivity.view.isHardCore) {
-                Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
-            }
+            resetValues();
         }
     }
 
+    @SuppressLint("LongLogTag")
+    public void resetValues() {
+        Log.d(Values.TAG = "EventHandler - resetGame", "Game reset");
+
+        MainActivity.currentMusic = R.raw.theme_music;
+        MainActivity.mediaPlayer = MediaPlayer.create(view.getContext(), currentMusic);
+        MainActivity.mediaPlayer.setLooping(true);
+        MainActivity.z = 1;
+
+        isAlive = false;
+        isRunning = false;
+        Bird.easterEgg = false;
+
+        if (!MainActivity.isMusicStopped) MainActivity.mediaPlayer.start();
+
+        scoreText.setVisibility(INVISIBLE);
+        relativeLayout.setVisibility(VISIBLE);
+        buttonStop.setVisibility(INVISIBLE);
+        musicStopButton.setVisibility(VISIBLE);
+        restartButton.setText("Restart");
+        gameOverText.setText("Game Over");
+        lastScoreText.setText(String.valueOf("Last score: " + bird.getScore()));
+        highScoreText.setText(String.valueOf("High Score: " + bird.getHighScore()));
+
+        editor.putBoolean("skinUnlocked", Bird.legendarySkin);
+        editor.putInt("highScore", bird.getHighScore());
+        editor.putInt("coinValue", bird.getCoins());
+        editor.putInt("skinBought", Bird.boughtSkin);
+        editor.commit();
+
+        checkBirdSkin();
+
+        if (bird.getScore() > bird.getHighScore()) {
+            sound.getSoundPool().play(sound.highScoreSound, 1f, 1f, 1, 0, 1f);
+        }
+
+        makeText(highScoreText.getContext(), "Score saved", Toast.LENGTH_SHORT).show();
+
+        MainActivity.z = 0;
+        bird.setScore(0);
+        bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
+        bird.setFallGravity(0.6f);
+        barriers.get(0).setX(SCREEN_WIDTH);
+        barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
+        barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
+        Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
+        System.out.println("Gap: " + Values.gapPipe);
+        Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
+        if (!MainActivity.view.isHardCore) {
+            Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
+        }
+    }
+
+    public void checkContinuity() {
+        view.handler.removeCallbacks(view.runnable);
+        MainActivity.reviveButton.setVisibility(VISIBLE);
+        MainActivity.skipReviveButton.setVisibility(VISIBLE);
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                view.handler.postDelayed(view.runnable, 1);
+                reviveButton.setVisibility(INVISIBLE);
+                skipReviveButton.setVisibility(INVISIBLE);
+                if (MainActivity.z == 0) {
+                    resetGame();
+                } else {
+                    continueGame();
+                }
+            }
+        }, 700);
+    }
+
+    public void continueGame() {
+        if (MainActivity.z == 1) {
+            view.handler.postDelayed(view.runnable, 1);
+
+            isRunning = true;
+            isActive = false;
+            isAlive = false;
+
+            if (!view.isHardCore && !MainActivity.isMusicStopped) {
+                Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
+            } else {
+                Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
+            }
+
+            if (!MainActivity.isMusicStopped) MainActivity.mediaPlayer.start();
+
+            bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
+            bird.setFallGravity(0.6f);
+
+            barriers.get(0).setX(SCREEN_WIDTH);
+            barriers.get(1).setX(barriers.get(0).getX() + barrierDistance);
+            barriers.get(2).setX(barriers.get(1).getX() + barrierDistance);
+            Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
+        }
+    }
+
+
     private void checkBirdSkin() {
-        if (sharedPreferences.getInt("skinBought", Bird.boughtSkin) == 0 && !isRunning && sharedPreferences.getInt("coinValue", bird.getCoins()) >= 1000) {
+        if (Bird.boughtSkin == 0 && !isRunning && bird.getCoins() >= 1000) {
             Snackbar.make(relativeLayout, "A new skin is available for purchase", Snackbar.LENGTH_SHORT).show();
         }
-        if (sharedPreferences.getInt("highScore", bird.getHighScore()) >= 10000 && !sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin) && !isRunning) {
+        if (bird.getHighScore() >= 10000 && !Bird.legendarySkin && !isRunning) {
             Snackbar.make(relativeLayout, "New skin unlocked", Snackbar.LENGTH_SHORT).show();
             Bird.legendarySkin = true;
             editor.putBoolean("skinUnlocked", true);
@@ -151,7 +218,9 @@ public class EventHandler {
     }
 
     private void checkHardCore() {
-        if (!view.isHardCore) {
+        if (Bird.easterEgg) {
+            bird.setScore(bird.getScore() + 6);
+        } else if (!view.isHardCore) {
             bird.setScore(bird.getScore() + 3);
         } else {
             bird.setScore(bird.getScore() + 1);

@@ -13,6 +13,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <Button
+        android:id="@+id/reviveButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/ic_revive_button"
+        android:contentDescription="Revive"
+        android:text="50$"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/skipReviveButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignTop="@id/reviveButton"
+        android:layout_marginTop="-20dp"
+        android:layout_toEndOf="@id/reviveButton"
+        android:background="@drawable/ic_cross_button"
+        android:visibility="invisible" />
+
 
     <ImageView
         android:id="@+id/grass"
@@ -32,6 +54,18 @@
         android:layout_marginTop="85dp"
         android:background="@drawable/coin"
         tools:ignore="ContentDescription" />
+
+    <ImageButton
+        android:id="@+id/musicStopButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/highScore"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/ic_music_play_button"
+        android:contentDescription="Music stop" />
+
 
     <TextView
         android:id="@+id/coinText"

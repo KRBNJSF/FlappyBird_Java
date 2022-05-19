@@ -5,7 +5,6 @@ import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.view.View.bird;
 import static cz.reindl.game.view.View.isActive;
-import static cz.reindl.game.view.View.isRunning;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Button;
@@ -27,11 +25,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cz.reindl.game.event.EventHandler;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.entity.Bird;
 import cz.reindl.game.view.View;
 
 public class MainActivity extends AppCompatActivity {
+
+    EventHandler eventHandler = new EventHandler();
 
     DisplayMetrics metrics;
     @SuppressLint("StaticFieldLeak")
@@ -41,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences.Editor editor;
 
     @SuppressLint("StaticFieldLeak")
-    public static Button devButton, restartButton, hardCoreButton;
+    public static Button devButton, restartButton, hardCoreButton, reviveButton, skipReviveButton;
     @SuppressLint("StaticFieldLeak")
-    public static ImageButton buttonSkin1, buttonSkin2, buttonSkin3, buttonStop;
+    public static ImageButton buttonSkin1, buttonSkin2, buttonSkin3, buttonStop, musicStopButton;
 
     @SuppressLint("StaticFieldLeak")
     public static RelativeLayout relativeLayout;
@@ -52,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
     public static MediaPlayer mediaPlayer;
     public static View view;
 
-    public static int i, c = 0;
+    public static int i, isGameStopped, z = 0;
+    public static boolean isMusicStopped;
     public static int currentMusic;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -95,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
         buttonSkin3 = (ImageButton) findViewById(R.id.buttonSkin3);
         hardCoreButton = (Button) findViewById(R.id.buttonHardCore);
         buttonStop = (ImageButton) findViewById(R.id.buttonStop);
+        reviveButton = (Button) findViewById(R.id.reviveButton);
+        musicStopButton = (ImageButton) findViewById(R.id.musicStopButton);
+        skipReviveButton = (Button) findViewById(R.id.skipReviveButton);
 
         gameOverText.setText("Flappy Bird");
         restartButton.setText("Start");
@@ -125,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 view.isHardCore = true;
                 hardCoreButton.setBackgroundColor(Color.BLACK);
                 Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
-                if (!mediaPlayer.isPlaying()) {
+                if (!mediaPlayer.isPlaying() && !isMusicStopped) {
                     mediaPlayer.stop();
                     backgroundMusic(R.raw.background_music);
                 }
@@ -168,15 +173,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         buttonStop.setOnClickListener(l -> {
-            if (c == 0) {
-                c = 1;
+            if (isGameStopped == 0) {
+                isGameStopped = 1;
                 buttonStop.setBackground(getDrawable(R.drawable.ic_play_button));
-                mediaPlayer.pause();
+                if (!isMusicStopped) {
+                    mediaPlayer.pause();
+                }
                 view.handler.removeCallbacks(view.runnable);
             } else {
-                c = 0;
+                isGameStopped = 0;
                 buttonStop.setBackground(getDrawable(R.drawable.ic_stop_button));
-                mediaPlayer.start();
+                if (!isMusicStopped) {
+                    mediaPlayer.start();
+                }
                 view.handler.postDelayed(view.runnable, 1);
             }
         });
@@ -189,27 +198,55 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 isActive = false;
                 i = 0;
-                Values.gapPipe = 400;
+                Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
             }
         });
 
         restartButton.setOnClickListener(v -> {
-            if (currentMusic != R.raw.background_music) {
+            if (currentMusic != R.raw.background_music && !isMusicStopped) {
                 mediaPlayer.stop();
                 Log.i(Values.TAG = "MainActivity - restartButton", "Playing music ID");
                 System.out.println("Music ID: " + currentMusic);
                 backgroundMusic(R.raw.background_music);
             }
-            if (!view.isHardCore) {
+            if (!view.isHardCore && !isMusicStopped) {
                 mediaPlayer.stop();
                 backgroundMusic(R.raw.hardcore_theme);
             }
             view.isRunning = true;
+            musicStopButton.setVisibility(android.view.View.INVISIBLE);
             relativeLayout.setVisibility(android.view.View.INVISIBLE);
             scoreText.setVisibility(android.view.View.VISIBLE);
             highScoreText.setVisibility(android.view.View.VISIBLE);
             buttonStop.setVisibility(android.view.View.VISIBLE);
             lastScoreText.setVisibility(android.view.View.VISIBLE);
+        });
+
+        reviveButton.setOnClickListener(l -> {
+            z = 1;
+            // FIXME: 19.05.2022 eventHandler.continueGame();
+            reviveButton.setVisibility(android.view.View.INVISIBLE);
+            skipReviveButton.setVisibility(android.view.View.INVISIBLE);
+            bird.setCoins(bird.getCoins() - 50);
+            coinText.setText(String.valueOf(bird.getCoins()));
+        });
+
+        musicStopButton.setOnClickListener(l -> {
+            if (!isMusicStopped && isGameStopped == 0) {
+                musicStopButton.setBackground(getDrawable(R.drawable.ic_music_button));
+                isMusicStopped = true;
+                mediaPlayer.pause();
+            } else {
+                musicStopButton.setBackground(getDrawable(R.drawable.ic_music_play_button));
+                isMusicStopped = false;
+                mediaPlayer.start();
+            }
+        });
+
+        skipReviveButton.setOnClickListener(l -> {
+            // FIXME: 19.05.2022 eventHandler.resetValues();
+            skipReviveButton.setVisibility(android.view.View.INVISIBLE);
+            reviveButton.setVisibility(android.view.View.INVISIBLE);
         });
 
         backgroundMusic(R.raw.theme_music);
