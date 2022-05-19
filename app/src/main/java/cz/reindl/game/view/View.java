@@ -69,6 +69,7 @@ public class View extends android.view.View {
         sound.highScoreSound = sound.getSoundPool().load(context, R.raw.high_score, 1);
         sound.barrierCollideSound = sound.getSoundPool().load(context, R.raw.collide_fall, 1);
         sound.scytheFlap = sound.getSoundPool().load(context, R.raw.scythe_flap, 1);
+        sound.reviveSound = sound.getSoundPool().load(context, R.raw.revive_sound, 1);
     }
 
     private void initBarrier() {
@@ -136,7 +137,7 @@ public class View extends android.view.View {
             }
             bird.setFallGravity(bird.getFallGravity() + 0.6f);
         } else {
-            if (bird.getCoins() >= 50 && MainActivity.z == 0) {
+            if (bird.getCoins() >= 50 && MainActivity.isRevived == 0) {
                 eventHandler.checkContinuity();
             } else {
                 eventHandler.resetValues();

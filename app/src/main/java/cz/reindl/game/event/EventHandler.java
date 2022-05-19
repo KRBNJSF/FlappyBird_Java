@@ -44,7 +44,6 @@ import cz.reindl.game.MainActivity;
 import cz.reindl.game.R;
 import cz.reindl.game.entity.Barrier;
 import cz.reindl.game.entity.Bird;
-import cz.reindl.game.event.timer.Timer;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.view.View;
 
@@ -114,7 +113,7 @@ public class EventHandler {
         MainActivity.currentMusic = R.raw.theme_music;
         MainActivity.mediaPlayer = MediaPlayer.create(view.getContext(), currentMusic);
         MainActivity.mediaPlayer.setLooping(true);
-        MainActivity.z = 1;
+        MainActivity.isRevived = 1;
 
         isAlive = false;
         isRunning = false;
@@ -145,7 +144,7 @@ public class EventHandler {
 
         makeText(highScoreText.getContext(), "Score saved", Toast.LENGTH_SHORT).show();
 
-        MainActivity.z = 0;
+        MainActivity.isRevived = 0;
         bird.setScore(0);
         bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
         bird.setFallGravity(0.6f);
@@ -170,7 +169,7 @@ public class EventHandler {
                 view.handler.postDelayed(view.runnable, 1);
                 reviveButton.setVisibility(INVISIBLE);
                 skipReviveButton.setVisibility(INVISIBLE);
-                if (MainActivity.z == 0) {
+                if (MainActivity.isRevived == 0) {
                     resetGame();
                 } else {
                     continueGame();
@@ -180,8 +179,10 @@ public class EventHandler {
     }
 
     public void continueGame() {
-        if (MainActivity.z == 1) {
+        if (MainActivity.isRevived == 1) {
             view.handler.postDelayed(view.runnable, 1);
+
+            buttonStop.setVisibility(VISIBLE);
 
             isRunning = true;
             isActive = false;

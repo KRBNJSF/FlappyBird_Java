@@ -5,6 +5,7 @@ import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.view.View.bird;
 import static cz.reindl.game.view.View.isActive;
+import static cz.reindl.game.view.View.sound;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public static MediaPlayer mediaPlayer;
     public static View view;
 
-    public static int i, isGameStopped, z = 0;
+    public static int isDevButtonOn, isGameStopped, isRevived = 0;
     public static boolean isMusicStopped;
     public static int currentMusic;
 
@@ -191,13 +192,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         devButton.setOnClickListener(v -> {
-            if (i == 0) {
+            if (isDevButtonOn == 0) {
                 isActive = true;
-                i = 1;
+                isDevButtonOn = 1;
                 Values.gapPipe = 600;
             } else {
                 isActive = false;
-                i = 0;
+                isDevButtonOn = 0;
                 Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
             }
         });
@@ -223,7 +224,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         reviveButton.setOnClickListener(l -> {
-            z = 1;
+            sound.getSoundPool().play(sound.reviveSound, 1f, 1f, 1, 0, 1f);
+            isRevived = 1;
             // FIXME: 19.05.2022 eventHandler.continueGame();
             reviveButton.setVisibility(android.view.View.INVISIBLE);
             skipReviveButton.setVisibility(android.view.View.INVISIBLE);

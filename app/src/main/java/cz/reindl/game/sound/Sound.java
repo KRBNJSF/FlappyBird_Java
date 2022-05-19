@@ -9,7 +9,7 @@ public class Sound {
     private boolean isSoundLoaded;
 
     //SOUND EFFECTS
-    public int flapSound, collideSound, scoreSound, highScoreSound, barrierCollideSound, scytheFlap;
+    public int flapSound, collideSound, scoreSound, highScoreSound, barrierCollideSound, scytheFlap, reviveSound;
 
     //SOUND SETTINGS
     public Sound() {
