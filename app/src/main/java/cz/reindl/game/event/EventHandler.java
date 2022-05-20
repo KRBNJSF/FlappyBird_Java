@@ -188,7 +188,7 @@ public class EventHandler {
             isActive = false;
             isAlive = false;
 
-            if (!view.isHardCore && MainActivity.isMusicStopped) {
+            if (!view.isHardCore) {
                 Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
             } else {
                 Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
