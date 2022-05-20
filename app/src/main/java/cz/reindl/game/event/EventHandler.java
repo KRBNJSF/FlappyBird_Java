@@ -188,7 +188,7 @@ public class EventHandler {
             isActive = false;
             isAlive = false;
 
-            if (!view.isHardCore && !MainActivity.isMusicStopped) {
+            if (!view.isHardCore && MainActivity.isMusicStopped) {
                 Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
             } else {
                 Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
@@ -225,7 +225,7 @@ public class EventHandler {
         } else if (!view.isHardCore) {
             bird.setScore(bird.getScore() + 3);
         } else {
-            bird.setScore(bird.getScore() + 100);
+            bird.setScore(bird.getScore() + 1);
         }
     }
 

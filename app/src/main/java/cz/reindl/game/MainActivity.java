@@ -5,6 +5,7 @@ import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.view.View.bird;
 import static cz.reindl.game.view.View.isActive;
+import static cz.reindl.game.view.View.isRunning;
 import static cz.reindl.game.view.View.sound;
 
 import androidx.annotation.RequiresApi;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     DisplayMetrics metrics;
     @SuppressLint("StaticFieldLeak")
-    public static TextView scoreText, highScoreText, gameOverText, coinText, lastScoreText;
+    public static TextView scoreText, highScoreText, gameOverText, coinText, lastScoreText, timerText;
 
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         highScoreText.setTextAppearance(R.style.whiteText);
         scoreText.setVisibility(android.view.View.INVISIBLE);
         lastScoreText = (TextView) findViewById(R.id.lastScoreText);
+        timerText = (TextView) findViewById(R.id.timerText);
 
         grass = (ImageView) findViewById(R.id.grass);
         grass.setMinimumHeight(SCREEN_HEIGHT / 4);
@@ -261,12 +263,16 @@ public class MainActivity extends AppCompatActivity {
         backgroundMusic(R.raw.theme_music);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onResume() {
         super.onResume();
         mediaPlayer.start();
+        isGameStopped = 0;
+        buttonStop.setBackground(getDrawable(R.drawable.ic_stop_button));
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onPause() {
         super.onPause();
@@ -280,4 +286,20 @@ public class MainActivity extends AppCompatActivity {
         mediaPlayer.start();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (isGameStopped == 1) {
+            timerText.setVisibility(android.view.View.VISIBLE);
+            try {
+                for (int i = 3; i > 0; i--) {
+                    makeText(this, String.valueOf("Start in " + i + " sec"), Toast.LENGTH_SHORT).show();
+                    Thread.sleep(1500);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        timerText.setVisibility(android.view.View.INVISIBLE);
+    }
 }
