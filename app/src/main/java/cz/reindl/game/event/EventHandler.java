@@ -215,6 +215,7 @@ public class EventHandler {
             Snackbar.make(relativeLayout, "New skin unlocked", Snackbar.LENGTH_SHORT).show();
             Bird.legendarySkin = true;
             editor.putBoolean("skinUnlocked", true);
+            editor.commit();
         }
     }
 
@@ -224,7 +225,7 @@ public class EventHandler {
         } else if (!view.isHardCore) {
             bird.setScore(bird.getScore() + 3);
         } else {
-            bird.setScore(bird.getScore() + 1);
+            bird.setScore(bird.getScore() + 100);
         }
     }
 
