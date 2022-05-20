@@ -164,7 +164,8 @@ public class MainActivity extends AppCompatActivity {
                 bird.setWidth(105 * SCREEN_WIDTH / 1080);
                 bird.getBirdList().clear();
                 view.initBirdList();
-            } else if (Bird.boughtSkin == 0 && bird.getCoins() == 1000) {
+            } else if (Bird.boughtSkin == 0 && bird.getCoins() >= 1000) {
+                makeText(this, "Successfully bought", Toast.LENGTH_SHORT).show();
                 bird.setCoins(bird.getCoins() - 1000);
                 coinText.setText(bird.getCoins());
                 Bird.boughtSkin = 1;
