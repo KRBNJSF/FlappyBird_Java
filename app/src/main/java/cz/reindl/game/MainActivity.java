@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences.Editor editor;
 
     @SuppressLint("StaticFieldLeak")
-    public static Button devButton, restartButton, hardCoreButton, reviveButton, skipReviveButton;
+    public static Button devButton, restartButton, hardCoreButton, reviveButton, skipReviveButton, settingsButton, shopButton;
     @SuppressLint("StaticFieldLeak")
     public static ImageButton buttonSkin1, buttonSkin2, buttonSkin3, buttonStop, musicStopButton;
 
@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
         reviveButton = (Button) findViewById(R.id.reviveButton);
         musicStopButton = (ImageButton) findViewById(R.id.musicStopButton);
         skipReviveButton = (Button) findViewById(R.id.skipReviveButton);
+        settingsButton = (Button) findViewById(R.id.settingButton);
+        shopButton = (Button) findViewById(R.id.shopButton);
 
         gameOverText.setText("Flappy Bird");
         restartButton.setText("Start");
@@ -118,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
         if (!Bird.legendarySkin) {
             buttonSkin2.setBackground(getDrawable(R.drawable.legendary_skin_locked));
         }
+
+        //LISTENERS
 
         buttonSkin1.setOnClickListener(l -> {
             Bird.legendarySkinUsing = false;
@@ -192,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 view.handler.removeCallbacks(view.runnable);
             } else {
                 isGameStopped = 0;
-                buttonStop.setBackground(getDrawable(R.drawable.ic_stop_button));
+                buttonStop.setBackground(getDrawable(R.drawable.ic_pause_button));
                 if (!isMusicStopped) {
                     mediaPlayer.start();
                 }
@@ -260,6 +264,14 @@ public class MainActivity extends AppCompatActivity {
             reviveButton.setVisibility(android.view.View.INVISIBLE);
         });
 
+        settingsButton.setOnClickListener(l -> {
+
+        });
+
+        shopButton.setOnClickListener(l -> {
+
+        });
+
         backgroundMusic(R.raw.theme_music);
     }
 
@@ -269,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         mediaPlayer.start();
         isGameStopped = 0;
-        buttonStop.setBackground(getDrawable(R.drawable.ic_stop_button));
+        buttonStop.setBackground(getDrawable(R.drawable.ic_pause_button));
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
