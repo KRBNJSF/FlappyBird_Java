@@ -8,17 +8,18 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="76dp"
+        android:layout_height="79dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="163dp"
-        android:layout_marginBottom="559dp"
+        android:layout_marginEnd="72dp"
+        android:layout_marginBottom="622dp"
+        android:background="@drawable/default_bird"
         android:text="Default" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Legendary skin" />
+        android:background="@drawable/legendary_skinup" />
 
 </RelativeLayout>

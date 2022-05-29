@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <font
+        android:font="@font/test_font"
+        android:fontStyle="normal"
+        android:fontWeight="200"
+        tools:ignore="ResourceCycle" />
+</font-family>

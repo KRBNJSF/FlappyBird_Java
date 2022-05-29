@@ -20,6 +20,7 @@
         android:layout_centerInParent="true"
         android:background="@drawable/ic_revive_button"
         android:contentDescription="Revive"
+        android:fontFamily="@font/pixel_font"
         android:text="50$"
         android:textColor="@color/black"
         android:textStyle="bold"
@@ -82,12 +83,14 @@
         android:id="@+id/coinText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/coinImg"
         android:layout_alignStart="@id/coinImg"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="85dp"
+        android:layout_marginTop="-17dp"
+        android:fontFamily="@font/pixel_font"
         android:text="0"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="20sp"
         tools:ignore="HardcodedText" />
 
     <Button
@@ -164,6 +167,7 @@
             android:layout_marginTop="60sp"
             android:alpha="0.8"
             android:background="@android:color/transparent"
+            android:fontFamily="@font/pixel_font"
             android:foreground="?android:attr/selectableItemBackground"
             android:text="Restart"
             android:textSize="20sp" />
@@ -177,8 +181,10 @@
             android:layout_marginTop="120dp"
             android:alpha="0.9"
             android:background="@color/black"
+            android:fontFamily="@font/pixel_font"
             android:foreground="?android:attr/selectableItemBackground"
-            android:text="HardCore" />
+            android:text="HardCore"
+            android:textSize="12sp" />
 
         <ImageButton
             android:id="@+id/buttonSkin1"
@@ -224,9 +230,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:fontFamily="@font/pixel_font"
             android:text="Game Over"
             android:textColor="@color/black"
-            android:textSize="40sp"
+            android:textSize="35sp"
             android:textStyle="bold" />
 
         <TextView
@@ -237,9 +244,10 @@
             android:layout_alignTop="@id/gameOverText"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-60dp"
+            android:fontFamily="@font/pixel_font"
             android:text="Last score: 0"
             android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textSize="25sp"
             android:visibility="invisible" />
 
     </RelativeLayout>
