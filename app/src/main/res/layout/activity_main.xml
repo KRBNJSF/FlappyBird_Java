@@ -86,11 +86,11 @@
         android:layout_below="@id/coinImg"
         android:layout_alignStart="@id/coinImg"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="-17dp"
+        android:layout_marginTop="-16dp"
         android:fontFamily="@font/pixel_font"
         android:text="0"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="17sp"
         tools:ignore="HardcodedText" />
 
     <Button
