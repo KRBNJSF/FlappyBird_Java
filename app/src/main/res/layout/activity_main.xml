@@ -11,7 +11,8 @@
     <cz.reindl.game.view.View
         android:id="@+id/gameView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="visible" />
 
     <Button
         android:id="@+id/reviveButton"

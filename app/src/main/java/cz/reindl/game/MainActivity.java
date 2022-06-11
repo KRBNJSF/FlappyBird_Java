@@ -136,12 +136,15 @@ public class MainActivity extends AppCompatActivity {
             bird.setWidth(105 * SCREEN_WIDTH / 1080);
             bird.getBirdList().clear();
             view.initBirdList();
+            bird.setWidth(75 * SCREEN_WIDTH / 1080);
         });
 
         hardCoreButton.setOnClickListener(l -> {
             if (!view.isHardCore) {
                 view.isHardCore = true;
                 hardCoreButton.setBackgroundColor(Color.BLACK);
+                mainLayout.setBackground(getDrawable(R.drawable.background));
+                restartButton.setTextColor(Color.WHITE);
                 view.barriers.clear();
                 view.initBarrier(BitmapFactory.decodeResource(view.getResources(), R.drawable.bottom_pipe), BitmapFactory.decodeResource(view.getResources(), R.drawable.top_pipe));
                 Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
@@ -152,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 makeText(this, "Hardcore enabled", Toast.LENGTH_SHORT).show();
                 view.isHardCore = false;
+                mainLayout.setBackground(getDrawable(R.drawable.background2));
+                restartButton.setTextColor(Color.BLACK);
                 hardCoreButton.setBackgroundColor(Color.RED);
                 view.barriers.clear();
                 view.initBarrier(BitmapFactory.decodeResource(view.getResources(), R.drawable.bottom_pipeblue), BitmapFactory.decodeResource(view.getResources(), R.drawable.top_pipeblue));

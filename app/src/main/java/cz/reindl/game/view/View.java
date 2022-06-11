@@ -116,6 +116,7 @@ public class View extends android.view.View {
         bird.setX((float) 100 * SCREEN_WIDTH / 1080);
         bird.setY((float) SCREEN_HEIGHT / 2 - (float) bird.getHeight() / 2);
         initBirdList();
+        bird.setWidth(75 * SCREEN_WIDTH / 1080);
     }
 
     //RENDER
