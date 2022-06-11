@@ -136,15 +136,14 @@ public class MainActivity extends AppCompatActivity {
             bird.setWidth(105 * SCREEN_WIDTH / 1080);
             bird.getBirdList().clear();
             view.initBirdList();
-            System.out.println("Velikost: " + view.barriers.size());
-            view.barriers.clear();
-            view.initBarrier(BitmapFactory.decodeResource(view.getResources(), R.drawable.bottom_pipeblue), BitmapFactory.decodeResource(view.getResources(), R.drawable.top_pipeblue));
         });
 
         hardCoreButton.setOnClickListener(l -> {
             if (!view.isHardCore) {
                 view.isHardCore = true;
                 hardCoreButton.setBackgroundColor(Color.BLACK);
+                view.barriers.clear();
+                view.initBarrier(BitmapFactory.decodeResource(view.getResources(), R.drawable.bottom_pipe), BitmapFactory.decodeResource(view.getResources(), R.drawable.top_pipe));
                 Values.speedPipe = 9 * SCREEN_WIDTH / 1080;
                 if (!mediaPlayer.isPlaying() && !isMusicStopped) {
                     mediaPlayer.stop();
@@ -153,8 +152,10 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 makeText(this, "Hardcore enabled", Toast.LENGTH_SHORT).show();
                 view.isHardCore = false;
-                Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
                 hardCoreButton.setBackgroundColor(Color.RED);
+                view.barriers.clear();
+                view.initBarrier(BitmapFactory.decodeResource(view.getResources(), R.drawable.bottom_pipeblue), BitmapFactory.decodeResource(view.getResources(), R.drawable.top_pipeblue));
+                Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
             }
         });
 
