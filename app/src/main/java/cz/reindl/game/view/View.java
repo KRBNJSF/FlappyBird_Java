@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.reindl.game.MainActivity;
 import cz.reindl.game.R;
@@ -46,13 +47,14 @@ public class View extends android.view.View {
     public Handler handler;
 
     EventHandler eventHandler = new EventHandler();
+    public final List<Barrier> barriers = new ArrayList();
 
     public View(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         Log.d(Values.TAG = "View - App start up", "Game view");
 
         //GAME OBJECTS INITIALIZATION
-        initBarrier();
+        initBarrier(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe));
         initBird();
         initCoin();
 
@@ -72,17 +74,17 @@ public class View extends android.view.View {
         sound.reviveSound = sound.getSoundPool().load(context, R.raw.revive_sound, 1);
     }
 
-    private void initBarrier() {
+    public void initBarrier(Bitmap bitmap, Bitmap bitmap2) {
         Log.d(Values.TAG = "initBarrier", "Barriers init");
         barrierDistance = 775 * SCREEN_HEIGHT / 1920;
 
-        Barrier barrier = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), SCREEN_WIDTH, 1);
-        Barrier barrier2 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance, -350);
-        Barrier barrier3 = new Barrier(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe), 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance * 2, -200);
+        Barrier barrier = new Barrier(resizeBitmap(bitmap, 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(bitmap2, 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), SCREEN_WIDTH, 1);
+        Barrier barrier2 = new Barrier(resizeBitmap(bitmap, 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(bitmap2, 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance, -350);
+        Barrier barrier3 = new Barrier(resizeBitmap(bitmap, 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), resizeBitmap(bitmap2, 200 * SCREEN_WIDTH / 1080, SCREEN_HEIGHT / 2), barrier.getX() + barrierDistance * 2, -200);
 
-        eventHandler.barriers.add(barrier);
-        eventHandler.barriers.add(barrier2);
-        eventHandler.barriers.add(barrier3);
+        barriers.add(barrier);
+        barriers.add(barrier2);
+        barriers.add(barrier3);
     }
 
     private void initCoin() {
@@ -122,8 +124,8 @@ public class View extends android.view.View {
         handler.postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {
-            for (int i = 0; i < eventHandler.barriers.size(); i++) {
-                eventHandler.barriers.get(i).renderBarrier(canvas);
+            for (int i = 0; i < barriers.size(); i++) {
+                barriers.get(i).renderBarrier(canvas);
             }
             coin.renderCoin(canvas);
             eventHandler.collision();
@@ -132,8 +134,8 @@ public class View extends android.view.View {
                 bird.setFallGravity(-15);
             }
         } else if (bird.getY() /*+ bird.getHeight()*/ <= SCREEN_HEIGHT - grass.getHeight()) {
-            for (int i = 0; i < eventHandler.barriers.size(); i++) {
-                eventHandler.barriers.get(i).renderBarrier(canvas);
+            for (int i = 0; i < barriers.size(); i++) {
+                barriers.get(i).renderBarrier(canvas);
             }
             bird.setFallGravity(bird.getFallGravity() + 0.6f);
         } else {

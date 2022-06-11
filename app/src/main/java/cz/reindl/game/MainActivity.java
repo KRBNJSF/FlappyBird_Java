@@ -1,11 +1,11 @@
 package cz.reindl.game;
 
 import static android.widget.Toast.makeText;
+import static cz.reindl.game.utils.Utils.resizeBitmap;
 import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.view.View.bird;
 import static cz.reindl.game.view.View.isActive;
-import static cz.reindl.game.view.View.isRunning;
 import static cz.reindl.game.view.View.sound;
 
 import androidx.annotation.RequiresApi;
@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -49,14 +50,14 @@ public class MainActivity extends AppCompatActivity {
     public static ImageButton buttonSkin1, buttonSkin2, buttonSkin3, buttonStop, musicStopButton;
 
     @SuppressLint("StaticFieldLeak")
-    public static RelativeLayout relativeLayout;
+    public static RelativeLayout menuLayout, mainLayout, shopLayout;
     @SuppressLint("StaticFieldLeak")
     public static ImageView grass;
     public static MediaPlayer mediaPlayer;
     public static View view;
 
     public static int isDevButtonOn, isGameStopped, isRevived = 0;
-    public static boolean isMusicStopped;
+    public static boolean isMusicStopped, isShop;
     public static int currentMusic;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -73,8 +74,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         view = findViewById(R.id.gameView);
-        relativeLayout = (RelativeLayout) findViewById(R.id.gameOver);
-        relativeLayout.setVisibility(android.view.View.VISIBLE);
+        menuLayout = (RelativeLayout) findViewById(R.id.mainMenuLayout);
+        mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
+        shopLayout = (RelativeLayout) findViewById(R.id.shopLayout);
+        menuLayout.setVisibility(android.view.View.VISIBLE);
+        shopLayout.setVisibility(android.view.View.VISIBLE); // FIXME: 31.05.2022 DELETE!
         view.isRunning = false;
 
         scoreText = (TextView) findViewById(R.id.scoreTextView);
@@ -91,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        devButton = (Button) findViewById(R.id.buttonMain);
+        devButton = (Button) findViewById(R.id.devButton);
 
         gameOverText = (TextView) findViewById(R.id.gameOverText);
         restartButton = (Button) findViewById(R.id.buttonRestart);
@@ -105,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
         skipReviveButton = (Button) findViewById(R.id.skipReviveButton);
         settingsButton = (Button) findViewById(R.id.settingButton);
         shopButton = (Button) findViewById(R.id.shopButton);
+
+        shopButton.setX((float) 0);
 
         gameOverText.setText("Flappy Bird");
         restartButton.setText("Start");
@@ -130,6 +136,9 @@ public class MainActivity extends AppCompatActivity {
             bird.setWidth(105 * SCREEN_WIDTH / 1080);
             bird.getBirdList().clear();
             view.initBirdList();
+            System.out.println("Velikost: " + view.barriers.size());
+            view.barriers.clear();
+            view.initBarrier(BitmapFactory.decodeResource(view.getResources(), R.drawable.bottom_pipeblue), BitmapFactory.decodeResource(view.getResources(), R.drawable.top_pipeblue));
         });
 
         hardCoreButton.setOnClickListener(l -> {
@@ -229,11 +238,14 @@ public class MainActivity extends AppCompatActivity {
             }
             view.isRunning = true;
             musicStopButton.setVisibility(android.view.View.INVISIBLE);
-            relativeLayout.setVisibility(android.view.View.INVISIBLE);
+            menuLayout.setVisibility(android.view.View.INVISIBLE);
             scoreText.setVisibility(android.view.View.VISIBLE);
             highScoreText.setVisibility(android.view.View.VISIBLE);
             buttonStop.setVisibility(android.view.View.VISIBLE);
             lastScoreText.setVisibility(android.view.View.VISIBLE);
+            shopButton.setVisibility(android.view.View.INVISIBLE);
+            settingsButton.setVisibility(android.view.View.INVISIBLE);
+            shopLayout.setVisibility(android.view.View.INVISIBLE); // FIXME: 31.05.2022 DELETE!
         });
 
         reviveButton.setOnClickListener(l -> {
@@ -265,11 +277,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
         settingsButton.setOnClickListener(l -> {
-
+            //startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
         });
 
         shopButton.setOnClickListener(l -> {
-
+            //startActivity(new Intent(getApplicationContext(), ShopActivity.class));
+            if (!isShop) {
+                menuLayout.setVisibility(android.view.View.INVISIBLE);
+                view.setVisibility(android.view.View.INVISIBLE);
+                shopLayout.setVisibility(android.view.View.VISIBLE);
+                isShop = true;
+            } else {
+                menuLayout.setVisibility(android.view.View.VISIBLE);
+                view.setVisibility(android.view.View.VISIBLE);
+                shopLayout.setVisibility(android.view.View.INVISIBLE);
+                isShop = false;
+            }
         });
 
         backgroundMusic(R.raw.theme_music);

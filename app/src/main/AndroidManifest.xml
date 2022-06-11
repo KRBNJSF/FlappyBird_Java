@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar"> <!-- No action bar -->
         <activity
-            android:name=".view.DeathScreen"
+            android:name=".view.ShopActivity"
             android:exported="false" />
 
         <activity
