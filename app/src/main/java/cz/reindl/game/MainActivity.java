@@ -1,7 +1,6 @@
 package cz.reindl.game;
 
 import static android.widget.Toast.makeText;
-import static cz.reindl.game.utils.Utils.resizeBitmap;
 import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.view.View.bird;
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     DisplayMetrics metrics;
     @SuppressLint("StaticFieldLeak")
-    public static TextView scoreText, highScoreText, gameOverText, coinText, lastScoreText, timerText;
+    public static TextView scoreText, highScoreText, gameOverText, coinText, lastScoreText, powerUpText, coinGetText;
 
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
@@ -88,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
         highScoreText.setTextAppearance(R.style.whiteText);
         scoreText.setVisibility(android.view.View.INVISIBLE);
         lastScoreText = (TextView) findViewById(R.id.lastScoreText);
-        timerText = (TextView) findViewById(R.id.timerText);
+        powerUpText = (TextView) findViewById(R.id.powerUpText);
+        coinGetText = (TextView) findViewById(R.id.coinGetText);
 
         grass = (ImageView) findViewById(R.id.grass);
         grass.setMinimumHeight(SCREEN_HEIGHT / 4);
@@ -134,14 +134,17 @@ public class MainActivity extends AppCompatActivity {
             Bird.boughtSkinUsing = false;
             bird.setHeight(105 * SCREEN_HEIGHT / 1920);
             bird.setWidth(105 * SCREEN_WIDTH / 1080);
-            bird.getBirdList().clear();
-            view.initBirdList();
+            if (bird.getBirdList().get(0) != bird.getBirdList().get(4)) {
+                bird.getBirdList().clear();
+                view.initBirdList();
+            }
             bird.setWidth(75 * SCREEN_WIDTH / 1080);
         });
 
         hardCoreButton.setOnClickListener(l -> {
             if (!view.isHardCore) {
                 view.isHardCore = true;
+                devButton.setBackgroundColor(getColor(R.color.SkyBlue));
                 hardCoreButton.setBackgroundColor(Color.BLACK);
                 mainLayout.setBackground(getDrawable(R.drawable.background));
                 restartButton.setTextColor(Color.WHITE);
@@ -154,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 makeText(this, "Hardcore enabled", Toast.LENGTH_SHORT).show();
+                devButton.setBackgroundColor(getColor(R.color.darkBlue));
                 view.isHardCore = false;
                 mainLayout.setBackground(getDrawable(R.drawable.background2));
                 restartButton.setTextColor(Color.BLACK);
@@ -172,8 +176,10 @@ public class MainActivity extends AppCompatActivity {
                 bird.setHeight(100 * SCREEN_HEIGHT / 1920);
                 bird.setWidth(110 * SCREEN_WIDTH / 1080);
                 buttonSkin2.setBackground(getDrawable(R.drawable.legendary_skinup));
-                bird.getBirdList().clear();
-                view.initBirdList();
+                if (bird.getBirdList().get(0) != bird.getBirdList().get(2)) {
+                    bird.getBirdList().clear();
+                    view.initBirdList();
+                }
             } else {
                 makeText(this, "It is not unlocked yet, " + (10000 - sharedPreferences.getInt("highScore", bird.getHighScore())) + " score remaining", Toast.LENGTH_SHORT).show();
             }
@@ -185,8 +191,10 @@ public class MainActivity extends AppCompatActivity {
                 Bird.legendarySkinUsing = false;
                 bird.setHeight(80 * SCREEN_HEIGHT / 1920);
                 bird.setWidth(105 * SCREEN_WIDTH / 1080);
-                bird.getBirdList().clear();
-                view.initBirdList();
+                if (bird.getBirdList().get(0) != bird.getBirdList().get(6)) {
+                    bird.getBirdList().clear();
+                    view.initBirdList();
+                }
             } else if (Bird.boughtSkin == 0 && bird.getCoins() >= 1000) {
                 makeText(this, "Successfully bought", Toast.LENGTH_SHORT).show();
                 bird.setCoins(bird.getCoins() - 1000);
@@ -331,7 +339,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         if (isGameStopped == 1) {
-            timerText.setVisibility(android.view.View.VISIBLE);
             try {
                 for (int i = 3; i > 0; i--) {
                     makeText(this, String.valueOf("Start in " + i + " sec"), Toast.LENGTH_SHORT).show();
@@ -341,6 +348,5 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        timerText.setVisibility(android.view.View.INVISIBLE);
     }
 }

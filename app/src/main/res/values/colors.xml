@@ -8,5 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="LightSkyBlue">#87CEFA</color>
-    <color name="SkyBlue">#87CEEB</color>
+    <color name="SkyBlue">#2dd6ff</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="darkBlue">#019ACB</color>
+    <color name="neonYellow">#FFF01F</color>
 </resources>

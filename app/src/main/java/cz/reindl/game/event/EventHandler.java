@@ -13,6 +13,7 @@ import static cz.reindl.game.MainActivity.highScoreText;
 import static cz.reindl.game.MainActivity.lastScoreText;
 import static cz.reindl.game.MainActivity.musicStopButton;
 import static cz.reindl.game.MainActivity.menuLayout;
+import static cz.reindl.game.MainActivity.powerUpText;
 import static cz.reindl.game.MainActivity.restartButton;
 import static cz.reindl.game.MainActivity.reviveButton;
 import static cz.reindl.game.MainActivity.scoreText;
@@ -52,7 +53,6 @@ import cz.reindl.game.values.Values;
 import cz.reindl.game.view.View;
 
 public class EventHandler {
-
 
     //COLLISION CHECK
     public void collision() {
@@ -117,6 +117,7 @@ public class EventHandler {
         MainActivity.mediaPlayer = MediaPlayer.create(view.getContext(), currentMusic);
         MainActivity.mediaPlayer.setLooping(true);
         MainActivity.isRevived = 1;
+        view.counter = 0;
 
         isAlive = false;
         isRunning = false;
@@ -128,6 +129,7 @@ public class EventHandler {
         menuLayout.setVisibility(VISIBLE);
         buttonStop.setVisibility(INVISIBLE);
         musicStopButton.setVisibility(VISIBLE);
+        powerUpText.setVisibility(INVISIBLE);
         shopLayout.setVisibility(VISIBLE); // FIXME: 31.05.2022 DELETE!
         restartButton.setText("Restart");
         gameOverText.setText("Game Over");

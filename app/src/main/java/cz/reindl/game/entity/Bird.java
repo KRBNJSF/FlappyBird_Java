@@ -1,6 +1,12 @@
 package cz.reindl.game.entity;
 
 
+import static cz.reindl.game.MainActivity.coinGetText;
+import static cz.reindl.game.MainActivity.powerUpText;
+import static cz.reindl.game.view.View.bird;
+import static cz.reindl.game.view.View.coin;
+import static cz.reindl.game.view.View.powerUp;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -46,6 +52,8 @@ public class Bird extends GameObject {
     private void fall() {
         this.fallGravity += velocity;
         y += this.fallGravity;
+        powerUpText.setY(this.y - this.height);
+        powerUpText.setX(this.x + this.width * 2);
     }
 
     public void checkY() {

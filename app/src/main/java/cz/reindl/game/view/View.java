@@ -25,6 +25,7 @@ import java.util.List;
 import cz.reindl.game.MainActivity;
 import cz.reindl.game.R;
 import cz.reindl.game.entity.Coin;
+import cz.reindl.game.entity.PowerUp;
 import cz.reindl.game.event.EventHandler;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.entity.Barrier;
@@ -42,9 +43,11 @@ public class View extends android.view.View {
 
     public static Bird bird;
     public static Coin coin;
+    public static PowerUp powerUp;
 
     public final Runnable runnable;
     public Handler handler;
+    public int counter = 0;
 
     EventHandler eventHandler = new EventHandler();
     public final List<Barrier> barriers = new ArrayList();
@@ -57,6 +60,7 @@ public class View extends android.view.View {
         initBarrier(BitmapFactory.decodeResource(this.getResources(), R.drawable.bottom_pipe), BitmapFactory.decodeResource(this.getResources(), R.drawable.top_pipe));
         initBird();
         initCoin();
+        initPowerUp();
 
         //Invalidating UI thread - view
         runnable = this::invalidate;
@@ -90,6 +94,11 @@ public class View extends android.view.View {
     private void initCoin() {
         Log.d(Values.TAG = "View - initCoin", "Coin init");
         coin = new Coin(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.coin), 100 * SCREEN_WIDTH / 1080, 90 * SCREEN_HEIGHT / 1920), 600, 600);
+    }
+
+    private void initPowerUp() {
+        Log.d(Values.TAG = "View - initPowerUp", "Power Up init");
+        powerUp = new PowerUp(resizeBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.mega_nose1), 100 * SCREEN_WIDTH / 1080, 90 * SCREEN_HEIGHT / 1920), SCREEN_WIDTH, 500);
     }
 
     public void initBirdList() {
@@ -129,6 +138,12 @@ public class View extends android.view.View {
                 barriers.get(i).renderBarrier(canvas);
             }
             coin.renderCoin(canvas);
+            if (!isHardCore) {
+                counter++;
+                if (counter >= 50) {
+                    powerUp.renderPowerUp(canvas);
+                }
+            }
             eventHandler.collision();
         } else if (!isAlive) {
             if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {

@@ -1,15 +1,22 @@
 package cz.reindl.game.entity;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static cz.reindl.game.MainActivity.coinGetText;
+import static cz.reindl.game.MainActivity.powerUpText;
 import static cz.reindl.game.utils.Utils.addBorder;
 import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.values.Values.barrierDistance;
 import static cz.reindl.game.values.Values.speedPipe;
 import static cz.reindl.game.view.View.bird;
+import static cz.reindl.game.view.View.coin;
 import static cz.reindl.game.view.View.sound;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.util.Random;
 
@@ -20,6 +27,8 @@ import cz.reindl.game.view.View;
 
 public class Coin extends GameObject {
 
+    private int velocity = 0;
+
     public Coin(Bitmap bitmap, int x, int y) {
         super(bitmap, x, y);
         this.width = bitmap.getWidth();
@@ -29,7 +38,21 @@ public class Coin extends GameObject {
     }
 
     public void renderCoin(Canvas canvas) {
+        velocity += 4;
+        coinGetText.setY(bird.getY() - bird.getHeight() - velocity);
         if (this.getRect().intersect(View.bird.getRect())) {
+            velocity = 0;
+            coinGetText.setVisibility(android.view.View.VISIBLE);
+            coinGetText.setX(this.x + bird.getWidth());
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (coinGetText.getVisibility() == VISIBLE) {
+                        coinGetText.setVisibility(INVISIBLE);
+                    }
+                    velocity = 0;
+                }
+            }, 500);
             sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
             bird.setCoins(bird.getCoins() + 1);
             MainActivity.coinText.setText(String.valueOf(bird.getCoins()));
