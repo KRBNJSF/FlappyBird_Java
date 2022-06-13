@@ -1,6 +1,7 @@
 package cz.reindl.game.view;
 
 import static android.widget.Toast.makeText;
+import static java.lang.Thread.sleep;
 import static cz.reindl.game.MainActivity.*;
 import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
@@ -12,7 +13,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -40,6 +43,7 @@ public class View extends android.view.View {
     public static boolean isRunning = true;
     public static boolean isAlive = false;
     public boolean isHardCore = true;
+    public boolean isDoublePoints, isBooster, isBoosterDone, barrierThrough, direction, isDragon;
 
     public static Bird bird;
     public static Coin coin;
@@ -47,7 +51,8 @@ public class View extends android.view.View {
 
     public final Runnable runnable;
     public Handler handler;
-    public int counter = 0;
+    public int counter, duckX = 0;
+    public int barrierThroughCounter = 3;
 
     EventHandler eventHandler = new EventHandler();
     public final List<Barrier> barriers = new ArrayList();
@@ -114,6 +119,8 @@ public class View extends android.view.View {
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.default_bird_flap));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.mega_nose1));
         birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.mega_nose2));
+        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.dragon_up));
+        birdList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.dragon_down));
         bird.setBirdList(birdList);
     }
 
@@ -128,23 +135,105 @@ public class View extends android.view.View {
         bird.setWidth(75 * SCREEN_WIDTH / 1080);
     }
 
+    public void test() {
+        long startTime;
+        long timeMillis;
+        long waitTime;
+        long totalTime = 0;
+        int frameCount = 0;
+        final int FPS = 30;
+        long targetTime = 1000 / FPS;
+
+        while (isRunning) {
+            startTime = System.nanoTime();
+
+            timeMillis = (System.nanoTime() - startTime) / 100000;
+            waitTime = targetTime - timeMillis;
+            try {
+                sleep(waitTime);
+            } catch (Exception ignored) {
+            }
+            totalTime += System.nanoTime() - startTime;
+            frameCount++;
+            if (frameCount == FPS) {
+                double averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
+                frameCount = 0;
+                totalTime = 0;
+                System.out.println("FPS: " + averageFPS);
+            }
+        }
+    }
+
     //RENDER
+    @SuppressLint("SetTextI18n")
     public void draw(Canvas canvas) {
         //LOOP
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (duckButton.getX() + duckButton.getWidth() <= SCREEN_WIDTH && !direction) {
+                    duckX += 10;
+                } else if (duckButton.getX() >= 0) {
+                    duckButton.setBackgroundResource(R.drawable.duck2);
+                    direction = true;
+                    duckX -= 10;
+                } else {
+                    duckButton.setBackgroundResource(R.drawable.duck);
+                    direction = false;
+                }
+                // FIXME: 13.06.2022 duckButton.setX(duckX);
+                duckButton.setTranslationX((float) SCREEN_WIDTH / 2 - (float) duckButton.getWidth() / 2); // FIXME: 13.06.2022 Just for now
+            }
+        });
         handler.postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {
             for (int i = 0; i < barriers.size(); i++) {
                 barriers.get(i).renderBarrier(canvas);
             }
-            coin.renderCoin(canvas);
+            if (bird.getY() >= barriers.get(0).getY() + barriers.get(0).getWidth() && barrierThroughCounter > 0 && barrierThrough) {
+                // FIXME: 13.06.2022 Test purposes eventHandler.resetGame();
+                barrierThroughCounter--;
+                powerUpText.setText("Collision Immunity for " + view.barrierThroughCounter + " barriers");
+                System.out.println("cau " + barrierThroughCounter);
+            }
+            if (barrierThroughCounter == 0) {
+                barrierThrough = false;
+                powerUpText.setVisibility(INVISIBLE);
+            }
+            if (!isBooster) coin.renderCoin(canvas);
             if (!isHardCore) {
                 counter++;
-                if (counter >= 50) {
+                if (counter >= 50 && !isBooster) {
                     powerUp.renderPowerUp(canvas);
                 }
+                if (isBooster) {
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            isBooster = false;
+
+                            if (isBoosterDone) {
+                                isBoosterDone = false;
+                                view.barriers.get(0).setX(SCREEN_WIDTH);
+                                view.barriers.get(1).setX(view.barriers.get(0).getX() + barrierDistance);
+                                view.barriers.get(2).setX(view.barriers.get(1).getX() + barrierDistance);
+                            }
+
+                            Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
+                        }
+                    }, 4000);
+                    isBoosterDone = true;
+                    Values.speedPipe = 50 * SCREEN_WIDTH / 1080;
+                    if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
+                        bird.setFallGravity(-15);
+                    }
+                }
             }
-            eventHandler.collision();
+            if (!barrierThrough) {
+                barrierThroughCounter = 3;
+                eventHandler.collision();
+            }
         } else if (!isAlive) {
             if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
                 bird.setFallGravity(-15);
@@ -169,11 +258,11 @@ public class View extends android.view.View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (isRunning && MainActivity.isGameStopped == 0) {
-            if (!isAlive) {
+            if (!isAlive && !isBooster) {
                 Log.d(Values.TAG = "View - onTouchEvent", "Bird flap");
                 bird.setFallGravity(-15);
                 if (sound.isSoundLoaded()) {
-                    if (!Bird.legendarySkinUsing && !Bird.boughtSkinUsing) {
+                    if (!Bird.legendarySkinUsing && !Bird.boughtSkinUsing && !isDragon) {
                         sound.getSoundPool().play(sound.scytheFlap, 0.3f, 0.3f, 1, 0, 1f);
                     } else {
                         sound.getSoundPool().play(sound.flapSound, 1f, 1f, 1, 0, 1f);

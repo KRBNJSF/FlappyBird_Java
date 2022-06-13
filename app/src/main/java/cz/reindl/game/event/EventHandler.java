@@ -6,6 +6,7 @@ import static android.view.View.generateViewId;
 import static android.widget.Toast.makeText;
 import static cz.reindl.game.MainActivity.buttonStop;
 import static cz.reindl.game.MainActivity.currentMusic;
+import static cz.reindl.game.MainActivity.duckButton;
 import static cz.reindl.game.MainActivity.editor;
 import static cz.reindl.game.MainActivity.gameOverText;
 import static cz.reindl.game.MainActivity.grass;
@@ -62,7 +63,7 @@ public class EventHandler {
                 View.coin.setX((SCREEN_WIDTH) + (float) SCREEN_WIDTH / 2); //barriers.get(i).getX() - (new Random().nextInt(100) + coin.getWidth())
                 View.coin.setY(new Random().nextInt(SCREEN_HEIGHT / 2 - MainActivity.grass.getHeight()) + (float) SCREEN_HEIGHT / 3);
             }
-            if (bird.getRect().intersect(view.barriers.get(i).getRect()) || bird.getY() + bird.getHeight() >= SCREEN_HEIGHT - grass.getHeight() || bird.getRect().intersect(view.barriers.get(i).getBottomPipeRect())) {
+            if (bird.getRect().intersect(view.barriers.get(i).getRect()) && !view.isBooster || bird.getY() + bird.getHeight() >= SCREEN_HEIGHT - grass.getHeight() || bird.getRect().intersect(view.barriers.get(i).getBottomPipeRect()) && !view.isBooster) {
                 resetGame();
             }
         }
@@ -122,6 +123,8 @@ public class EventHandler {
         isAlive = false;
         isRunning = false;
         Bird.easterEgg = false;
+        view.isBoosterDone = false;
+        view.barrierThrough = false;
 
         if (!MainActivity.isMusicStopped) MainActivity.mediaPlayer.start();
 
@@ -130,6 +133,7 @@ public class EventHandler {
         buttonStop.setVisibility(INVISIBLE);
         musicStopButton.setVisibility(VISIBLE);
         powerUpText.setVisibility(INVISIBLE);
+        duckButton.setVisibility(VISIBLE);
         shopLayout.setVisibility(VISIBLE); // FIXME: 31.05.2022 DELETE!
         restartButton.setText("Restart");
         gameOverText.setText("Game Over");
@@ -181,7 +185,7 @@ public class EventHandler {
                     continueGame();
                 }
             }
-        }, 700);
+        }, 750);
     }
 
     public void continueGame() {
@@ -226,27 +230,23 @@ public class EventHandler {
     }
 
     private void checkHardCore() {
-        if (Bird.easterEgg) {
-            bird.setScore(bird.getScore() + 6);
-        } else if (!view.isHardCore) {
-            bird.setScore(bird.getScore() + 3);
-        } else {
-            bird.setScore(bird.getScore() + 1);
-        }
+        if (view.isBooster) bird.setScore(bird.getScore() + 10);
+        else if (view.isDoublePoints) bird.setScore(bird.getScore() + 6);
+        else if (Bird.easterEgg) bird.setScore(bird.getScore() + 6);
+        else if (!view.isHardCore) bird.setScore(bird.getScore() + 3);
+        else bird.setScore(bird.getScore() + 1);
     }
 
     private void gameSpeedUp() {
-        if (bird.getScore() > 1000 && bird.getScore() < 2000) {
+        if (bird.getScore() > 1000 && bird.getScore() < 2000)
             Values.speedPipe = 10 * SCREEN_WIDTH / 1080;
-        } else if (bird.getScore() > 2000 && bird.getScore() < 3000) {
+        else if (bird.getScore() > 2000 && bird.getScore() < 3000)
             Values.speedPipe = 11 * SCREEN_WIDTH / 1080;
-        } else if (bird.getScore() > 3000 && bird.getScore() < 4000) {
+        else if (bird.getScore() > 3000 && bird.getScore() < 4000)
             Values.speedPipe = 12 * SCREEN_WIDTH / 1080;
-        } else if (bird.getScore() > 4000 && bird.getScore() < 5000) {
+        else if (bird.getScore() > 4000 && bird.getScore() < 5000)
             Values.speedPipe = 13 * SCREEN_WIDTH / 1080;
-        } else if (bird.getScore() > 5000) {
-            Values.speedPipe = 14 * SCREEN_WIDTH / 1080;
-        }
+        else if (bird.getScore() > 5000) Values.speedPipe = 14 * SCREEN_WIDTH / 1080;
     }
 
 }

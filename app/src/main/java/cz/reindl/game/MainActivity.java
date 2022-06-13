@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences.Editor editor;
 
     @SuppressLint("StaticFieldLeak")
-    public static Button devButton, restartButton, hardCoreButton, reviveButton, skipReviveButton, settingsButton, shopButton;
+    public static Button devButton, restartButton, hardCoreButton, reviveButton, skipReviveButton, settingsButton, shopButton, duckButton;
     @SuppressLint("StaticFieldLeak")
     public static ImageButton buttonSkin1, buttonSkin2, buttonSkin3, buttonStop, musicStopButton;
 
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         skipReviveButton = (Button) findViewById(R.id.skipReviveButton);
         settingsButton = (Button) findViewById(R.id.settingButton);
         shopButton = (Button) findViewById(R.id.shopButton);
+        duckButton = (Button) findViewById(R.id.duckButton);
 
         shopButton.setX((float) 0);
 
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         buttonSkin1.setOnClickListener(l -> {
             Bird.legendarySkinUsing = false;
             Bird.boughtSkinUsing = false;
+            view.isDragon = false;
             bird.setHeight(105 * SCREEN_HEIGHT / 1920);
             bird.setWidth(105 * SCREEN_WIDTH / 1080);
             if (bird.getBirdList().get(0) != bird.getBirdList().get(4)) {
@@ -173,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
             if (sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin)) {
                 Bird.boughtSkinUsing = false;
                 Bird.legendarySkinUsing = true;
+                view.isDragon = false;
                 bird.setHeight(100 * SCREEN_HEIGHT / 1920);
                 bird.setWidth(110 * SCREEN_WIDTH / 1080);
                 buttonSkin2.setBackground(getDrawable(R.drawable.legendary_skinup));
@@ -189,8 +192,12 @@ public class MainActivity extends AppCompatActivity {
             if (Bird.boughtSkin == 1) {
                 Bird.boughtSkinUsing = true;
                 Bird.legendarySkinUsing = false;
+                view.isDragon = false;
                 bird.setHeight(80 * SCREEN_HEIGHT / 1920);
                 bird.setWidth(105 * SCREEN_WIDTH / 1080);
+                if (!view.isHardCore) {
+                    view.isBooster = true;
+                }
                 if (bird.getBirdList().get(0) != bird.getBirdList().get(6)) {
                     bird.getBirdList().clear();
                     view.initBirdList();
@@ -250,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayer.stop();
                 backgroundMusic(R.raw.hardcore_theme);
             }
+            duckButton.setVisibility(android.view.View.INVISIBLE);
             view.isRunning = true;
             musicStopButton.setVisibility(android.view.View.INVISIBLE);
             menuLayout.setVisibility(android.view.View.INVISIBLE);
@@ -306,6 +314,16 @@ public class MainActivity extends AppCompatActivity {
                 view.setVisibility(android.view.View.VISIBLE);
                 shopLayout.setVisibility(android.view.View.INVISIBLE);
                 isShop = false;
+            }
+        });
+
+        duckButton.setOnClickListener(l -> {
+            view.isDragon = true;
+            bird.setHeight(80 * SCREEN_HEIGHT / 1920);
+            bird.setWidth(105 * SCREEN_WIDTH / 1080);
+            if (bird.getBirdList().get(0) != bird.getBirdList().get(10)) {
+                bird.getBirdList().clear();
+                view.initBirdList();
             }
         });
 

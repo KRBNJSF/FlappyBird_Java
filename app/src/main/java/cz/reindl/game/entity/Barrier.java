@@ -1,5 +1,7 @@
 package cz.reindl.game.entity;
 
+import static cz.reindl.game.MainActivity.duckButton;
+import static cz.reindl.game.MainActivity.view;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.values.Values.barrierDistance;
 import static cz.reindl.game.values.Values.speedPipe;

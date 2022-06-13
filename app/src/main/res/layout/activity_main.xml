@@ -22,11 +22,19 @@
         android:background="@drawable/ic_revive_button"
         android:contentDescription="Revive"
         android:fontFamily="@font/pixel_font"
-        android:text="50💸"
+        android:text="💸50💸"
         android:textColor="@color/black"
-        android:textSize="17sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/duckButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_above="@id/grass"
+        android:background="@drawable/duck"
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/powerUpText"

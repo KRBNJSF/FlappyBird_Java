@@ -41,7 +41,7 @@ public class PowerUp extends GameObject {
             view.counter = 0;
             if (this.getRect().intersect(View.bird.getRect())) {
                 if (bird.getScore() >= 0) {
-                    switch (new Random().nextInt(6)) { //Bound can be smaller by 1 -> Isn't cause of initial (default) case.
+                    switch (new Random().nextInt(9)/*7*/) { //Bound can be smaller by 1 -> Isn't cause of initial (default) case.
                         case 0:
                             bird.setScore(bird.getScore() - 100);
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -67,6 +67,7 @@ public class PowerUp extends GameObject {
                             break;
                         case 2:
                             bird.setCoins(bird.getCoins() + 5);
+                            MainActivity.coinText.setText(String.valueOf(bird.getCoins()));
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -99,6 +100,34 @@ public class PowerUp extends GameObject {
                             powerUpText.setText("Smaller gap");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
                             break;
+                        case 5: {
+                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
+                                    powerUpText.setVisibility(INVISIBLE);
+                                }
+                            }, 750);
+                            Values.speedPipe = 5 * SCREEN_WIDTH / 1080;
+                            powerUpText.setText("Slowness");
+                            powerUpText.setVisibility(android.view.View.VISIBLE);
+                        }
+                        case 6: {
+                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    view.isDoublePoints = false;
+                                    powerUpText.setVisibility(INVISIBLE);
+                                }
+                            }, 1500);
+                            view.isDoublePoints = true;
+                            powerUpText.setText("Double points");
+                            powerUpText.setVisibility(android.view.View.VISIBLE);
+                        }
+                        case 7: {
+                            view.barrierThrough = true;
+                            powerUpText.setVisibility(android.view.View.VISIBLE);
+                        }
                         default: {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                 @Override
@@ -112,7 +141,7 @@ public class PowerUp extends GameObject {
                     }
                 }
             }
-            //sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
+            // FIXME: 13.06.2022 New sound effect //sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
             this.setX((float) SCREEN_WIDTH);
             this.setY(new Random().nextInt(SCREEN_HEIGHT / 2 - MainActivity.grass.getHeight()) + (float) SCREEN_HEIGHT / 3);
         }

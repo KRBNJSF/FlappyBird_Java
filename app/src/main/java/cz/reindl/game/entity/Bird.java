@@ -3,6 +3,7 @@ package cz.reindl.game.entity;
 
 import static cz.reindl.game.MainActivity.coinGetText;
 import static cz.reindl.game.MainActivity.powerUpText;
+import static cz.reindl.game.MainActivity.view;
 import static cz.reindl.game.view.View.bird;
 import static cz.reindl.game.view.View.coin;
 import static cz.reindl.game.view.View.powerUp;
@@ -67,7 +68,10 @@ public class Bird extends GameObject {
 
     //ANIMATION
     public Bitmap changeBird() {
-        if (easterEgg) {
+        if (view.isDragon) {
+            this.birdList.set(0, birdList.get(10));
+            this.birdList.set(1, birdList.get(11));
+        } else if (easterEgg) {
             this.birdList.set(0, birdList.get(8));
             this.birdList.set(1, birdList.get(9));
         } else if (legendarySkin && legendarySkinUsing) {
