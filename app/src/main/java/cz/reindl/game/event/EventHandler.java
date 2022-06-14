@@ -2,9 +2,10 @@ package cz.reindl.game.event;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static android.view.View.generateViewId;
 import static android.widget.Toast.makeText;
+import static cz.reindl.game.MainActivity.boosterButton;
 import static cz.reindl.game.MainActivity.buttonStop;
+import static cz.reindl.game.MainActivity.buyBoostButton;
 import static cz.reindl.game.MainActivity.currentMusic;
 import static cz.reindl.game.MainActivity.duckButton;
 import static cz.reindl.game.MainActivity.editor;
@@ -22,7 +23,6 @@ import static cz.reindl.game.MainActivity.sharedPreferences;
 import static cz.reindl.game.MainActivity.shopLayout;
 import static cz.reindl.game.MainActivity.skipReviveButton;
 import static cz.reindl.game.MainActivity.view;
-import static cz.reindl.game.utils.Utils.resizeBitmap;
 import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.values.Values.barrierDistance;
@@ -33,7 +33,6 @@ import static cz.reindl.game.view.View.isRunning;
 import static cz.reindl.game.view.View.sound;
 
 import android.annotation.SuppressLint;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Looper;
@@ -42,13 +41,10 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import cz.reindl.game.MainActivity;
 import cz.reindl.game.R;
-import cz.reindl.game.entity.Barrier;
 import cz.reindl.game.entity.Bird;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.view.View;
@@ -124,7 +120,7 @@ public class EventHandler {
         isRunning = false;
         Bird.easterEgg = false;
         view.isBoosterDone = false;
-        view.barrierThrough = false;
+        view.isCollisionImmunity = false;
 
         if (!MainActivity.isMusicStopped) MainActivity.mediaPlayer.start();
 
@@ -134,6 +130,8 @@ public class EventHandler {
         musicStopButton.setVisibility(VISIBLE);
         powerUpText.setVisibility(INVISIBLE);
         duckButton.setVisibility(VISIBLE);
+        boosterButton.setVisibility(VISIBLE);
+        buyBoostButton.setVisibility(VISIBLE);
         shopLayout.setVisibility(VISIBLE); // FIXME: 31.05.2022 DELETE!
         restartButton.setText("Restart");
         gameOverText.setText("Game Over");
@@ -144,6 +142,7 @@ public class EventHandler {
         editor.putInt("highScore", bird.getHighScore());
         editor.putInt("coinValue", bird.getCoins());
         editor.putInt("skinBought", Bird.boughtSkin);
+        editor.putInt("boosterCount", Bird.boosterCount);
         editor.commit();
 
         checkBirdSkin();

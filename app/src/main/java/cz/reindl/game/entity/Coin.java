@@ -17,10 +17,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.animation.AnimationUtils;
 
 import java.util.Random;
 
 import cz.reindl.game.MainActivity;
+import cz.reindl.game.R;
 import cz.reindl.game.event.EventHandler;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.view.View;
@@ -48,11 +50,14 @@ public class Coin extends GameObject {
                 @Override
                 public void run() {
                     if (coinGetText.getVisibility() == VISIBLE) {
+                        coinGetText.setAnimation(null);
                         coinGetText.setVisibility(INVISIBLE);
                     }
                     velocity = 0;
                 }
             }, 500);
+            coinGetText.setAnimation(AnimationUtils.loadAnimation(powerUpText.getContext(), R.anim.disappear));
+            coinGetText.setText(String.valueOf("+1"));
             sound.getSoundPool().play(sound.scoreSound, 1f, 1f, 1, 0, 1f);
             bird.setCoins(bird.getCoins() + 1);
             MainActivity.coinText.setText(String.valueOf(bird.getCoins()));

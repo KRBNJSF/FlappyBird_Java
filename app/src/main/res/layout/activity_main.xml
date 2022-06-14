@@ -29,10 +29,35 @@
         android:visibility="invisible" />
 
     <Button
+        android:id="@+id/boostButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/coinImg"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/ic_boost_button"
+        android:text="0"
+        android:textAlignment="center"
+        android:textSize="10sp"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/buyBoostButton"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_below="@id/coinImg"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/boostButton"
+        android:background="@drawable/ic_plus_button"
+        android:visibility="visible" />
+
+    <Button
         android:id="@+id/duckButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_above="@id/grass"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/duck"
         android:visibility="visible" />
 
@@ -50,7 +75,8 @@
         android:id="@+id/coinGetText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_below="@id/boostButton"
+        android:layout_centerHorizontal="true"
         android:text="+1"
         android:textColor="@color/neonYellow"
         android:textSize="20sp"

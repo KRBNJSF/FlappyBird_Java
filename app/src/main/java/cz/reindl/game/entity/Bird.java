@@ -22,7 +22,7 @@ public class Bird extends GameObject {
 
     //SKIN
     public static boolean legendarySkin;
-    public static int boughtSkin = 0;
+    public static int boughtSkin, boosterCount = 0;
     //SKIN USAGE
     public static boolean legendarySkinUsing, boughtSkinUsing, easterEgg;
 
@@ -68,12 +68,12 @@ public class Bird extends GameObject {
 
     //ANIMATION
     public Bitmap changeBird() {
-        if (view.isDragon) {
-            this.birdList.set(0, birdList.get(10));
-            this.birdList.set(1, birdList.get(11));
-        } else if (easterEgg) {
+        if (easterEgg) {
             this.birdList.set(0, birdList.get(8));
             this.birdList.set(1, birdList.get(9));
+        } else if (view.isDragon) {
+            this.birdList.set(0, birdList.get(10));
+            this.birdList.set(1, birdList.get(11));
         } else if (legendarySkin && legendarySkinUsing) {
             this.birdList.set(0, birdList.get(2));
             this.birdList.set(1, birdList.get(3));

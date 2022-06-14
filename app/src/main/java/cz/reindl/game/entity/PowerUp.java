@@ -2,26 +2,23 @@ package cz.reindl.game.entity;
 
 import static android.view.View.INVISIBLE;
 import static cz.reindl.game.MainActivity.powerUpText;
-import static cz.reindl.game.MainActivity.reviveButton;
-import static cz.reindl.game.MainActivity.skipReviveButton;
 import static cz.reindl.game.MainActivity.view;
 import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
-import static cz.reindl.game.values.Values.barrierDistance;
 import static cz.reindl.game.values.Values.speedPipe;
 import static cz.reindl.game.view.View.bird;
-import static cz.reindl.game.view.View.powerUp;
-import static cz.reindl.game.view.View.sound;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.animation.AnimationUtils;
 
 import java.util.Random;
 
 import cz.reindl.game.MainActivity;
+import cz.reindl.game.R;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.view.View;
 
@@ -111,6 +108,7 @@ public class PowerUp extends GameObject {
                             Values.speedPipe = 5 * SCREEN_WIDTH / 1080;
                             powerUpText.setText("Slowness");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
+                            break;
                         }
                         case 6: {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -123,10 +121,29 @@ public class PowerUp extends GameObject {
                             view.isDoublePoints = true;
                             powerUpText.setText("Double points");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
+                            break;
                         }
                         case 7: {
-                            view.barrierThrough = true;
+                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            view.isCollisionImmunity = false;
+                                            powerUpText.setAnimation(null);
+                                            powerUpText.setVisibility(INVISIBLE);
+                                            view.cnt = 3;
+                                        }
+                                    }, 1000);
+                                    if (view.isCollisionImmunity)
+                                        powerUpText.setAnimation(AnimationUtils.loadAnimation(powerUpText.getContext(), R.anim.blink));
+                                }
+                            }, 2000);
+                            view.isCollisionImmunity = true;
+                            powerUpText.setText("Collision Immunity " + view.cnt + "sec");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
+                            break;
                         }
                         default: {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -137,6 +154,7 @@ public class PowerUp extends GameObject {
                             }, 1000);
                             powerUpText.setText("Nothing");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
+                            break;
                         }
                     }
                 }

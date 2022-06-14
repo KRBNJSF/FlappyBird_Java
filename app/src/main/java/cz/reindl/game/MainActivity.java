@@ -1,10 +1,13 @@
 package cz.reindl.game;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static android.widget.Toast.makeText;
 import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.view.View.bird;
 import static cz.reindl.game.view.View.isActive;
+import static cz.reindl.game.view.View.isRunning;
 import static cz.reindl.game.view.View.sound;
 
 import androidx.annotation.RequiresApi;
@@ -18,14 +21,20 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import cz.reindl.game.event.EventHandler;
 import cz.reindl.game.values.Values;
@@ -44,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences.Editor editor;
 
     @SuppressLint("StaticFieldLeak")
-    public static Button devButton, restartButton, hardCoreButton, reviveButton, skipReviveButton, settingsButton, shopButton, duckButton;
+    public static Button devButton, restartButton, hardCoreButton, reviveButton, skipReviveButton, settingsButton, shopButton, duckButton, boosterButton, buyBoostButton;
     @SuppressLint("StaticFieldLeak")
     public static ImageButton buttonSkin1, buttonSkin2, buttonSkin3, buttonStop, musicStopButton;
 
@@ -55,12 +64,12 @@ public class MainActivity extends AppCompatActivity {
     public static MediaPlayer mediaPlayer;
     public static View view;
 
-    public static int isDevButtonOn, isGameStopped, isRevived = 0;
+    public static int isDevButtonOn, isGameStopped, isRevived, x, y = 0;
     public static boolean isMusicStopped, isShop;
     public static int currentMusic;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    @SuppressLint({"SetTextI18n", "WrongConstant", "UseCompatLoadingForDrawables", "LongLogTag"})
+    @SuppressLint({"SetTextI18n", "WrongConstant", "UseCompatLoadingForDrawables", "LongLogTag", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +119,10 @@ public class MainActivity extends AppCompatActivity {
         settingsButton = (Button) findViewById(R.id.settingButton);
         shopButton = (Button) findViewById(R.id.shopButton);
         duckButton = (Button) findViewById(R.id.duckButton);
+        boosterButton = (Button) findViewById(R.id.boostButton);
+        buyBoostButton = (Button) findViewById(R.id.buyBoostButton);
 
+        duckButton.setAlpha(0.03f);
         shopButton.setX((float) 0);
 
         gameOverText.setText("Flappy Bird");
@@ -120,6 +132,10 @@ public class MainActivity extends AppCompatActivity {
         bird.setCoins(sharedPreferences.getInt("coinValue", bird.getCoins()));
         Bird.legendarySkin = sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin);
         Bird.boughtSkin = sharedPreferences.getInt("skinBought", Bird.boughtSkin);
+        Bird.boosterCount = sharedPreferences.getInt("boosterCount", Bird.boosterCount);
+        boosterButton.setText(String.valueOf(Bird.boosterCount));
+        x = 300;
+        y = 300;
 
         if (Bird.boughtSkin == 0) {
             buttonSkin3.setBackground(getDrawable(R.drawable.skin_bird_locked));
@@ -145,6 +161,14 @@ public class MainActivity extends AppCompatActivity {
 
         hardCoreButton.setOnClickListener(l -> {
             if (!view.isHardCore) {
+                if (view.isBooster) {
+                    view.isBooster = false;
+                    Bird.boosterCount++;
+                    editor.putInt("boosterCount", Bird.boosterCount);
+                    editor.commit();
+                    Snackbar.make(menuLayout, "Booster disabled", Snackbar.LENGTH_SHORT).show();
+                    boosterButton.setText(String.valueOf(Bird.boosterCount));
+                }
                 view.isHardCore = true;
                 devButton.setBackgroundColor(getColor(R.color.SkyBlue));
                 hardCoreButton.setBackgroundColor(Color.BLACK);
@@ -195,9 +219,6 @@ public class MainActivity extends AppCompatActivity {
                 view.isDragon = false;
                 bird.setHeight(80 * SCREEN_HEIGHT / 1920);
                 bird.setWidth(105 * SCREEN_WIDTH / 1080);
-                if (!view.isHardCore) {
-                    view.isBooster = true;
-                }
                 if (bird.getBirdList().get(0) != bird.getBirdList().get(6)) {
                     bird.getBirdList().clear();
                     view.initBirdList();
@@ -267,6 +288,8 @@ public class MainActivity extends AppCompatActivity {
             lastScoreText.setVisibility(android.view.View.VISIBLE);
             shopButton.setVisibility(android.view.View.INVISIBLE);
             settingsButton.setVisibility(android.view.View.INVISIBLE);
+            boosterButton.setVisibility(android.view.View.INVISIBLE);
+            buyBoostButton.setVisibility(android.view.View.INVISIBLE);
             shopLayout.setVisibility(android.view.View.INVISIBLE); // FIXME: 31.05.2022 DELETE!
         });
 
@@ -322,8 +345,65 @@ public class MainActivity extends AppCompatActivity {
             bird.setHeight(80 * SCREEN_HEIGHT / 1920);
             bird.setWidth(105 * SCREEN_WIDTH / 1080);
             if (bird.getBirdList().get(0) != bird.getBirdList().get(10)) {
+                if (duckButton.getAlpha() != 1f) {
+                    Snackbar.make(menuLayout, "New skin unlocked", Snackbar.LENGTH_SHORT).show();
+                }
+                duckButton.setAlpha(1f);
                 bird.getBirdList().clear();
                 view.initBirdList();
+            }
+        });
+
+        boosterButton.setOnClickListener(l -> {
+            if (view.isBooster) {
+                Snackbar.make(menuLayout, "Booster's ready!", Snackbar.LENGTH_SHORT).show();
+            } else if (!view.isBooster && !view.isHardCore && Bird.boosterCount > 0) {
+                view.isBooster = true;
+                Bird.boosterCount--;
+                boosterButton.setText(String.valueOf(Bird.boosterCount));
+                Snackbar.make(menuLayout, "Booster's ready!", Snackbar.LENGTH_SHORT).show();
+            } else if (Bird.boosterCount <= 0) {
+                Snackbar.make(menuLayout, "Not enough boosts", Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(menuLayout, "Booster only works in Special mode!", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        buyBoostButton.setOnClickListener(l -> {
+            if (bird.getCoins() < 50) {
+                Snackbar.make(menuLayout, "Booster costs 50 coins", Snackbar.LENGTH_SHORT).show();
+            } else {
+                bird.setCoins(bird.getCoins() - 50);
+                Bird.boosterCount++;
+                editor.putInt("boosterCount", Bird.boosterCount);
+                editor.putInt("coinValue", bird.getCoins());
+                editor.commit();
+                boosterButton.setText(String.valueOf(Bird.boosterCount));
+                coinText.setText(String.valueOf(bird.getCoins()));
+                coinGetText.setText(String.valueOf(-50));
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (coinGetText.getVisibility() == VISIBLE) {
+                            coinGetText.setVisibility(INVISIBLE);
+                        }
+                    }
+                }, 100);
+
+                /*if (!isRunning) {
+                    view.setOnTouchListener((v, event) -> {
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            x = (int) event.getX();
+                            y = (int) event.getY();
+                        }
+                        return true;
+                    });
+                }*/ // FIXME: 14.06.2022
+
+                coinGetText.setVisibility(VISIBLE);
+                coinGetText.setX(x);
+                coinGetText.setY(y);
+                Snackbar.make(menuLayout, "Booster bought Successfully!", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -367,4 +447,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }

@@ -19,11 +19,14 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cz.reindl.game.MainActivity;
 import cz.reindl.game.R;
@@ -43,7 +46,7 @@ public class View extends android.view.View {
     public static boolean isRunning = true;
     public static boolean isAlive = false;
     public boolean isHardCore = true;
-    public boolean isDoublePoints, isBooster, isBoosterDone, barrierThrough, direction, isDragon;
+    public boolean isDoublePoints, isBooster, isBoosterDone, isCollisionImmunity, direction, isDragon;
 
     public static Bird bird;
     public static Coin coin;
@@ -52,6 +55,7 @@ public class View extends android.view.View {
     public final Runnable runnable;
     public Handler handler;
     public int counter, duckX = 0;
+    public int cnt = 3;
     public int barrierThroughCounter = 3;
 
     EventHandler eventHandler = new EventHandler();
@@ -168,7 +172,7 @@ public class View extends android.view.View {
     @SuppressLint("SetTextI18n")
     public void draw(Canvas canvas) {
         //LOOP
-        AsyncTask.execute(new Runnable() {
+        /*AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 if (duckButton.getX() + duckButton.getWidth() <= SCREEN_WIDTH && !direction) {
@@ -184,23 +188,21 @@ public class View extends android.view.View {
                 // FIXME: 13.06.2022 duckButton.setX(duckX);
                 duckButton.setTranslationX((float) SCREEN_WIDTH / 2 - (float) duckButton.getWidth() / 2); // FIXME: 13.06.2022 Just for now
             }
-        });
+        });*/
         handler.postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {
             for (int i = 0; i < barriers.size(); i++) {
                 barriers.get(i).renderBarrier(canvas);
             }
-            if (bird.getY() >= barriers.get(0).getY() + barriers.get(0).getWidth() && barrierThroughCounter > 0 && barrierThrough) {
+            if (bird.getY() >= barriers.get(0).getY() + barriers.get(0).getWidth() && barrierThroughCounter > 0/* && isCollisionImmunity*/) {
                 // FIXME: 13.06.2022 Test purposes eventHandler.resetGame();
-                barrierThroughCounter--;
-                powerUpText.setText("Collision Immunity for " + view.barrierThroughCounter + " barriers");
-                System.out.println("cau " + barrierThroughCounter);
+                //barrierThroughCounter--;
             }
-            if (barrierThroughCounter == 0) {
-                barrierThrough = false;
+            /*if (barrierThroughCounter == 0) {
+                isCollisionImmunity = false;
                 powerUpText.setVisibility(INVISIBLE);
-            }
+            }*/
             if (!isBooster) coin.renderCoin(canvas);
             if (!isHardCore) {
                 counter++;
@@ -212,17 +214,17 @@ public class View extends android.view.View {
                         @Override
                         public void run() {
                             isBooster = false;
-
                             if (isBoosterDone) {
                                 isBoosterDone = false;
                                 view.barriers.get(0).setX(SCREEN_WIDTH);
                                 view.barriers.get(1).setX(view.barriers.get(0).getX() + barrierDistance);
                                 view.barriers.get(2).setX(view.barriers.get(1).getX() + barrierDistance);
+                                buttonStop.setVisibility(VISIBLE);
+                                Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
                             }
-
-                            Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
                         }
                     }, 4000);
+                    buttonStop.setVisibility(INVISIBLE);
                     isBoosterDone = true;
                     Values.speedPipe = 50 * SCREEN_WIDTH / 1080;
                     if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
@@ -230,9 +232,13 @@ public class View extends android.view.View {
                     }
                 }
             }
-            if (!barrierThrough) {
-                barrierThroughCounter = 3;
+            if (!isCollisionImmunity) {
+                //barrierThroughCounter = 3;
                 eventHandler.collision();
+            } else if (bird.getY() + bird.getHeight() >= SCREEN_HEIGHT - grass.getHeight()) {
+                eventHandler.resetGame();
+            } else {
+                //powerUpText.setText("Collision Immunity " + view.cnt + "sec");
             }
         } else if (!isAlive) {
             if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
