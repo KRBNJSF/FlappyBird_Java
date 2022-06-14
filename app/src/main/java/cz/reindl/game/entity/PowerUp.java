@@ -24,6 +24,8 @@ import cz.reindl.game.view.View;
 
 public class PowerUp extends GameObject {
 
+    private boolean isPowerUp;
+
     public PowerUp(Bitmap bitmap, int x, int y) {
         super(bitmap, x, y);
         this.width = bitmap.getWidth();
@@ -44,9 +46,11 @@ public class PowerUp extends GameObject {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    isPowerUp = false;
                                     powerUpText.setVisibility(INVISIBLE);
                                 }
                             }, 1000);
+                            isPowerUp = true;
                             powerUpText.setText("-100 SCORE");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
                             break;
@@ -54,10 +58,19 @@ public class PowerUp extends GameObject {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
-                                    powerUpText.setVisibility(INVISIBLE);
+                                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            isPowerUp = false;
+                                            Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
+                                            powerUpText.setAnimation(null);
+                                            powerUpText.setVisibility(INVISIBLE);
+                                        }
+                                    }, 250);
+                                    powerUpText.setAnimation(AnimationUtils.loadAnimation(powerUpText.getContext(), R.anim.blink));
                                 }
-                            }, 2500);
+                            }, 2250);
+                            isPowerUp = true;
                             Values.gapPipe = (int) (SCREEN_HEIGHT / 4);
                             powerUpText.setText("Bigger gap");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
@@ -68,9 +81,11 @@ public class PowerUp extends GameObject {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    isPowerUp = false;
                                     powerUpText.setVisibility(INVISIBLE);
                                 }
                             }, 1000);
+                            isPowerUp = true;
                             powerUpText.setText("+5 coins");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
                             break;
@@ -79,9 +94,11 @@ public class PowerUp extends GameObject {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    isPowerUp = false;
                                     powerUpText.setVisibility(INVISIBLE);
                                 }
                             }, 1000);
+                            isPowerUp = true;
                             powerUpText.setText("+200 score");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
                             break;
@@ -89,10 +106,19 @@ public class PowerUp extends GameObject {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
-                                    powerUpText.setVisibility(INVISIBLE);
+                                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            isPowerUp = false;
+                                            Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
+                                            powerUpText.setAnimation(null);
+                                            powerUpText.setVisibility(INVISIBLE);
+                                        }
+                                    }, 250);
+                                    powerUpText.setAnimation(AnimationUtils.loadAnimation(powerUpText.getContext(), R.anim.blink));
                                 }
-                            }, 2500);
+                            }, 2250);
+                            isPowerUp = true;
                             Values.gapPipe = (int) (SCREEN_HEIGHT / 6);
                             powerUpText.setText("Smaller gap");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
@@ -101,10 +127,19 @@ public class PowerUp extends GameObject {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
-                                    powerUpText.setVisibility(INVISIBLE);
+                                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            isPowerUp = false;
+                                            Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
+                                            powerUpText.setAnimation(null);
+                                            powerUpText.setVisibility(INVISIBLE);
+                                        }
+                                    }, 250);
+                                    powerUpText.setAnimation(AnimationUtils.loadAnimation(powerUpText.getContext(), R.anim.blink));
                                 }
-                            }, 750);
+                            }, 500);
+                            isPowerUp = true;
                             Values.speedPipe = 5 * SCREEN_WIDTH / 1080;
                             powerUpText.setText("Slowness");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
@@ -114,10 +149,19 @@ public class PowerUp extends GameObject {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    view.isDoublePoints = false;
-                                    powerUpText.setVisibility(INVISIBLE);
+                                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            isPowerUp = false;
+                                            view.isDoublePoints = false;
+                                            powerUpText.setAnimation(null);
+                                            powerUpText.setVisibility(INVISIBLE);
+                                        }
+                                    }, 250);
+                                    powerUpText.setAnimation(AnimationUtils.loadAnimation(powerUpText.getContext(), R.anim.blink));
                                 }
-                            }, 1500);
+                            }, 1250);
+                            isPowerUp = true;
                             view.isDoublePoints = true;
                             powerUpText.setText("Double points");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
@@ -130,16 +174,18 @@ public class PowerUp extends GameObject {
                                     new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
+                                            isPowerUp = false;
                                             view.isCollisionImmunity = false;
                                             powerUpText.setAnimation(null);
                                             powerUpText.setVisibility(INVISIBLE);
                                             view.cnt = 3;
                                         }
-                                    }, 1000);
+                                    }, 500);
                                     if (view.isCollisionImmunity)
                                         powerUpText.setAnimation(AnimationUtils.loadAnimation(powerUpText.getContext(), R.anim.blink));
                                 }
-                            }, 2000);
+                            }, 2500);
+                            isPowerUp = true;
                             view.isCollisionImmunity = true;
                             powerUpText.setText("Collision Immunity " + view.cnt + "sec");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
@@ -149,9 +195,11 @@ public class PowerUp extends GameObject {
                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    isPowerUp = false;
                                     powerUpText.setVisibility(INVISIBLE);
                                 }
                             }, 1000);
+                            isPowerUp = true;
                             powerUpText.setText("Nothing");
                             powerUpText.setVisibility(android.view.View.VISIBLE);
                             break;
@@ -164,8 +212,10 @@ public class PowerUp extends GameObject {
             this.setY(new Random().nextInt(SCREEN_HEIGHT / 2 - MainActivity.grass.getHeight()) + (float) SCREEN_HEIGHT / 3);
         }
 
-        this.x -= (speedPipe + (float) speedPipe / 2);
-        canvas.drawBitmap(this.bitmap, this.x, this.y, null);
+        if (!isPowerUp) {
+            this.x -= (speedPipe + (float) speedPipe / 2);
+            canvas.drawBitmap(this.bitmap, this.x, this.y, null);
+        }
     }
 
 }
