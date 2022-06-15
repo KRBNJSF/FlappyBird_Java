@@ -122,9 +122,6 @@ public class MainActivity extends AppCompatActivity {
         boosterButton = (Button) findViewById(R.id.boostButton);
         buyBoostButton = (Button) findViewById(R.id.buyBoostButton);
 
-        if (!sharedPreferences.getBoolean("isDragon", view.isDragon)) {
-            duckButton.setAlpha(0.02f);
-        }
         shopButton.setX((float) 0);
 
         gameOverText.setText("Flappy Bird");
@@ -135,7 +132,14 @@ public class MainActivity extends AppCompatActivity {
         Bird.legendarySkin = sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin);
         Bird.boughtSkin = sharedPreferences.getInt("skinBought", Bird.boughtSkin);
         Bird.boosterCount = sharedPreferences.getInt("boosterCount", Bird.boosterCount);
+        //view.isDragon = sharedPreferences.getBoolean("isDragon", view.isDragon);
+        //Bird.boughtSkinUsing = sharedPreferences.getBoolean("boughtSkinUsing", Bird.boughtSkinUsing);
         boosterButton.setText(String.valueOf(Bird.boosterCount));
+
+        if (!sharedPreferences.getBoolean("isDragon", view.isDragon)) {
+            duckButton.setAlpha(0.02f);
+        }
+
         x = 300;
         y = 300;
 

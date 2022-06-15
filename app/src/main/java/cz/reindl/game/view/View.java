@@ -172,27 +172,29 @@ public class View extends android.view.View {
     @SuppressLint("SetTextI18n")
     public void draw(Canvas canvas) {
         //LOOP
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (duckButton.getX() + duckButton.getWidth() <= SCREEN_WIDTH && !direction) {
-                    duckX += 10;
-                } else if (duckButton.getX() >= 0) {
-                    duckButton.setBackgroundResource(R.drawable.duck2);
-                    direction = true;
-                    duckX -= 10;
-                } else {
-                    duckButton.setBackgroundResource(R.drawable.duck);
-                    direction = false;
+        /*if (duckButton.getAlpha() == 1f) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (duckButton.getX() + duckButton.getWidth() <= SCREEN_WIDTH && !direction) {
+                        duckX += 10;
+                    } else if (duckButton.getX() >= 0) {
+                        duckButton.setBackgroundResource(R.drawable.duck2);
+                        direction = true;
+                        duckX -= 10;
+                    } else {
+                        duckButton.setBackgroundResource(R.drawable.duck);
+                        direction = false;
+                    }
+                    if (duckCounter >= 20) {
+                        duckButton.setX(duckX);
+                        duckCounter = 0;
+                    }
+                    //duckButton.setTranslationX((float) SCREEN_WIDTH / 2 - (float) duckButton.getWidth() / 2); // FIXME: 13.06.2022 Just for now
                 }
-                if (duckCounter >= 10) {
-                    duckButton.setX(duckX - 200);
-                    duckCounter = 0;
-                }
-                //duckButton.setTranslationX((float) SCREEN_WIDTH / 2 - (float) duckButton.getWidth() / 2); // FIXME: 13.06.2022 Just for now
-            }
-        });
-        duckCounter++;
+            });
+            duckCounter++;
+        }*/
         handler.postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {
