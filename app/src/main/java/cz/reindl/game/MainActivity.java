@@ -122,7 +122,9 @@ public class MainActivity extends AppCompatActivity {
         boosterButton = (Button) findViewById(R.id.boostButton);
         buyBoostButton = (Button) findViewById(R.id.buyBoostButton);
 
-        duckButton.setAlpha(0.03f);
+        if (!sharedPreferences.getBoolean("isDragon", view.isDragon)) {
+            duckButton.setAlpha(0.02f);
+        }
         shopButton.setX((float) 0);
 
         gameOverText.setText("Flappy Bird");
@@ -259,11 +261,11 @@ public class MainActivity extends AppCompatActivity {
             if (isDevButtonOn == 0) {
                 isActive = true;
                 isDevButtonOn = 1;
-                Values.gapPipe = 600;
+                //Values.gapPipe = 600;
             } else {
                 isActive = false;
                 isDevButtonOn = 0;
-                Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
+                //Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
             }
         });
 
@@ -342,6 +344,8 @@ public class MainActivity extends AppCompatActivity {
 
         duckButton.setOnClickListener(l -> {
             view.isDragon = true;
+            editor.putBoolean("isDragon", true);
+            editor.commit();
             bird.setHeight(80 * SCREEN_HEIGHT / 1920);
             bird.setWidth(105 * SCREEN_WIDTH / 1080);
             if (bird.getBirdList().get(0) != bird.getBirdList().get(10)) {

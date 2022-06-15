@@ -54,7 +54,7 @@ public class View extends android.view.View {
 
     public final Runnable runnable;
     public Handler handler;
-    public int counter, duckX = 0;
+    public int counter, duckX, duckCounter = 0;
     public int cnt = 3;
     public int barrierThroughCounter = 3;
 
@@ -172,7 +172,7 @@ public class View extends android.view.View {
     @SuppressLint("SetTextI18n")
     public void draw(Canvas canvas) {
         //LOOP
-        /*AsyncTask.execute(new Runnable() {
+        AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 if (duckButton.getX() + duckButton.getWidth() <= SCREEN_WIDTH && !direction) {
@@ -185,10 +185,14 @@ public class View extends android.view.View {
                     duckButton.setBackgroundResource(R.drawable.duck);
                     direction = false;
                 }
-                // FIXME: 13.06.2022 duckButton.setX(duckX);
-                duckButton.setTranslationX((float) SCREEN_WIDTH / 2 - (float) duckButton.getWidth() / 2); // FIXME: 13.06.2022 Just for now
+                if (duckCounter >= 10) {
+                    duckButton.setX(duckX - 200);
+                    duckCounter = 0;
+                }
+                //duckButton.setTranslationX((float) SCREEN_WIDTH / 2 - (float) duckButton.getWidth() / 2); // FIXME: 13.06.2022 Just for now
             }
-        });*/
+        });
+        duckCounter++;
         handler.postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {
@@ -221,6 +225,7 @@ public class View extends android.view.View {
                                 view.barriers.get(2).setX(view.barriers.get(1).getX() + barrierDistance);
                                 buttonStop.setVisibility(VISIBLE);
                                 Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
+                                bird.setFallGravity(-15);
                             }
                         }
                     }, 4000);
@@ -238,6 +243,8 @@ public class View extends android.view.View {
             } else if (bird.getY() + bird.getHeight() >= SCREEN_HEIGHT - grass.getHeight()) {
                 eventHandler.resetGame();
             } else {
+                eventHandler.checkHardCore();
+                scoreText.setText(String.valueOf("Score: " + bird.getScore()));
                 //powerUpText.setText("Collision Immunity " + view.cnt + "sec");
             }
         } else if (!isAlive) {

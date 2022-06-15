@@ -228,7 +228,7 @@ public class EventHandler {
         }
     }
 
-    private void checkHardCore() {
+    public void checkHardCore() {
         if (view.isBooster) bird.setScore(bird.getScore() + 10);
         else if (view.isDoublePoints) bird.setScore(bird.getScore() + 6);
         else if (Bird.easterEgg) bird.setScore(bird.getScore() + 6);
