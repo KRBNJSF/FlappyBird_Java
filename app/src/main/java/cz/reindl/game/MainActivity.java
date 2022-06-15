@@ -7,6 +7,7 @@ import static cz.reindl.game.values.Values.SCREEN_HEIGHT;
 import static cz.reindl.game.values.Values.SCREEN_WIDTH;
 import static cz.reindl.game.view.View.bird;
 import static cz.reindl.game.view.View.isActive;
+import static cz.reindl.game.view.View.isAlive;
 import static cz.reindl.game.view.View.isRunning;
 import static cz.reindl.game.view.View.sound;
 
@@ -28,6 +29,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -35,6 +37,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Objects;
 
 import cz.reindl.game.event.EventHandler;
 import cz.reindl.game.values.Values;
@@ -48,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     DisplayMetrics metrics;
     @SuppressLint("StaticFieldLeak")
     public static TextView scoreText, highScoreText, gameOverText, coinText, lastScoreText, powerUpText, coinGetText;
+    @SuppressLint("StaticFieldLeak")
+    public static EditText bonusCodeText;
 
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     public static View view;
 
     public static int isDevButtonOn, isGameStopped, isRevived, x, y = 0;
-    public static boolean isMusicStopped, isShop;
+    public static boolean isMusicStopped, isShop, isBonusUsed;
     public static int currentMusic;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -121,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         duckButton = (Button) findViewById(R.id.duckButton);
         boosterButton = (Button) findViewById(R.id.boostButton);
         buyBoostButton = (Button) findViewById(R.id.buyBoostButton);
+        bonusCodeText = (EditText) findViewById(R.id.bonusCodeText);
 
         shopButton.setX((float) 0);
 
@@ -132,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         Bird.legendarySkin = sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin);
         Bird.boughtSkin = sharedPreferences.getInt("skinBought", Bird.boughtSkin);
         Bird.boosterCount = sharedPreferences.getInt("boosterCount", Bird.boosterCount);
+        isBonusUsed = sharedPreferences.getBoolean("isBonusUsed", isBonusUsed);
         //view.isDragon = sharedPreferences.getBoolean("isDragon", view.isDragon);
         //Bird.boughtSkinUsing = sharedPreferences.getBoolean("boughtSkinUsing", Bird.boughtSkinUsing);
         boosterButton.setText(String.valueOf(Bird.boosterCount));
@@ -262,6 +270,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         devButton.setOnClickListener(v -> {
+            if (!isRunning && !isAlive && !isBonusUsed) {
+                bonusCodeText.setVisibility(VISIBLE);
+            }
             if (isDevButtonOn == 0) {
                 isActive = true;
                 isDevButtonOn = 1;
@@ -296,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
             settingsButton.setVisibility(android.view.View.INVISIBLE);
             boosterButton.setVisibility(android.view.View.INVISIBLE);
             buyBoostButton.setVisibility(android.view.View.INVISIBLE);
+            bonusCodeText.setVisibility(INVISIBLE);
             shopLayout.setVisibility(android.view.View.INVISIBLE); // FIXME: 31.05.2022 DELETE!
         });
 
@@ -412,6 +424,31 @@ public class MainActivity extends AppCompatActivity {
                 coinGetText.setX(x);
                 coinGetText.setY(y);
                 Snackbar.make(menuLayout, "Booster bought Successfully!", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        bonusCodeText.setOnClickListener(l -> {
+            if (!bonusCodeText.isActivated()) {
+                String text = String.valueOf(bonusCodeText.getText());
+                if (text.equals("kachna") && !isBonusUsed) {
+                    isBonusUsed = true;
+                    bonusCodeText.setVisibility(INVISIBLE);
+                    bird.setCoins(bird.getCoins() + 500);
+                    coinText.setText(String.valueOf(bird.getCoins()));
+                    editor.putInt("coinValue", bird.getCoins());
+                    editor.putBoolean("isBonusUsed", isBonusUsed);
+                    editor.commit();
+                    coinGetText.setText(String.valueOf("+500"));
+                    coinGetText.setVisibility(VISIBLE);
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (coinGetText.getVisibility() == VISIBLE) {
+                                coinGetText.setVisibility(INVISIBLE);
+                            }
+                        }
+                    }, 600);
+                }
             }
         });
 

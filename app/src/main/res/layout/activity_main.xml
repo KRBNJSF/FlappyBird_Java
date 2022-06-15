@@ -28,6 +28,16 @@
         android:textStyle="bold"
         android:visibility="invisible" />
 
+    <EditText
+        android:id="@+id/bonusCodeText"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/boostButton"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:visibility="invisible"
+        tools:ignore="LabelFor" />
+
     <Button
         android:id="@+id/boostButton"
         android:layout_width="40dp"
