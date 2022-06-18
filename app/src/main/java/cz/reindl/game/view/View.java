@@ -85,6 +85,10 @@ public class View extends android.view.View {
         sound.barrierCollideSound = sound.getSoundPool().load(context, R.raw.collide_fall, 1);
         sound.scytheFlap = sound.getSoundPool().load(context, R.raw.scythe_flap, 1);
         sound.reviveSound = sound.getSoundPool().load(context, R.raw.revive_sound, 1);
+
+        //CODES
+        Values.bonusCodes.add("verdysduck");
+        Values.bonusCodes.add("pride");
     }
 
     public void initBarrier(Bitmap bitmap, Bitmap bitmap2) {

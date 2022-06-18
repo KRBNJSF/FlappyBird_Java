@@ -24,10 +24,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public static View view;
 
     public static int isDevButtonOn, isGameStopped, isRevived, x, y = 0;
-    public static boolean isMusicStopped, isShop, isBonusUsed;
+    public static boolean isMusicStopped, isShop, isBonusLeft, isDuckBonus, isPrideBonus;
     public static int currentMusic;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -133,13 +135,23 @@ public class MainActivity extends AppCompatActivity {
 
         gameOverText.setText("Flappy Bird");
         restartButton.setText("Start");
+
+        //SCORE TEXT
         highScoreText.setText(String.valueOf("High Score: " + sharedPreferences.getInt("highScore", bird.getHighScore())));
         coinText.setText(String.valueOf(sharedPreferences.getInt("coinValue", bird.getCoins())));
         bird.setCoins(sharedPreferences.getInt("coinValue", bird.getCoins()));
+
+        //SKIN
         Bird.legendarySkin = sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin);
         Bird.boughtSkin = sharedPreferences.getInt("skinBought", Bird.boughtSkin);
         Bird.boosterCount = sharedPreferences.getInt("boosterCount", Bird.boosterCount);
-        isBonusUsed = sharedPreferences.getBoolean("isBonusUsed", isBonusUsed);
+
+        //CODE
+        isBonusLeft = sharedPreferences.getBoolean("isBonusLeft", isBonusLeft);
+        isDuckBonus = sharedPreferences.getBoolean("isDuckBonus", isDuckBonus);
+        isPrideBonus = sharedPreferences.getBoolean("isPrideBonus", isPrideBonus);
+        isBonusLeft = !isDuckBonus && !isPrideBonus;
+
         //view.isDragon = sharedPreferences.getBoolean("isDragon", view.isDragon);
         //Bird.boughtSkinUsing = sharedPreferences.getBoolean("boughtSkinUsing", Bird.boughtSkinUsing);
         boosterButton.setText(String.valueOf(Bird.boosterCount));
@@ -270,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         devButton.setOnClickListener(v -> {
-            if (!isRunning && !isAlive && !isBonusUsed) {
+            if (!isRunning && !isAlive && isBonusLeft) {
                 bonusCodeText.setVisibility(VISIBLE);
             }
             if (isDevButtonOn == 0) {
@@ -308,7 +320,9 @@ public class MainActivity extends AppCompatActivity {
             boosterButton.setVisibility(android.view.View.INVISIBLE);
             buyBoostButton.setVisibility(android.view.View.INVISIBLE);
             bonusCodeText.setVisibility(INVISIBLE);
+            bonusCodeText.setText(null);
             shopLayout.setVisibility(android.view.View.INVISIBLE); // FIXME: 31.05.2022 DELETE!
+            hideKeyboard();
         });
 
         reviveButton.setOnClickListener(l -> {
@@ -430,24 +444,66 @@ public class MainActivity extends AppCompatActivity {
         bonusCodeText.setOnClickListener(l -> {
             if (!bonusCodeText.isActivated()) {
                 String text = String.valueOf(bonusCodeText.getText());
-                if (text.equals("kachna") && !isBonusUsed) {
-                    isBonusUsed = true;
-                    bonusCodeText.setVisibility(INVISIBLE);
-                    bird.setCoins(bird.getCoins() + 500);
-                    coinText.setText(String.valueOf(bird.getCoins()));
-                    editor.putInt("coinValue", bird.getCoins());
-                    editor.putBoolean("isBonusUsed", isBonusUsed);
-                    editor.commit();
-                    coinGetText.setText(String.valueOf("+500"));
-                    coinGetText.setVisibility(VISIBLE);
-                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (coinGetText.getVisibility() == VISIBLE) {
-                                coinGetText.setVisibility(INVISIBLE);
+                for (int i = 0; i < Values.bonusCodes.size(); i++) {
+                    switch (text) {
+                        case "verdysduck": {
+                            if (isDuckBonus) {
+                                hideKeyboard();
+                                Snackbar.make(menuLayout, "Successfully used", Snackbar.LENGTH_SHORT).show();
+                                addValues("isDuckBonus", 500);
+                                isDuckBonus = false;
+                            } else {
+                                hideKeyboard();
+                                bonusCodeText.setText(null);
+                                Snackbar.make(menuLayout, "Code's been already used", Snackbar.LENGTH_SHORT).show();
                             }
+                            break;
                         }
-                    }, 600);
+                        case "pride": {
+                            if (isPrideBonus) {
+                                hideKeyboard();
+                                Snackbar.make(menuLayout, "Successfully used", Snackbar.LENGTH_SHORT).show();
+                                addValues("isPrideBonus", 1000);
+                                isPrideBonus = false;
+                            } else {
+                                hideKeyboard();
+                                bonusCodeText.setText(null);
+                                Snackbar.make(menuLayout, "Code's been already used", Snackbar.LENGTH_SHORT).show();
+                            }
+                            break;
+                        }
+                        case "": {
+                            bonusCodeText.setSelected(false);
+                            bonusCodeText.setFocusableInTouchMode(false);
+                            break;
+                        }
+                        default:
+                            hideKeyboard();
+                            bonusCodeText.setSelected(false);
+                            bonusCodeText.setFocusableInTouchMode(false);
+                            Snackbar.make(menuLayout, "Invalid code", Snackbar.LENGTH_SHORT).show();
+                            bonusCodeText.setText(null);
+                            break;
+                    }
+                    /*if (text.equals(Values.bonusCodes.get(i)) && !isBonusUsed) {
+                        isBonusUsed = true;
+                        bonusCodeText.setVisibility(INVISIBLE);
+                        bird.setCoins(bird.getCoins() + 500);
+                        coinText.setText(String.valueOf(bird.getCoins()));
+                        editor.putInt("coinValue", bird.getCoins());
+                        editor.putBoolean("isBonusUsed", isBonusUsed);
+                        editor.commit();
+                        coinGetText.setText(String.valueOf("+500"));
+                        coinGetText.setVisibility(VISIBLE);
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (coinGetText.getVisibility() == VISIBLE) {
+                                    coinGetText.setVisibility(INVISIBLE);
+                                }
+                            }
+                        }, 600);
+                    }*/
                 }
             }
         });
@@ -492,5 +548,44 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void addValues(String booleanName, int coinValue) {
+        //bonus = isUsed;
+        bonusCodeText.setVisibility(INVISIBLE);
+        bonusCodeText.setText(null);
+        bird.setCoins(bird.getCoins() + coinValue / 2);
+        coinText.setText(String.valueOf(bird.getCoins()));
+        editor.putInt("coinValue", bird.getCoins());
+        editor.putBoolean(booleanName, false);
+        editor.commit();
+        coinGetText.setText(String.valueOf("+" + coinValue));
+        coinGetText.setVisibility(VISIBLE);
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (coinGetText.getVisibility() == VISIBLE) {
+                    coinGetText.setVisibility(INVISIBLE);
+                }
+            }
+        }, 600);
+    }
+
+    private void showKeyboard(EditText editText) {
+        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+        editText.requestFocus();
+        InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (mgr.isActive()) mgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public boolean onTouchEvent(MotionEvent event) {
+        hideKeyboard();
+        return super.onTouchEvent(event);
+    }
+
 
 }

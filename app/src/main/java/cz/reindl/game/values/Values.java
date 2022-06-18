@@ -2,6 +2,8 @@ package cz.reindl.game.values;
 
 import android.content.Intent;
 
+import java.util.ArrayList;
+
 public class Values {
 
     //SCREEN ATTRIBUTES
@@ -18,5 +20,8 @@ public class Values {
 
     //ACTIVITY
     public static Intent intent;
+
+    //CODES
+    public static ArrayList<String> bonusCodes = new ArrayList<>();
 
 }
