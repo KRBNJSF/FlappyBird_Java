@@ -3,6 +3,7 @@ package cz.reindl.game.event;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.makeText;
+import static cz.reindl.game.MainActivity.bonusCodeButton;
 import static cz.reindl.game.MainActivity.boosterButton;
 import static cz.reindl.game.MainActivity.buttonStop;
 import static cz.reindl.game.MainActivity.buyBoostButton;
@@ -132,6 +133,7 @@ public class EventHandler {
         duckButton.setVisibility(VISIBLE);
         boosterButton.setVisibility(VISIBLE);
         buyBoostButton.setVisibility(VISIBLE);
+        bonusCodeButton.setVisibility(VISIBLE);
         shopLayout.setVisibility(VISIBLE); // FIXME: 31.05.2022 DELETE!
         restartButton.setText("Restart");
         gameOverText.setText("Game Over");

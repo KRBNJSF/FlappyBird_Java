@@ -39,6 +39,18 @@
         tools:ignore="LabelFor" />
 
     <Button
+        android:id="@+id/bonusCodeButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toStartOf="@id/musicStopButton"
+        android:layout_below="@id/musicStopButton"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="-40dp"
+        android:background="@drawable/ic_settings_button"
+        android:fontFamily="@font/pixel_font"
+        android:visibility="visible" />
+
+    <Button
         android:id="@+id/boostButton"
         android:layout_width="40dp"
         android:layout_height="40dp"

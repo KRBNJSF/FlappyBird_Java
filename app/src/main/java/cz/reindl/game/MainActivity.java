@@ -24,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.BoringLayout;
 import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -61,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences.Editor editor;
 
     @SuppressLint("StaticFieldLeak")
-    public static Button devButton, restartButton, hardCoreButton, reviveButton, skipReviveButton, settingsButton, shopButton, duckButton, boosterButton, buyBoostButton;
+    public static Button devButton, restartButton, hardCoreButton, reviveButton, skipReviveButton, settingsButton,
+            shopButton, duckButton, boosterButton, buyBoostButton, bonusCodeButton;
     @SuppressLint("StaticFieldLeak")
     public static ImageButton buttonSkin1, buttonSkin2, buttonSkin3, buttonStop, musicStopButton;
 
@@ -129,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
         duckButton = (Button) findViewById(R.id.duckButton);
         boosterButton = (Button) findViewById(R.id.boostButton);
         buyBoostButton = (Button) findViewById(R.id.buyBoostButton);
+        bonusCodeButton = (Button) findViewById(R.id.bonusCodeButton);
+
         bonusCodeText = (EditText) findViewById(R.id.bonusCodeText);
 
         shopButton.setX((float) 0);
@@ -145,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
         Bird.legendarySkin = sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin);
         Bird.boughtSkin = sharedPreferences.getInt("skinBought", Bird.boughtSkin);
         Bird.boosterCount = sharedPreferences.getInt("boosterCount", Bird.boosterCount);
+        //view.isDragon = sharedPreferences.getBoolean("isDragon", view.isDragon);
+        //Bird.boughtSkinUsing = sharedPreferences.getBoolean("boughtSkinUsing", Bird.boughtSkinUsing);
 
         //CODE
         isBonusLeft = sharedPreferences.getBoolean("isBonusLeft", isBonusLeft);
@@ -152,8 +158,6 @@ public class MainActivity extends AppCompatActivity {
         isPrideBonus = sharedPreferences.getBoolean("isPrideBonus", isPrideBonus);
         isBonusLeft = !isDuckBonus && !isPrideBonus;
 
-        //view.isDragon = sharedPreferences.getBoolean("isDragon", view.isDragon);
-        //Bird.boughtSkinUsing = sharedPreferences.getBoolean("boughtSkinUsing", Bird.boughtSkinUsing);
         boosterButton.setText(String.valueOf(Bird.boosterCount));
 
         if (!sharedPreferences.getBoolean("isDragon", view.isDragon)) {
@@ -282,9 +286,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         devButton.setOnClickListener(v -> {
-            if (!isRunning && !isAlive && isBonusLeft) {
-                bonusCodeText.setVisibility(VISIBLE);
-            }
             if (isDevButtonOn == 0) {
                 isActive = true;
                 isDevButtonOn = 1;
@@ -319,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
             settingsButton.setVisibility(android.view.View.INVISIBLE);
             boosterButton.setVisibility(android.view.View.INVISIBLE);
             buyBoostButton.setVisibility(android.view.View.INVISIBLE);
+            bonusCodeButton.setVisibility(INVISIBLE);
             bonusCodeText.setVisibility(INVISIBLE);
             bonusCodeText.setText(null);
             shopLayout.setVisibility(android.view.View.INVISIBLE); // FIXME: 31.05.2022 DELETE!
@@ -473,8 +475,8 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         }
                         case "": {
-                            bonusCodeText.setSelected(false);
-                            bonusCodeText.setFocusableInTouchMode(false);
+                            //bonusCodeText.setSelected(false);
+                            //bonusCodeText.setFocusableInTouchMode(false);
                             break;
                         }
                         default:
@@ -505,6 +507,15 @@ public class MainActivity extends AppCompatActivity {
                         }, 600);
                     }*/
                 }
+            }
+        });
+
+        bonusCodeButton.setOnClickListener(l -> {
+            isBonusLeft = !isDuckBonus && !isPrideBonus;
+            if (!isRunning && !isAlive && !isBonusLeft) {
+                bonusCodeText.setVisibility(VISIBLE);
+            } else if (!isRunning) {
+                Snackbar.make(menuLayout, "No bonus code available", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -584,6 +595,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onTouchEvent(MotionEvent event) {
         hideKeyboard();
+        bonusCodeText.setSelected(false);
         return super.onTouchEvent(event);
     }
 
