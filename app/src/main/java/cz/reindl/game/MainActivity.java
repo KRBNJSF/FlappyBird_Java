@@ -75,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
     public static View view;
 
     public static int isDevButtonOn, isGameStopped, isRevived, x, y = 0;
-    public static boolean isMusicStopped, isShop, isBonusLeft, isDuckBonus, isPrideBonus;
+    public static boolean isMusicStopped, isShop;
+    public static boolean isDuckBonus, isPrideBonus, isBonusLeft = true;
     public static int currentMusic;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -156,8 +157,6 @@ public class MainActivity extends AppCompatActivity {
         isBonusLeft = sharedPreferences.getBoolean("isBonusLeft", isBonusLeft);
         isDuckBonus = sharedPreferences.getBoolean("isDuckBonus", isDuckBonus);
         isPrideBonus = sharedPreferences.getBoolean("isPrideBonus", isPrideBonus);
-        isBonusLeft = !isDuckBonus && !isPrideBonus;
-
         boosterButton.setText(String.valueOf(Bird.boosterCount));
 
         if (!sharedPreferences.getBoolean("isDragon", view.isDragon)) {
@@ -449,11 +448,11 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < Values.bonusCodes.size(); i++) {
                     switch (text) {
                         case "verdysduck": {
-                            if (isDuckBonus) {
+                            if (!isDuckBonus) {
                                 hideKeyboard();
                                 Snackbar.make(menuLayout, "Successfully used", Snackbar.LENGTH_SHORT).show();
                                 addValues("isDuckBonus", 500);
-                                isDuckBonus = false;
+                                isDuckBonus = true;
                             } else {
                                 hideKeyboard();
                                 bonusCodeText.setText(null);
@@ -462,11 +461,11 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         }
                         case "pride": {
-                            if (isPrideBonus) {
+                            if (!isPrideBonus) {
                                 hideKeyboard();
                                 Snackbar.make(menuLayout, "Successfully used", Snackbar.LENGTH_SHORT).show();
                                 addValues("isPrideBonus", 1000);
-                                isPrideBonus = false;
+                                isPrideBonus = true;
                             } else {
                                 hideKeyboard();
                                 bonusCodeText.setText(null);
@@ -511,8 +510,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         bonusCodeButton.setOnClickListener(l -> {
-            isBonusLeft = !isDuckBonus && !isPrideBonus;
-            if (!isRunning && !isAlive && !isBonusLeft) {
+            if (isDuckBonus && isPrideBonus) {
+                isBonusLeft = false;
+            } else {
+                isBonusLeft = true;
+            }
+            if (!isRunning && !isAlive && isBonusLeft) {
                 bonusCodeText.setVisibility(VISIBLE);
             } else if (!isRunning) {
                 Snackbar.make(menuLayout, "No bonus code available", Snackbar.LENGTH_SHORT).show();
@@ -567,7 +570,7 @@ public class MainActivity extends AppCompatActivity {
         bird.setCoins(bird.getCoins() + coinValue / 2);
         coinText.setText(String.valueOf(bird.getCoins()));
         editor.putInt("coinValue", bird.getCoins());
-        editor.putBoolean(booleanName, false);
+        editor.putBoolean(booleanName, true);
         editor.commit();
         coinGetText.setText(String.valueOf("+" + coinValue));
         coinGetText.setVisibility(VISIBLE);
@@ -598,6 +601,5 @@ public class MainActivity extends AppCompatActivity {
         bonusCodeText.setSelected(false);
         return super.onTouchEvent(event);
     }
-
 
 }
