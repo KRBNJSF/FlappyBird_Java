@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     DisplayMetrics metrics;
     @SuppressLint("StaticFieldLeak")
-    public static TextView scoreText, highScoreText, gameOverText, coinText, lastScoreText, powerUpText, coinGetText;
+    public static TextView scoreText, highScoreText, gameOverText, coinText, lastScoreText, powerUpText, coinGetText, boostIcon;
     @SuppressLint("StaticFieldLeak")
     public static EditText bonusCodeText;
 
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static int isDevButtonOn, isGameStopped, isRevived, x, y = 0;
     public static boolean isMusicStopped, isShop;
-    public static boolean isDuckBonus, isPrideBonus, isBonusLeft = true;
+    public static boolean isDuckBonus, isPrideBonus, isCapybaraBonus, isBonusLeft = true;
     public static int currentMusic;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         lastScoreText = (TextView) findViewById(R.id.lastScoreText);
         powerUpText = (TextView) findViewById(R.id.powerUpText);
         coinGetText = (TextView) findViewById(R.id.coinGetText);
+        boostIcon = (TextView) findViewById(R.id.boostIcon);
 
         grass = (ImageView) findViewById(R.id.grass);
         grass.setMinimumHeight(SCREEN_HEIGHT / 4);
@@ -150,13 +151,16 @@ public class MainActivity extends AppCompatActivity {
         Bird.legendarySkin = sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin);
         Bird.boughtSkin = sharedPreferences.getInt("skinBought", Bird.boughtSkin);
         Bird.boosterCount = sharedPreferences.getInt("boosterCount", Bird.boosterCount);
-        //view.isDragon = sharedPreferences.getBoolean("isDragon", view.isDragon);
-        //Bird.boughtSkinUsing = sharedPreferences.getBoolean("boughtSkinUsing", Bird.boughtSkinUsing);
+        Bird.boughtSkinUsing = sharedPreferences.getBoolean("boughtSkinUsing", Bird.boughtSkinUsing);
+        Bird.legendarySkinUsing = sharedPreferences.getBoolean("legendarySkinUsing", Bird.legendarySkinUsing);
+        Bird.dragonSkinUsing = sharedPreferences.getBoolean("dragonSkinUsing", Bird.dragonSkinUsing);
+        view.isDragon = sharedPreferences.getBoolean("isDragon", view.isDragon);
 
         //CODE
         isBonusLeft = sharedPreferences.getBoolean("isBonusLeft", isBonusLeft);
         isDuckBonus = sharedPreferences.getBoolean("isDuckBonus", isDuckBonus);
         isPrideBonus = sharedPreferences.getBoolean("isPrideBonus", isPrideBonus);
+        isCapybaraBonus = sharedPreferences.getBoolean("isCapybaraBonus", isCapybaraBonus);
         boosterButton.setText(String.valueOf(Bird.boosterCount));
 
         if (!sharedPreferences.getBoolean("isDragon", view.isDragon)) {
@@ -172,10 +176,35 @@ public class MainActivity extends AppCompatActivity {
         if (!Bird.legendarySkin) {
             buttonSkin2.setBackground(getDrawable(R.drawable.legendary_skin_locked));
         }
+        if (Bird.boughtSkinUsing) {
+            bird.setHeight(80 * SCREEN_HEIGHT / 1920);
+            bird.setWidth(105 * SCREEN_WIDTH / 1080);
+            bird.getBirdList().clear();
+            view.initBirdList();
+        } else if (Bird.legendarySkinUsing) {
+            bird.setHeight(100 * SCREEN_HEIGHT / 1920);
+            bird.setWidth(110 * SCREEN_WIDTH / 1080);
+            bird.getBirdList().clear();
+            view.initBirdList();
+        } else if (Bird.dragonSkinUsing) {
+            bird.setHeight(80 * SCREEN_HEIGHT / 1920);
+            bird.setWidth(105 * SCREEN_WIDTH / 1080);
+            bird.getBirdList().clear();
+            view.initBirdList();
+        } else {
+            bird.setHeight(105 * SCREEN_HEIGHT / 1920);
+            bird.setWidth(105 * SCREEN_WIDTH / 1080);
+            bird.getBirdList().clear();
+            view.initBirdList();
+        }
 
         //LISTENERS
 
         buttonSkin1.setOnClickListener(l -> {
+            editor.putBoolean("boughtSkinUsing", false);
+            editor.putBoolean("legendarySkinUsing", false);
+            editor.putBoolean("dragonSkinUsing", false);
+            editor.commit();
             Bird.legendarySkinUsing = false;
             Bird.boughtSkinUsing = false;
             view.isDragon = false;
@@ -226,9 +255,11 @@ public class MainActivity extends AppCompatActivity {
         buttonSkin2.setOnClickListener(l -> {
             Bird.legendarySkin = sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin);
             if (sharedPreferences.getBoolean("skinUnlocked", Bird.legendarySkin)) {
+                editor.putBoolean("legendarySkinUsing", true);
+                editor.commit();
                 Bird.boughtSkinUsing = false;
                 Bird.legendarySkinUsing = true;
-                view.isDragon = false;
+                Bird.dragonSkinUsing = false;
                 bird.setHeight(100 * SCREEN_HEIGHT / 1920);
                 bird.setWidth(110 * SCREEN_WIDTH / 1080);
                 buttonSkin2.setBackground(getDrawable(R.drawable.legendary_skinup));
@@ -243,9 +274,13 @@ public class MainActivity extends AppCompatActivity {
 
         buttonSkin3.setOnClickListener(l -> {
             if (Bird.boughtSkin == 1) {
+                editor.putBoolean("boughtSkinUsing", true);
+                editor.putBoolean("legendarySkinUsing", false);
+                editor.putBoolean("dragonSkinUsing", false);
+                editor.commit();
                 Bird.boughtSkinUsing = true;
                 Bird.legendarySkinUsing = false;
-                view.isDragon = false;
+                Bird.dragonSkinUsing = false;
                 bird.setHeight(80 * SCREEN_HEIGHT / 1920);
                 bird.setWidth(105 * SCREEN_WIDTH / 1080);
                 if (bird.getBirdList().get(0) != bird.getBirdList().get(6)) {
@@ -375,7 +410,12 @@ public class MainActivity extends AppCompatActivity {
 
         duckButton.setOnClickListener(l -> {
             view.isDragon = true;
+            Bird.dragonSkinUsing = true;
+            editor.putBoolean("dragonSkinUsing", true);
             editor.putBoolean("isDragon", true);
+            editor.putBoolean("boughtSkinUsing", false);
+            editor.putBoolean("legendarySkinUsing", false);
+            editor.commit();
             editor.commit();
             bird.setHeight(80 * SCREEN_HEIGHT / 1920);
             bird.setWidth(105 * SCREEN_WIDTH / 1080);
@@ -445,47 +485,61 @@ public class MainActivity extends AppCompatActivity {
         bonusCodeText.setOnClickListener(l -> {
             if (!bonusCodeText.isActivated()) {
                 String text = String.valueOf(bonusCodeText.getText());
-                for (int i = 0; i < Values.bonusCodes.size(); i++) {
-                    switch (text) {
-                        case "verdysduck": {
-                            if (!isDuckBonus) {
-                                hideKeyboard();
-                                Snackbar.make(menuLayout, "Successfully used", Snackbar.LENGTH_SHORT).show();
-                                addValues("isDuckBonus", 500);
-                                isDuckBonus = true;
-                            } else {
-                                hideKeyboard();
-                                bonusCodeText.setText(null);
-                                Snackbar.make(menuLayout, "Code's been already used", Snackbar.LENGTH_SHORT).show();
-                            }
-                            break;
-                        }
-                        case "pride": {
-                            if (!isPrideBonus) {
-                                hideKeyboard();
-                                Snackbar.make(menuLayout, "Successfully used", Snackbar.LENGTH_SHORT).show();
-                                addValues("isPrideBonus", 1000);
-                                isPrideBonus = true;
-                            } else {
-                                hideKeyboard();
-                                bonusCodeText.setText(null);
-                                Snackbar.make(menuLayout, "Code's been already used", Snackbar.LENGTH_SHORT).show();
-                            }
-                            break;
-                        }
-                        case "": {
-                            //bonusCodeText.setSelected(false);
-                            //bonusCodeText.setFocusableInTouchMode(false);
-                            break;
-                        }
-                        default:
+                //for (int i = 0; i < Values.bonusCodes.size(); i++) {
+                switch (text) {
+                    case "verdysduck": {
+                        if (!isDuckBonus) {
                             hideKeyboard();
-                            bonusCodeText.setSelected(false);
-                            bonusCodeText.setFocusableInTouchMode(false);
-                            Snackbar.make(menuLayout, "Invalid code", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(menuLayout, "Successfully used", Snackbar.LENGTH_SHORT).show();
+                            addValues("isDuckBonus", 500);
+                            isDuckBonus = true;
+                        } else {
+                            hideKeyboard();
                             bonusCodeText.setText(null);
-                            break;
+                            Snackbar.make(menuLayout, "Code's been already used", Snackbar.LENGTH_SHORT).show();
+                        }
+                        break;
                     }
+                    case "pride": {
+                        if (!isPrideBonus) {
+                            hideKeyboard();
+                            Snackbar.make(menuLayout, "Successfully used", Snackbar.LENGTH_SHORT).show();
+                            addValues("isPrideBonus", 1000);
+                            isPrideBonus = true;
+                        } else {
+                            hideKeyboard();
+                            bonusCodeText.setText(null);
+                            Snackbar.make(menuLayout, "Code's been already used", Snackbar.LENGTH_SHORT).show();
+                        }
+                        break;
+                    }
+                    case "capybara": {
+                        if (!isCapybaraBonus) {
+                            hideKeyboard();
+                            Snackbar.make(menuLayout, "Successfully used", Snackbar.LENGTH_SHORT).show();
+                            addValues("isCapybaraBonus", 500);
+                            isCapybaraBonus = true;
+                            break;
+                        } else {
+                            hideKeyboard();
+                            bonusCodeText.setText(null);
+                            Snackbar.make(menuLayout, "Code's been already used", Snackbar.LENGTH_SHORT).show();
+                        }
+                        break;
+                    }
+                    case "": {
+                        //bonusCodeText.setSelected(false);
+                        //bonusCodeText.setFocusableInTouchMode(false);
+                        break;
+                    }
+                    default:
+                        hideKeyboard();
+                        bonusCodeText.setSelected(false);
+                        bonusCodeText.setFocusableInTouchMode(false);
+                        Snackbar.make(menuLayout, "Invalid code", Snackbar.LENGTH_SHORT).show();
+                        bonusCodeText.setText(null);
+                        break;
+                }
                     /*if (text.equals(Values.bonusCodes.get(i)) && !isBonusUsed) {
                         isBonusUsed = true;
                         bonusCodeText.setVisibility(INVISIBLE);
@@ -505,12 +559,12 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }, 600);
                     }*/
-                }
+                //}
             }
         });
 
         bonusCodeButton.setOnClickListener(l -> {
-            if (isDuckBonus && isPrideBonus) {
+            if (isDuckBonus && isPrideBonus && isCapybaraBonus) {
                 isBonusLeft = false;
             } else {
                 isBonusLeft = true;
@@ -567,7 +621,7 @@ public class MainActivity extends AppCompatActivity {
         //bonus = isUsed;
         bonusCodeText.setVisibility(INVISIBLE);
         bonusCodeText.setText(null);
-        bird.setCoins(bird.getCoins() + coinValue / 2);
+        bird.setCoins(bird.getCoins() + coinValue);
         coinText.setText(String.valueOf(bird.getCoins()));
         editor.putInt("coinValue", bird.getCoins());
         editor.putBoolean(booleanName, true);
@@ -582,6 +636,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, 600);
+    }
+
+    private void checkBonusCode(Boolean bonus) {
+        if (!bonus) {
+            hideKeyboard();
+            Snackbar.make(menuLayout, "Successfully used", Snackbar.LENGTH_SHORT).show();
+            addValues("isDuckBonus", 500);
+            bonus = true;
+        } else {
+            hideKeyboard();
+            bonusCodeText.setText(null);
+            Snackbar.make(menuLayout, "Code's been already used", Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     private void showKeyboard(EditText editText) {

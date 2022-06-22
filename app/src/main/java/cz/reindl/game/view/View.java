@@ -89,6 +89,7 @@ public class View extends android.view.View {
         //CODES
         Values.bonusCodes.add("verdysduck");
         Values.bonusCodes.add("pride");
+        Values.bonusCodes.add("capybara");
     }
 
     public void initBarrier(Bitmap bitmap, Bitmap bitmap2) {
@@ -202,6 +203,13 @@ public class View extends android.view.View {
         handler.postDelayed(runnable, 1);
         super.draw(canvas);
         if (isRunning) {
+            /*new Timer().scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Log.i("tag", "TEST");
+                }
+            }, 5000, 5000);*/
+
             for (int i = 0; i < barriers.size(); i++) {
                 barriers.get(i).renderBarrier(canvas);
             }
@@ -220,23 +228,32 @@ public class View extends android.view.View {
                     powerUp.renderPowerUp(canvas);
                 }
                 if (isBooster) {
+                    isBoosterDone = true;
                     new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            isBooster = false;
-                            if (isBoosterDone) {
-                                isBoosterDone = false;
-                                view.barriers.get(0).setX(SCREEN_WIDTH);
-                                view.barriers.get(1).setX(view.barriers.get(0).getX() + barrierDistance);
-                                view.barriers.get(2).setX(view.barriers.get(1).getX() + barrierDistance);
-                                buttonStop.setVisibility(VISIBLE);
-                                Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
-                                bird.setFallGravity(-15);
-                            }
+                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    isBooster = false;
+                                    if (isBoosterDone) {
+                                        isBoosterDone = false;
+                                        view.barriers.get(0).setX(SCREEN_WIDTH);
+                                        view.barriers.get(1).setX(view.barriers.get(0).getX() + barrierDistance);
+                                        view.barriers.get(2).setX(view.barriers.get(1).getX() + barrierDistance);
+                                        buttonStop.setVisibility(VISIBLE);
+                                        Values.speedPipe = 15 * SCREEN_WIDTH / 1080;
+                                        bird.setFallGravity(-15);
+                                    }
+                                    boostIcon.setVisibility(INVISIBLE);
+                                    boostIcon.setAnimation(null);
+                                }
+                            }, 3250);
+                            boostIcon.setAnimation(AnimationUtils.loadAnimation(boostIcon.getContext(), R.anim.blink));
                         }
-                    }, 4000);
+                    }, 750);
+                    // FIXME: 22.06.2022 boostIcon.setVisibility(VISIBLE);
                     buttonStop.setVisibility(INVISIBLE);
-                    isBoosterDone = true;
                     Values.speedPipe = 50 * SCREEN_WIDTH / 1080;
                     if (bird.getY() - bird.getHeight() > (float) SCREEN_HEIGHT / 2) {
                         bird.setFallGravity(-15);

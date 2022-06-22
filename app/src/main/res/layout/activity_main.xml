@@ -42,10 +42,10 @@
         android:id="@+id/bonusCodeButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_toStartOf="@id/musicStopButton"
         android:layout_below="@id/musicStopButton"
-        android:layout_marginEnd="10dp"
         android:layout_marginTop="-40dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@id/musicStopButton"
         android:background="@drawable/ic_settings_button"
         android:fontFamily="@font/pixel_font"
         android:visibility="visible" />
@@ -90,6 +90,17 @@
         android:layout_centerInParent="true"
         android:text="Power up"
         android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/boostIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:alpha="1.0"
+        android:text="🚀"
+        android:textSize="30sp"
         android:textStyle="bold"
         android:visibility="invisible" />
 

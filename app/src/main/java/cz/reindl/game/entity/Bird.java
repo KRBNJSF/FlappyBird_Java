@@ -1,6 +1,7 @@
 package cz.reindl.game.entity;
 
 
+import static cz.reindl.game.MainActivity.boostIcon;
 import static cz.reindl.game.MainActivity.coinGetText;
 import static cz.reindl.game.MainActivity.powerUpText;
 import static cz.reindl.game.MainActivity.view;
@@ -24,7 +25,7 @@ public class Bird extends GameObject {
     public static boolean legendarySkin;
     public static int boughtSkin, boosterCount = 0;
     //SKIN USAGE
-    public static boolean legendarySkinUsing, boughtSkinUsing, easterEgg;
+    public static boolean legendarySkinUsing, boughtSkinUsing, easterEgg, dragonSkinUsing;
 
     //REFRESH TICKS
     private int tick = 0;
@@ -55,6 +56,10 @@ public class Bird extends GameObject {
         y += this.fallGravity;
         powerUpText.setY(this.y - this.height);
         powerUpText.setX(this.x + this.width * 2);
+        if (view.isBooster) {
+            boostIcon.setY(this.y - this.height);
+            boostIcon.setX(this.x + this.width * 2);
+        }
     }
 
     public void checkY() {
@@ -71,7 +76,7 @@ public class Bird extends GameObject {
         if (easterEgg) {
             this.birdList.set(0, birdList.get(8));
             this.birdList.set(1, birdList.get(9));
-        } else if (view.isDragon) {
+        } else if (view.isDragon && dragonSkinUsing) {
             this.birdList.set(0, birdList.get(10));
             this.birdList.set(1, birdList.get(11));
         } else if (legendarySkin && legendarySkinUsing) {

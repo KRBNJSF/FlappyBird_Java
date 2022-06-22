@@ -24,7 +24,7 @@ import cz.reindl.game.view.View;
 
 public class PowerUp extends GameObject {
 
-    private boolean isPowerUp;
+    public static boolean isPowerUp;
 
     public PowerUp(Bitmap bitmap, int x, int y) {
         super(bitmap, x, y);

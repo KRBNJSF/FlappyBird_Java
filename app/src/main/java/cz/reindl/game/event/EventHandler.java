@@ -38,6 +38,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -47,6 +48,7 @@ import java.util.Random;
 import cz.reindl.game.MainActivity;
 import cz.reindl.game.R;
 import cz.reindl.game.entity.Bird;
+import cz.reindl.game.entity.PowerUp;
 import cz.reindl.game.values.Values;
 import cz.reindl.game.view.View;
 
@@ -145,6 +147,9 @@ public class EventHandler {
         editor.putInt("coinValue", bird.getCoins());
         editor.putInt("skinBought", Bird.boughtSkin);
         editor.putInt("boosterCount", Bird.boosterCount);
+        editor.putBoolean("boughtSkinUsing", Bird.boughtSkinUsing);
+        editor.putBoolean("legendarySkinUsing", Bird.legendarySkinUsing);
+        editor.putBoolean("dragonSkinUsing", Bird.legendarySkinUsing);
         editor.commit();
 
         checkBirdSkin();
@@ -214,6 +219,29 @@ public class EventHandler {
             view.barriers.get(1).setX(view.barriers.get(0).getX() + barrierDistance);
             view.barriers.get(2).setX(view.barriers.get(1).getX() + barrierDistance);
             Values.gapPipe = (int) (SCREEN_HEIGHT / 5.4);
+
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            PowerUp.isPowerUp = false;
+                            view.isCollisionImmunity = false;
+                            powerUpText.setAnimation(null);
+                            powerUpText.setVisibility(INVISIBLE);
+                        }
+                    }, 500);
+                    if (view.isCollisionImmunity) {
+                        powerUpText.setText(String.valueOf("Spawn immunity 0.5 sec"));
+                        powerUpText.setAnimation(AnimationUtils.loadAnimation(powerUpText.getContext(), R.anim.blink));
+                    }
+                }
+            }, 1500);
+            PowerUp.isPowerUp = true;
+            view.isCollisionImmunity = true;
+            powerUpText.setText(String.valueOf("Spawn immunity 2 sec"));
+            powerUpText.setVisibility(android.view.View.VISIBLE);
         }
     }
 
