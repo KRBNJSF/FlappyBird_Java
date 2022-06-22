@@ -15,3 +15,4 @@
  
   - verdysduck
   - pride
+  - capybara
