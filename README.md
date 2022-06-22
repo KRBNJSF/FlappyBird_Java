@@ -9,7 +9,7 @@
 <p align="center">
  
 <a href="https://www.mediafire.com/file/4deqzvm4vib3isx/app-debug.apk/file" download>
- <img src="https://user-images.githubusercontent.com/90755554/164563628-6a321da5-c2d2-4c80-97e0-8d55529d44bb.png" alt="Ghost" height="105px" width="10%">
+ <img src="https://user-images.githubusercontent.com/90755554/164563628-6a321da5-c2d2-4c80-97e0-8d55529d44bb.png" alt="Ghost" height="20%" width="10%">
 </a>
  
  <br>
